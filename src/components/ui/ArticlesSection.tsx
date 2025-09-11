@@ -1,5 +1,9 @@
+import { useState, useMemo } from "react";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import BlogCard from "./BlogCard";
+import { blogPosts } from "../../data/blogPosts";
+import type { FilterCategory, BlogPost } from "../../types/blog";
 import {
   Select,
   SelectContent,
@@ -9,6 +13,17 @@ import {
 } from "@/components/ui/select";
 
 export default function Articles() {
+  const [selectedCategory, setSelectedCategory] = useState<FilterCategory>("highlight");
+  
+  // Filter posts based on selected category
+  const filteredPosts = useMemo(() => {
+    if (selectedCategory === "highlight") {
+      // Show posts with highest likes (highlight posts)
+      return blogPosts;
+    }
+    return blogPosts.filter((post: BlogPost) => post.category.toLowerCase() === selectedCategory.toLowerCase());
+  }, [selectedCategory]);
+
   return (
     <div className="w-full container mx-auto mb-10">
       <h2 className="text-xl font-bold mb-4 px-4">Latest articles</h2>
@@ -25,7 +40,7 @@ export default function Articles() {
         </div>
         <div className="md:hidden w-full text-[var(--brown-400)]">
             <h2 className="text-sm font-medium mb-2">Category</h2>
-          <Select>
+          <Select value={selectedCategory} onValueChange={(value: string) => setSelectedCategory(value as FilterCategory)}>
             <SelectTrigger className="w-full py-3 rounded-sm text-muted-foreground bg-white">
               <SelectValue placeholder="Select category" />
             </SelectTrigger>
@@ -39,31 +54,60 @@ export default function Articles() {
         </div>
         <div className="hidden md:flex space-x-2">
           <button
-            className="px-4 py-3 transition-colors rounded-sm text-sm text-muted-foreground font-medium focus:bg-[var(--brown-300)] focus:text-[var(--brown-500)] cursor-pointer
-            "
+            onClick={() => setSelectedCategory("highlight")}
+            className={`px-4 py-3 transition-colors rounded-sm text-sm font-medium cursor-pointer ${
+              selectedCategory === "highlight"
+                ? "bg-[var(--brown-300)] text-[var(--brown-500)]"
+                : "text-muted-foreground hover:bg-[var(--brown-300)] hover:text-[var(--brown-500)]"
+            }`}
           >
             Highlight
           </button>
           <button
-            className="px-4 py-3 transition-colors rounded-sm text-sm text-muted-foreground font-medium focus:bg-[var(--brown-300)] focus:text-[var(--brown-500)] cursor-pointer
-            "
+            onClick={() => setSelectedCategory("cat")}
+            className={`px-4 py-3 transition-colors rounded-sm text-sm font-medium cursor-pointer ${
+              selectedCategory === "cat"
+                ? "bg-[var(--brown-300)] text-[var(--brown-500)]"
+                : "text-muted-foreground hover:bg-[var(--brown-300)] hover:text-[var(--brown-500)]"
+            }`}
           >
             Cat
           </button>
           <button
-            className="px-4 py-3 transition-colors rounded-sm text-sm text-muted-foreground font-medium focus:bg-[var(--brown-300)] focus:text-[var(--brown-500)] cursor-pointer
-            "
+            onClick={() => setSelectedCategory("inspiration")}
+            className={`px-4 py-3 transition-colors rounded-sm text-sm font-medium cursor-pointer ${
+              selectedCategory === "inspiration"
+                ? "bg-[var(--brown-300)] text-[var(--brown-500)]"
+                : "text-muted-foreground hover:bg-[var(--brown-300)] hover:text-[var(--brown-500)]"
+            }`}
           >
             Inspiration
           </button>
           <button
-            className="px-4 py-3 transition-colors rounded-sm text-sm text-muted-foreground font-medium focus:bg-[var(--brown-300)] focus:text-[var(--brown-500)] cursor-pointer
-            "
+            onClick={() => setSelectedCategory("general")}
+            className={`px-4 py-3 transition-colors rounded-sm text-sm font-medium cursor-pointer ${
+              selectedCategory === "general"
+                ? "bg-[var(--brown-300)] text-[var(--brown-500)]"
+                : "text-muted-foreground hover:bg-[var(--brown-300)] hover:text-[var(--brown-500)]"
+            }`}
           >
             General
           </button>
         </div>
       </div>
+      <article className="grid grid-cols-1 md:grid-cols-2 gap-8 px-4 md:px-0 mt-10 mb-20">
+        {filteredPosts.map((post: BlogPost) => (
+          <BlogCard
+            key={post.id}
+            image={post.image}
+            category={post.category}
+            title={post.title}
+            description={post.description}
+            author={post.author}
+            date={post.date}
+          />
+        ))}
+      </article>
     </div>
   );
 }
