@@ -1,6 +1,7 @@
 function NavBar() {
-    return (
-      <nav className="flex items-center justify-between py-4 px-8 border-b bg-[#F9F8F6]">
+  return (
+    <header className="bg-[var(--brown-100)] border-b">
+      <nav className="container mx-auto flex items-center justify-between py-4 px-8">
         <a href="/" className="text-2xl font-bold">
           LeoShin<span className="text-green-500">.</span>
         </a>
@@ -17,7 +18,8 @@ function NavBar() {
         </div>
         <button className="md:hidden">Menu</button>
       </nav>
-    );
-  }
+    </header>
+  );
+}
 
 export default NavBar;

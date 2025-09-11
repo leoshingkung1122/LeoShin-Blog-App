@@ -8,6 +8,22 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  
+  /* Base Colors for Tailwind */
+  --color-brown-600: var(--brown-600);
+  --color-brown-500: var(--brown-500);
+  --color-brown-400: var(--brown-400);
+  --color-brown-300: var(--brown-300);
+  --color-brown-200: var(--brown-200);
+  --color-brown-100: var(--brown-100);
+  
+  /* Brand Colors for Tailwind */
+  --color-brand-orange: var(--orange);
+  --color-brand-green: var(--green);
+  --color-brand-green-light: var(--green-light);
+  --color-brand-red: var(--red);
+  
+  /* System Colors */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -43,6 +59,23 @@
 
 :root {
   --radius: 0.625rem;
+  
+  /* Base Colors */
+  --brown-600: #26231E;
+  --brown-500: #34303B;
+  --brown-400: #757160;
+  --brown-300: #DAD6D1;
+  --brown-200: #EFEEEB;
+  --brown-100: #F8F6F6;
+  --white: #FFFFFF;
+  
+  /* Brand Colors */
+  --orange: #F2B68C;
+  --green: #12B279;
+  --green-light: #D7F2EB;
+  --red: #EB5164;
+  
+  /* System Colors */
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
