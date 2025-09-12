@@ -9,7 +9,7 @@ export const blogPosts: BlogPost[] = [
       title: "The Art of Mindfulness: Finding Peace in a Busy World",
       description:
         "Discover the transformative power of mindfulness and how it can help you navigate the challenges of modern life with greater ease and contentment.",
-      author: "Thompson P.",
+      author: "LeoShin",
       date: "11 September 2024",
       likes: 321,
       content:
@@ -23,7 +23,7 @@ export const blogPosts: BlogPost[] = [
       title: "The Secret Language of Cats: Decoding Feline Communication",
       description:
         "Unravel the mysteries of cat communication and learn how to better understand your feline friend's needs and desires.",
-      author: "Thompson P.",
+      author: "LeoShin",
       date: "21 August 2024",
       likes: 123,
       content:
@@ -37,7 +37,7 @@ export const blogPosts: BlogPost[] = [
       title: "Embracing Change: How to Thrive in Times of Transition",
       description:
         "Learn powerful strategies to navigate life's changes with grace and emerge stronger on the other side.",
-      author: "Thompson P.",
+      author: "LeoShin.",
       date: "23 March 2024",
       likes: 21,
       content:
@@ -51,7 +51,7 @@ export const blogPosts: BlogPost[] = [
       title: "The Future of Work: Adapting to a Digital-First Economy",
       description:
         "Explore how technology is reshaping the workplace and learn skills to succeed in the evolving job market.",
-      author: "Thompson P.",
+      author: "LeoShin",
       date: "23 May 2024",
       likes: 32,
       content:
@@ -65,7 +65,7 @@ export const blogPosts: BlogPost[] = [
       title: "The Power of Habits: Small Changes, Big Results",
       description:
         "Discover how small, consistent habits can lead to significant personal and professional growth over time.",
-      author: "Thompson P.",
+      author: "LeoShin",
       date: "23 June 2024",
       likes: 515,
       content:
@@ -86,3 +86,9 @@ export const blogPosts: BlogPost[] = [
         "## 1. Understanding Feline Nutritional Needs\n\nExplore the unique dietary requirements of cats as obligate carnivores.\n\n## 2. Choosing the Right Cat Food\n\nLearn how to read cat food labels and select high-quality options for your pet.\n\n## 3. Wet vs. Dry Food\n\nUnderstand the pros and cons of wet and dry cat food and how to incorporate both into your cat's diet.\n\n## 4. Portion Control and Feeding Schedule\n\nDiscover how to determine the right portion sizes and establish a healthy feeding routine.\n\n## 5. Special Dietary Considerations\n\nLearn about nutrition for cats with specific health conditions or at different life stages.",
     },
   ];
+
+
+
+
+
+  

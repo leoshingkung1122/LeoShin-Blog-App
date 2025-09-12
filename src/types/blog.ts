@@ -12,4 +12,4 @@ export interface BlogPost {
   content: string;
 }
 
-export type FilterCategory = "highlight" | "cat" | "inspiration" | "general";
+export type FilterCategory = "Highlight" | "Cat" | "Inspiration" | "General";

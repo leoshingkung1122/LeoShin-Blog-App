@@ -13,11 +13,14 @@ import {
 } from "@/components/ui/select";
 
 export default function Articles() {
-  const [selectedCategory, setSelectedCategory] = useState<FilterCategory>("highlight");
+  const [selectedCategory, setSelectedCategory] = useState<FilterCategory>("Highlight");
+
+  const categories:FilterCategory[] = ["Highlight", "Cat", "Inspiration", "General"];
+
   
   // Filter posts based on selected category
   const filteredPosts = useMemo(() => {
-    if (selectedCategory === "highlight") {
+    if (selectedCategory === "Highlight") {
       // Show posts with highest likes (highlight posts)
       return blogPosts;
     }
@@ -45,54 +48,21 @@ export default function Articles() {
               <SelectValue placeholder="Select category" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="highlight">Highlight</SelectItem>
-              <SelectItem value="cat">Cat</SelectItem>
-              <SelectItem value="inspiration">Inspiration</SelectItem>
-              <SelectItem value="general">General</SelectItem>
+              {categories.map((category) => (
+                <SelectItem key={category} value={category}>{category}</SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
         <div className="hidden md:flex space-x-2">
-          <button
-            onClick={() => setSelectedCategory("highlight")}
-            className={`px-4 py-3 transition-colors rounded-sm text-sm font-medium cursor-pointer ${
-              selectedCategory === "highlight"
-                ? "bg-[var(--brown-300)] text-[var(--brown-500)]"
-                : "text-muted-foreground hover:bg-[var(--brown-300)] hover:text-[var(--brown-500)]"
-            }`}
-          >
-            Highlight
-          </button>
-          <button
-            onClick={() => setSelectedCategory("cat")}
-            className={`px-4 py-3 transition-colors rounded-sm text-sm font-medium cursor-pointer ${
-              selectedCategory === "cat"
-                ? "bg-[var(--brown-300)] text-[var(--brown-500)]"
-                : "text-muted-foreground hover:bg-[var(--brown-300)] hover:text-[var(--brown-500)]"
-            }`}
-          >
-            Cat
-          </button>
-          <button
-            onClick={() => setSelectedCategory("inspiration")}
-            className={`px-4 py-3 transition-colors rounded-sm text-sm font-medium cursor-pointer ${
-              selectedCategory === "inspiration"
-                ? "bg-[var(--brown-300)] text-[var(--brown-500)]"
-                : "text-muted-foreground hover:bg-[var(--brown-300)] hover:text-[var(--brown-500)]"
-            }`}
-          >
-            Inspiration
-          </button>
-          <button
-            onClick={() => setSelectedCategory("general")}
-            className={`px-4 py-3 transition-colors rounded-sm text-sm font-medium cursor-pointer ${
-              selectedCategory === "general"
-                ? "bg-[var(--brown-300)] text-[var(--brown-500)]"
-                : "text-muted-foreground hover:bg-[var(--brown-300)] hover:text-[var(--brown-500)]"
-            }`}
-          >
-            General
-          </button>
+          {categories.map((category) => (
+            <button key={category} onClick={() => setSelectedCategory(category)} 
+            className={`px-4 py-3 transition-colors rounded-sm text-sm font-medium cursor-pointer 
+            ${selectedCategory === category ? 
+            "bg-[var(--brown-300)] text-[var(--brown-500)]" : "text-muted-foreground hover:bg-[var(--brown-300)] hover:text-[var(--brown-500)]"}`}>
+              {category}
+            </button>
+          ))}
         </div>
       </div>
       <article className="grid grid-cols-1 md:grid-cols-2 gap-8 px-4 md:px-0 mt-10 mb-20">
