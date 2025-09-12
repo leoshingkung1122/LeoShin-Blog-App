@@ -1,3 +1,6 @@
+import DropdownMenuDemo from "./DropdownMenuDemo";
+
+
 function NavBar() {
   return (
     <header className="bg-[var(--brown-100)] border-b">
@@ -5,7 +8,7 @@ function NavBar() {
         <a href="/" className="text-2xl font-bold">
           LeoShin<span className="text-green-500">.</span>
         </a>
-        <div className="hidden md:flex space-x-4">
+        <div className="hidden sm:flex space-x-4">
           <a href="/login" className="px-9 py-2  rounded-full border">
             Log in
           </a>
@@ -16,7 +19,7 @@ function NavBar() {
             Sign up
           </a>
         </div>
-        <button className="md:hidden">Menu</button>
+        <DropdownMenuDemo />
       </nav>
     </header>
   );
