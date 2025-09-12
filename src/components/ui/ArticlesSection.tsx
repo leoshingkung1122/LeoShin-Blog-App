@@ -1,8 +1,11 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo , useEffect } from "react";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import BlogCard from "./BlogCard";
-import { blogPosts } from "../../data/blogPosts";
+import axios from "axios";
+
+/*import { blogPosts } from "../../data/blogPosts";*/
+
 import type { FilterCategory, BlogPost } from "../../types/blog";
 import {
   Select,
@@ -14,18 +17,46 @@ import {
 
 export default function Articles() {
   const [selectedCategory, setSelectedCategory] = useState<FilterCategory>("Highlight");
-
+  const [posts, setPosts] = useState<BlogPost[]>([]);
   const categories:FilterCategory[] = ["Highlight", "Cat", "Inspiration", "General"];
+  const [page, setPage] = useState<number>(1);
+  const [hasMore, setHasMore] = useState<boolean>(true); 
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   
-  // Filter posts based on selected category
-  const filteredPosts = useMemo(() => {
-    if (selectedCategory === "Highlight") {
-      // Show posts with highest likes (highlight posts)
-      return blogPosts;
+
+  useEffect(() => {
+    fetchPosts();
+  }, [page, selectedCategory]);
+
+    const fetchPosts = async () => {
+    setIsLoading(true); // Set isLoading to true when starting to fetch
+      try {
+        let response;
+        if (selectedCategory === "Highlight") {
+          response = await axios.get(
+            `https://blog-post-project-api.vercel.app/posts?page=${page}&limit=6`
+          );
+        } else {
+          response = await axios.get(
+            `https://blog-post-project-api.vercel.app/posts?page=${page}&limit=6&category=${selectedCategory}`
+          );
+        }
+        setPosts((prevPosts) => page === 1 ? response.data.posts : [...prevPosts, ...response.data.posts]);
+        setIsLoading(false); // Set isLoading to false after fetching
+        if (response.data.currentPage >= response.data.totalPages) {
+          setHasMore(false); // No more posts to load
+        }
+      } catch (error) {
+        console.log(error);
+        setIsLoading(false); // Set loading to false in case of error
+      }
     }
-    return blogPosts.filter((post: BlogPost) => post.category.toLowerCase() === selectedCategory.toLowerCase());
-  }, [selectedCategory]);
+
+    const handleLoadMore = () => {
+      setPage((prevPage) => prevPage + 1); // Increment page number to load more posts
+    };
+
 
   return (
     <div className="w-full container mx-auto mb-10">
@@ -43,7 +74,15 @@ export default function Articles() {
         </div>
         <div className="md:hidden w-full text-[var(--brown-400)]">
             <h2 className="text-sm font-medium mb-2">Category</h2>
-          <Select value={selectedCategory} onValueChange={(value: string) => setSelectedCategory(value as FilterCategory)}>
+          <Select 
+           value={selectedCategory}
+           onValueChange={(value: FilterCategory) => {
+            setSelectedCategory(value);
+            setPosts([]); // Clear posts when category changes
+            setPage(1); // Reset page to 1
+            setHasMore(true); // Reset "has more" state
+          }}>
+
             <SelectTrigger className="w-full py-3 rounded-sm text-muted-foreground bg-white">
               <SelectValue placeholder="Select category" />
             </SelectTrigger>
@@ -56,7 +95,13 @@ export default function Articles() {
         </div>
         <div className="hidden md:flex space-x-2">
           {categories.map((category) => (
-            <button key={category} onClick={() => setSelectedCategory(category)} 
+            <button key={category} 
+            onClick={() => {
+              setSelectedCategory(category);
+              setPosts([]); // Clear posts when category changes
+              setPage(1); // Reset page to 1
+              setHasMore(true); // Reset "has more" state
+            }}
             className={`px-4 py-3 transition-colors rounded-sm text-sm font-medium cursor-pointer 
             ${selectedCategory === category ? 
             "bg-[var(--brown-300)] text-[var(--brown-500)]" : "text-muted-foreground hover:bg-[var(--brown-100)] hover:text-[var(--brown-500)]"}`}
@@ -67,7 +112,7 @@ export default function Articles() {
         </div>
       </div>
       <article className="grid grid-cols-1 md:grid-cols-2 gap-8 px-4 md:px-0 mt-10 mb-20">
-        {filteredPosts.map((post: BlogPost) => (
+        {posts.map((post: BlogPost) => (
           <BlogCard
             key={post.id}
             image={post.image}
@@ -75,10 +120,25 @@ export default function Articles() {
             title={post.title}
             description={post.description}
             author={post.author}
-            date={post.date}
+            date={new Date(post.date).toLocaleDateString("en-GB", {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            })}
           />
         ))}
       </article>
+
+      {hasMore && (
+        <div className="text-center mt-8">
+          <button
+            onClick={handleLoadMore}
+            className="hover:text-muted-foreground font-medium underline"
+          >
+            {isLoading ? "Loading..." : "View more"}
+          </button>
+        </div>
+      )}
     </div>
   );
 }
