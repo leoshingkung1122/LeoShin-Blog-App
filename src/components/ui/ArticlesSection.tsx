@@ -127,15 +127,60 @@ export default function Articles() {
             })}
           />
         ))}
+        
+        {/* Loading Skeleton */}
+        {isLoading && (
+          <>
+            {Array.from({ length: 6 }, (_, index) => (
+              <div key={`skeleton-${index}`} className="animate-pulse">
+                <div className="bg-[var(--brown-200)] rounded-lg overflow-hidden shadow-sm">
+                  <div className="h-48 bg-[var(--brown-300)]"></div>
+                  <div className="p-4 space-y-3">
+                    <div className="h-4 bg-[var(--brown-300)] rounded w-20"></div>
+                    <div className="h-6 bg-[var(--brown-300)] rounded"></div>
+                    <div className="space-y-2">
+                      <div className="h-4 bg-[var(--brown-300)] rounded"></div>
+                      <div className="h-4 bg-[var(--brown-300)] rounded w-3/4"></div>
+                    </div>
+                    <div className="flex items-center space-x-2 pt-2">
+                      <div className="h-4 bg-[var(--brown-300)] rounded w-16"></div>
+                      <div className="h-4 bg-[var(--brown-300)] rounded w-24"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </>
+        )}
       </article>
 
       {hasMore && (
-        <div className="text-center mt-8">
+        <div className="flex justify-center mt-12">
           <button
             onClick={handleLoadMore}
-            className="hover:text-muted-foreground font-medium underline"
+            disabled={isLoading}
+            className="group relative overflow-hidden bg-[var(--brown-600)] text-white px-8 py-3 rounded-lg font-medium transition-all duration-300 hover:bg-[var(--brown-500)] hover:shadow-lg hover:scale-105 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-none"
           >
-            {isLoading ? "Loading..." : "View more"}
+            <span className={`transition-opacity duration-300 ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
+              View more articles
+            </span>
+            
+            {/* Loading Animation */}
+            {isLoading && (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="flex items-center space-x-2">
+                  <span className="text-white font-medium">Loading</span>
+                  <div className="flex space-x-1">
+                    <div className="w-1.5 h-1.5 bg-white rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                    <div className="w-1.5 h-1.5 bg-white rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                    <div className="w-1.5 h-1.5 bg-white rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            {/* Hover Effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-[var(--orange)] to-[var(--green)] opacity-0 group-hover:opacity-10 transition-opacity duration-300 cursor-pointer"></div>
           </button>
         </div>
       )}
