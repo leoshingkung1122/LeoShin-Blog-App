@@ -59,7 +59,8 @@ export default function Articles() {
             <button key={category} onClick={() => setSelectedCategory(category)} 
             className={`px-4 py-3 transition-colors rounded-sm text-sm font-medium cursor-pointer 
             ${selectedCategory === category ? 
-            "bg-[var(--brown-300)] text-[var(--brown-500)]" : "text-muted-foreground hover:bg-[var(--brown-300)] hover:text-[var(--brown-500)]"}`}>
+            "bg-[var(--brown-300)] text-[var(--brown-500)]" : "text-muted-foreground hover:bg-[var(--brown-100)] hover:text-[var(--brown-500)]"}`}
+            disabled={selectedCategory === category}>
               {category}
             </button>
           ))}
