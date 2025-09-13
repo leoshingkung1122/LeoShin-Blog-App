@@ -1,6 +1,6 @@
 import NavBar from "@/components/ui/navbar";
 import Footer from "@/components/ui/footer";
-import ViewPost from "@/components/ui/viewPost";
+import ViewPost from "@/components/ui/ViewPost";
 
 export default function ViewPostPage() {
     return (
