@@ -12,7 +12,7 @@ function ViewPost() {
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
   const [content, setContent] = useState("");
-  const [likes, setLikes] = useState(0);
+  /*const [likes, setLikes] = useState(0);*/
   const [isLoading, setIsLoading] = useState(false);
   const { postId } = useParams();
 
