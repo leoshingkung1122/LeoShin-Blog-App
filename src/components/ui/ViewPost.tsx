@@ -4,6 +4,7 @@ import axios from "axios";
 import LoadingScreen from "./LoadingScreen";
 import ReactMarkdown from "react-markdown";
 import AuthorBio from "./AuthorBio";
+import Share from "./Share";
 
 function ViewPost() {
   const [img, setImg] = useState("");
@@ -12,7 +13,7 @@ function ViewPost() {
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
   const [content, setContent] = useState("");
-  /*const [likes, setLikes] = useState(0);*/
+  const [likes, setLikes] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const { postId } = useParams();
 
@@ -80,6 +81,7 @@ function ViewPost() {
           <div className="xl:hidden px-4">
             <AuthorBio />
           </div>
+          <Share likesAmount={likes} />
 
         
         </div>
