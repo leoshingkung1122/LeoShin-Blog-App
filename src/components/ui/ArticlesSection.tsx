@@ -7,6 +7,7 @@ import LoadMoreButton from "./LoadMoreButton";
 import { useBlogPosts, useCategories } from "../../hooks";
 import type { BlogPost } from "../../types/blog";
 
+
 export default function Articles() {
   const [searchTerm, setSearchTerm] = useState<string>("");
   

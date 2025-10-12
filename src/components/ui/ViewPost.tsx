@@ -6,6 +6,7 @@ import ReactMarkdown from "react-markdown";
 import AuthorBio from "./AuthorBio";
 import Share from "./Share";
 import Comment from "./comment";
+import CreateAccountModal from "./CreateAccountModal";
 
 function ViewPost() {
   const [img, setImg] = useState("");
@@ -17,6 +18,7 @@ function ViewPost() {
   const [likes, setLikes] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const { postId } = useParams();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   useEffect(() => {
     getPost();
@@ -82,8 +84,8 @@ function ViewPost() {
           <div className="xl:hidden px-4">
             <AuthorBio />
           </div>
-          <Share likesAmount={likes} />
-          <Comment />
+          <Share likesAmount={likes} setDialogState={setIsDialogOpen}/>
+          <Comment setDialogState={setIsDialogOpen}/>
 
         
         </div>
@@ -94,6 +96,10 @@ function ViewPost() {
         </div>
 
       </div>
+      <CreateAccountModal
+        dialogState={isDialogOpen}
+        setDialogState={setIsDialogOpen}
+      />
     </div>
   )
 }

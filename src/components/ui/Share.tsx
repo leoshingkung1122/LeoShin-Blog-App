@@ -1,13 +1,17 @@
-import { SmilePlus, Copy } from "lucide-react";
+import { SmilePlus, Copy, X } from "lucide-react";
 import { FaFacebook, FaLinkedin, FaTwitter } from "react-icons/fa";
+import { toast } from "sonner";
 
-function Share({ likesAmount }: { likesAmount: number }) {
+function Share({ likesAmount, setDialogState }: { likesAmount: number, setDialogState: (state: boolean) => void }) {
     const shareLink = encodeURI(window.location.href);
     
     return (
       <div className="flex flex-col space-y-3 sm:flex-row sm:items-center sm:justify-between sm:space-y-0 bg-gray-50 p-4 rounded-lg border border-gray-200 mx-auto ">
         {/* Likes Button */}
-        <button className="w-full sm:w-auto flex items-center justify-center space-x-2 bg-white px-6 py-3 rounded-full border border-gray-300 hover:bg-gray-50 transition-colors">
+        <button
+          onClick={() => setDialogState(true)}
+          className="bg-white flex items-center justify-center space-x-2 px-11 py-3 rounded-full text-foreground border border-foreground hover:border-muted-foreground hover:text-muted-foreground transition-colors group"
+        >
           <SmilePlus className="w-5 h-5 text-gray-600" />
           <span className="text-gray-700 font-medium">
             {likesAmount}
@@ -20,6 +24,22 @@ function Share({ likesAmount }: { likesAmount: number }) {
           <button
             onClick={() => {
               navigator.clipboard.writeText(shareLink);
+              toast.custom((t) => (
+                <div className="bg-green-500 text-white p-4 rounded-sm flex justify-between items-start max-w-md w-full">
+                  <div>
+                    <h2 className="font-bold text-lg mb-1">Copied!</h2>
+                    <p className="text-sm">
+                      This article has been copied to your clipboard.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => toast.dismiss(t)}
+                    className="text-white hover:text-gray-200"
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
+              ));
             }}
             className="flex items-center space-x-2 bg-white px-6 py-3 rounded-full border border-gray-300 hover:bg-gray-50 transition-colors"
           >

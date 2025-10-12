@@ -1,13 +1,14 @@
 import { Textarea } from "./Textarea";
 import { comments } from "@/data/comments";
 
-export default function Comment() {
+export default function Comment({ setDialogState }: { setDialogState: (state: boolean) => void }) {
     return (
       <div>
         <div className="space-y-4 px-4 mb-16">
           <h3 className="text-lg font-semibold">Comment</h3>
           <div className="space-y-2">
             <Textarea
+              onFocus={() => setDialogState(true)}
               placeholder="What are your thoughts?"
               className="w-full p-4 h-24 resize-none py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground"
             />
