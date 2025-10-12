@@ -8,14 +8,15 @@ export default function NotFoundPage() {
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
       <NavBar />
-      <main className="flex-grow flex items-center justify-center p-4 my-4">
-        <div className="flex flex-col items-center w-full max-w-2xl relative">
-          {/* Decorative elements */}
-          <div className="absolute -top-20 -left-20 w-40 h-40 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full blur-3xl opacity-30" />
-          <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-gradient-to-br from-pink-100 to-yellow-100 rounded-full blur-3xl opacity-30" />
+      <main className="flex-grow">
+        <div className="w-full container mx-auto px-4 py-16 md:py-24">
+          <div className="w-full max-w-2xl mx-auto relative">
           
           {/* Main content card */}
           <div className="flex flex-col space-y-8 items-center w-full bg-white rounded-2xl shadow-2xl px-6 sm:px-20 py-16 relative overflow-hidden border border-gray-100">
+            {/* Decorative elements */}
+            <div className="absolute -top-20 -left-20 w-40 h-40 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full blur-3xl opacity-30 -z-10 pointer-events-none" />
+            <div className="absolute -bottom-20 -right-20 w-40 h-40 bg-gradient-to-br from-pink-100 to-yellow-100 rounded-full blur-3xl opacity-30 -z-10 pointer-events-none" />
             {/* Animated background pattern */}
             <div className="absolute inset-0 opacity-5">
               <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-gray-800 to-transparent"></div>
@@ -64,6 +65,7 @@ export default function NotFoundPage() {
                 Back to Home
               </button>
             </div>
+          </div>
           </div>
         </div>
       </main>

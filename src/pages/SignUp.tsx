@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/authentication";
 import { toast } from "sonner";
-import { X, Loader2 } from "lucide-react";
+import { X, Loader2, User, AtSign, Mail, Lock, Sparkles } from "lucide-react";
 
 interface FormValues {
   name: string;
@@ -122,132 +122,190 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
       <NavBar />
-      <main className="flex justify-center items-center p-4 my-6 flex-grow">
-        <div className="w-full max-w-2xl bg-[#EFEEEB] rounded-sm shadow-md px-3 sm:px-20 py-14">
-          <h2 className="text-4xl font-semibold text-center mb-6 text-foreground">
-            Sign up
-          </h2>
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            <div className="relative space-y-1">
+      <main className="flex-grow">
+        <div className="w-full container mx-auto px-4 py-8 md:py-12">
+          <div className="w-full max-w-2xl mx-auto relative">
+          
+          
+          {/* Main card */}
+          <div className="relative bg-white rounded-2xl shadow-2xl px-6 sm:px-12 py-12 border border-gray-100 overflow-hidden">
+            {/* Animated background pattern */}
+            <div className="absolute inset-0 opacity-5">
+              <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-gray-800 to-transparent"></div>
+            </div>
+            
+            {/* Header with icon */}
+            <div className="relative z-10 text-center mb-8">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-gray-800 via-gray-700 to-gray-900 rounded-full mb-4 shadow-lg">
+                <Sparkles className="w-8 h-8 text-white" />
+              </div>
+              <h2 className="text-4xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent mb-2">
+                Create Account
+              </h2>
+              <p className="text-gray-600 text-sm">Join our community today</p>
+            </div>
+            
+            <form className="space-y-5 relative z-10" onSubmit={handleSubmit}>
+            <div className="relative space-y-2">
               <label
                 htmlFor="name"
-                className="block text-sm font-medium text-muted-foreground"
+                className="block text-sm font-semibold text-gray-700"
               >
-                Name
+                Full Name
               </label>
-              <Input
-                id="name"
-                placeholder="Full name"
-                value={formValues.name}
-                onChange={(e) => handleChange("name", e.target.value)}
-                className={`mt-1 py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground ${
-                  formErrors.name ? "border-red-500" : ""
-                }`}
-                disabled={state.loading}
-              />
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Input
+                  id="name"
+                  placeholder="John Doe"
+                  value={formValues.name}
+                  onChange={(e) => handleChange("name", e.target.value)}
+                  className={`pl-11 pr-4 py-3 rounded-lg border-2 transition-all duration-200 ${
+                    formErrors.name 
+                      ? "border-red-500 focus:border-red-600" 
+                      : "border-gray-200 focus:border-gray-800 hover:border-gray-300"
+                  } placeholder:text-gray-400 focus-visible:ring-0 focus-visible:ring-offset-0`}
+                  disabled={state.loading}
+                />
+              </div>
               {formErrors.name && (
-                <p className="text-red-500 text-xs absolute">
+                <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                  <X className="w-3 h-3" />
                   {formErrors.name}
                 </p>
               )}
             </div>
-            <div className="relative space-y-1">
+            <div className="relative space-y-2">
               <label
                 htmlFor="username"
-                className="block text-sm font-medium text-muted-foreground"
+                className="block text-sm font-semibold text-gray-700"
               >
                 Username
               </label>
-              <Input
-                id="username"
-                placeholder="Username"
-                value={formValues.username}
-                onChange={(e) => handleChange("username", e.target.value)}
-                className={`mt-1 py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground ${
-                  formErrors.username ? "border-red-500" : ""
-                }`}
-                disabled={state.loading}
-              />
+              <div className="relative">
+                <AtSign className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Input
+                  id="username"
+                  placeholder="johndoe123"
+                  value={formValues.username}
+                  onChange={(e) => handleChange("username", e.target.value)}
+                  className={`pl-11 pr-4 py-3 rounded-lg border-2 transition-all duration-200 ${
+                    formErrors.username 
+                      ? "border-red-500 focus:border-red-600" 
+                      : "border-gray-200 focus:border-gray-800 hover:border-gray-300"
+                  } placeholder:text-gray-400 focus-visible:ring-0 focus-visible:ring-offset-0`}
+                  disabled={state.loading}
+                />
+              </div>
               {formErrors.username && (
-                <p className="text-red-500 text-xs absolute">
+                <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                  <X className="w-3 h-3" />
                   {formErrors.username}
                 </p>
               )}
             </div>
-            <div className="relative space-y-1">
+            <div className="relative space-y-2">
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-muted-foreground"
+                className="block text-sm font-semibold text-gray-700"
               >
-                Email
+                Email Address
               </label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="Email"
-                value={formValues.email}
-                onChange={(e) => handleChange("email", e.target.value)}
-                className={`mt-1 py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground ${
-                  formErrors.email ? "border-red-500" : ""
-                }`}
-                disabled={state.loading}
-              />
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="john@example.com"
+                  value={formValues.email}
+                  onChange={(e) => handleChange("email", e.target.value)}
+                  className={`pl-11 pr-4 py-3 rounded-lg border-2 transition-all duration-200 ${
+                    formErrors.email 
+                      ? "border-red-500 focus:border-red-600" 
+                      : "border-gray-200 focus:border-gray-800 hover:border-gray-300"
+                  } placeholder:text-gray-400 focus-visible:ring-0 focus-visible:ring-offset-0`}
+                  disabled={state.loading}
+                />
+              </div>
               {formErrors.email && (
-                <p className="text-red-500 text-xs absolute">
+                <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                  <X className="w-3 h-3" />
                   {formErrors.email}
                 </p>
               )}
             </div>
-            <div className="relative space-y-1">
+            <div className="relative space-y-2">
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-muted-foreground"
+                className="block text-sm font-semibold text-gray-700"
               >
                 Password
               </label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Password"
-                value={formValues.password}
-                onChange={(e) => handleChange("password", e.target.value)}
-                className={`mt-1 py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground ${
-                  formErrors.password ? "border-red-500" : ""
-                }`}
-                disabled={state.loading}
-              />
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="••••••••"
+                  value={formValues.password}
+                  onChange={(e) => handleChange("password", e.target.value)}
+                  className={`pl-11 pr-4 py-3 rounded-lg border-2 transition-all duration-200 ${
+                    formErrors.password 
+                      ? "border-red-500 focus:border-red-600" 
+                      : "border-gray-200 focus:border-gray-800 hover:border-gray-300"
+                  } placeholder:text-gray-400 focus-visible:ring-0 focus-visible:ring-offset-0`}
+                  disabled={state.loading}
+                />
+              </div>
               {formErrors.password && (
-                <p className="text-red-500 text-xs absolute">
+                <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+                  <X className="w-3 h-3" />
                   {formErrors.password}
                 </p>
               )}
             </div>
-            <div className="flex justify-center">
+            <div className="flex justify-center pt-2">
               <button
                 type="submit"
-                className="px-8 py-2 bg-foreground text-white rounded-full hover:bg-muted-foreground transition-colors flex items-center gap-1"
+                className="group w-full sm:w-auto px-12 py-4 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-900 text-white rounded-full hover:from-gray-900 hover:via-gray-800 hover:to-black transition-all duration-300 font-semibold shadow-xl hover:shadow-2xl transform hover:-translate-y-0.5 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                 disabled={state.loading}
               >
                 {state.loading ? (
-                  <Loader2 className="animate-spin" size={20} />
+                  <>
+                    <Loader2 className="animate-spin w-5 h-5" />
+                    <span>Creating Account...</span>
+                  </>
                 ) : (
-                  ""
+                  <>
+                    <span>Create Account</span>
+                    <User className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                  </>
                 )}
-                Sign up
               </button>
             </div>
           </form>
-          <p className="flex flex-row justify-center gap-1 mt-4 text-sm text-center pt-2 text-muted-foreground font-medium">
-            Already have an account?{" "}
-            <a
+          
+          {/* Divider */}
+          <div className="relative z-10 flex items-center gap-4 w-full my-6">
+            <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent" />
+            <span className="text-xs text-gray-400 font-medium uppercase tracking-wider">or</span>
+            <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent" />
+          </div>
+          
+          {/* Login link */}
+          <p className="relative z-10 flex flex-row justify-center items-center gap-2 text-sm text-center text-gray-600 font-medium">
+            <span>Already have an account?</span>
+            <button
               onClick={() => navigate("/login")}
-              className="text-foreground hover:text-muted-foreground transition-colors underline font-semibold cursor-pointer"
+              className="text-gray-800 hover:text-gray-600 transition-colors underline decoration-2 underline-offset-2 font-bold"
             >
               Log in
-            </a>
+            </button>
           </p>
+          </div>
+        </div>
         </div>
       </main>
       <Footer />
