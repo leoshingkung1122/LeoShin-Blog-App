@@ -511,3 +511,93 @@
 .animate-water-shimmer {
   animation: water-shimmer 2s ease-in-out infinite;
 }
+
+/* Magic/Spell Animation Effects */
+@keyframes spin-slow {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+@keyframes spin-reverse {
+  from {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+}
+
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translateY(-15px) scale(1.1);
+    opacity: 1;
+  }
+}
+
+@keyframes magic-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1.3);
+    opacity: 0;
+  }
+}
+
+@keyframes magic-shimmer {
+  0% {
+    transform: translateX(-100%) rotate(-5deg);
+  }
+  100% {
+    transform: translateX(100%) rotate(5deg);
+  }
+}
+
+/* Apply magic animations */
+.animate-spin-slow {
+  animation: spin-slow 20s linear infinite;
+}
+
+.animate-spin-reverse {
+  animation: spin-reverse 15s linear infinite;
+}
+
+.animate-twinkle {
+  animation: twinkle 2s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.animate-magic-pulse {
+  animation: magic-pulse 2s ease-out infinite;
+}
+
+.animate-magic-pulse-delayed {
+  animation: magic-pulse 2s ease-out infinite 0.5s;
+}
+
+.animate-magic-shimmer {
+  animation: magic-shimmer 3s ease-in-out infinite;
+}

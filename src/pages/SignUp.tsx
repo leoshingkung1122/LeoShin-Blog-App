@@ -134,20 +134,48 @@ export default function SignUpPage() {
             
             {/* Frieren Character with Tooltip - Hidden on mobile/tablet */}
             <div className="hidden lg:flex items-center justify-center relative group">
-              {/* Decorative floating sparkles */}
-              <div className="absolute top-10 left-10 w-2 h-2 bg-purple-400 rounded-full animate-pulse opacity-60"></div>
-              <div className="absolute top-20 right-14 w-1.5 h-1.5 bg-blue-400 rounded-full animate-pulse opacity-50" style={{ animationDelay: '0.5s' }}></div>
-              <div className="absolute bottom-24 left-16 w-2.5 h-2.5 bg-cyan-400 rounded-full animate-pulse opacity-70" style={{ animationDelay: '1s' }}></div>
+              {/* Magic Theme Effects */}
               
-              {/* Frieren Image */}
-              <div className="relative">
+              {/* Magic Particles - Floating */}
+              <div className="absolute top-16 left-24 w-2 h-2 bg-purple-400/80 rounded-full shadow-lg shadow-purple-400/50 animate-float"></div>
+              <div className="absolute top-32 right-24 w-2.5 h-2.5 bg-pink-400/70 rounded-full shadow-lg shadow-pink-400/50 animate-float" style={{ animationDelay: '0.7s' }}></div>
+              <div className="absolute bottom-28 left-20 w-2 h-2 bg-fuchsia-400/90 rounded-full shadow-lg shadow-fuchsia-400/50 animate-float" style={{ animationDelay: '1.2s' }}></div>
+              <div className="absolute bottom-16 right-12 w-1.5 h-1.5 bg-violet-300/80 rounded-full shadow-md shadow-violet-300/40 animate-float" style={{ animationDelay: '0.3s' }}></div>
+              <div className="absolute top-40 left-12 w-1.5 h-1.5 bg-purple-300/70 rounded-full shadow-md shadow-purple-300/40 animate-float" style={{ animationDelay: '1.8s' }}></div>
+              <div className="absolute top-12 right-12 w-2 h-2 bg-pink-300/85 rounded-full shadow-lg shadow-pink-300/50 animate-float" style={{ animationDelay: '0.8s' }}></div>
+              
+              {/* Frieren Image with Magic Effects */}
+              <div className="relative z-10">
+                {/* Magic Aura Base */}
+                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-400/30 via-pink-400/30 to-fuchsia-400/30 blur-3xl animate-pulse-slow"></div>
+                
+                {/* Magic Pulse Rings on Hover */}
+                <div className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                  <div className="absolute inset-0 rounded-full border-4 border-purple-400/50 animate-magic-pulse"></div>
+                  <div className="absolute inset-0 rounded-full border-4 border-pink-400/40 animate-magic-pulse-delayed"></div>
+                </div>
+                
+                {/* Magic Runes/Symbols - Around Character */}
+                <div className="absolute top-20 right-16 text-purple-400/70 opacity-70 animate-float text-2xl" style={{ animationDelay: '0s' }}>✦</div>
+                <div className="absolute bottom-24 left-20 text-pink-400/60 opacity-60 animate-float text-xl" style={{ animationDelay: '1s' }}>✧</div>
+                <div className="absolute top-36 left-16 text-fuchsia-400/80 opacity-80 animate-float text-lg" style={{ animationDelay: '0.5s' }}>❋</div>
+                <div className="absolute top-52 right-24 text-violet-400/65 opacity-65 animate-float text-xl" style={{ animationDelay: '1.5s' }}>✦</div>
+                <div className="absolute bottom-36 right-12 text-purple-400/70 opacity-70 animate-float text-lg" style={{ animationDelay: '0.8s' }}>✧</div>
+                <div className="absolute top-28 left-28 text-pink-400/60 opacity-60 animate-float text-base" style={{ animationDelay: '1.3s' }}>❋</div>
+                
+                {/* Magic Dust Particles */}
+                <div className="absolute top-32 right-32 w-1 h-1 bg-purple-200/70 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
+                <div className="absolute bottom-28 left-32 w-1 h-1 bg-pink-200/60 rounded-full animate-pulse" style={{ animationDelay: '1.1s' }}></div>
+                <div className="absolute top-44 left-36 w-1 h-1 bg-fuchsia-200/80 rounded-full animate-pulse" style={{ animationDelay: '1.6s' }}></div>
+                
                 <img 
                   src={FrirenHappy} 
-                  alt="Frieren" 
-                  className="w-full max-w-[400px] h-auto object-contain drop-shadow-2xl transition-all duration-500 group-hover:scale-105 group-hover:-translate-y-1"
+                  alt="Frieren - Mage" 
+                  className="w-full max-w-[400px] h-auto object-contain drop-shadow-2xl transition-all duration-700 group-hover:scale-110 group-hover:-translate-y-2 relative z-10"
                 />
-                {/* Glow effect */}
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-200/20 via-blue-200/20 to-cyan-200/20 blur-3xl -z-10 group-hover:opacity-100 opacity-70 transition-opacity duration-500"></div>
+                
+                {/* Enhanced Magic Aura Glow */}
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-400/40 via-pink-400/40 to-fuchsia-400/40 blur-3xl -z-10 group-hover:opacity-100 opacity-70 transition-opacity duration-700 animate-pulse-slow"></div>
               </div>
               
               {/* Tooltip/Speech Bubble on Hover - Positioned above */}
@@ -210,7 +238,7 @@ export default function SignUpPage() {
               </div>
               <h2 className="text-3xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent mb-1">
                 Create Account
-              </h2>
+          </h2>
               <p className="text-gray-600 text-sm">Join our community today</p>
             </div>
             
@@ -224,18 +252,18 @@ export default function SignUpPage() {
               </label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <Input
-                  id="name"
+              <Input
+                id="name"
                   placeholder="John Doe"
-                  value={formValues.name}
-                  onChange={(e) => handleChange("name", e.target.value)}
+                value={formValues.name}
+                onChange={(e) => handleChange("name", e.target.value)}
                   className={`pl-10 pr-3 py-2.5 rounded-lg border-2 transition-all duration-200 ${
                     formErrors.name 
                       ? "border-red-500 focus:border-red-600" 
                       : "border-gray-200 focus:border-gray-800 hover:border-gray-300"
                   } placeholder:text-gray-400 focus-visible:ring-0 focus-visible:ring-offset-0`}
-                  disabled={state.loading}
-                />
+                disabled={state.loading}
+              />
               </div>
               {formErrors.name && (
                 <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
@@ -253,18 +281,18 @@ export default function SignUpPage() {
               </label>
               <div className="relative">
                 <AtSign className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <Input
-                  id="username"
+              <Input
+                id="username"
                   placeholder="johndoe123"
-                  value={formValues.username}
-                  onChange={(e) => handleChange("username", e.target.value)}
+                value={formValues.username}
+                onChange={(e) => handleChange("username", e.target.value)}
                   className={`pl-10 pr-3 py-2.5 rounded-lg border-2 transition-all duration-200 ${
                     formErrors.username 
                       ? "border-red-500 focus:border-red-600" 
                       : "border-gray-200 focus:border-gray-800 hover:border-gray-300"
                   } placeholder:text-gray-400 focus-visible:ring-0 focus-visible:ring-offset-0`}
-                  disabled={state.loading}
-                />
+                disabled={state.loading}
+              />
               </div>
               {formErrors.username && (
                 <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
@@ -282,19 +310,19 @@ export default function SignUpPage() {
               </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <Input
-                  id="email"
-                  type="email"
+              <Input
+                id="email"
+                type="email"
                   placeholder="john@example.com"
-                  value={formValues.email}
-                  onChange={(e) => handleChange("email", e.target.value)}
+                value={formValues.email}
+                onChange={(e) => handleChange("email", e.target.value)}
                   className={`pl-10 pr-3 py-2.5 rounded-lg border-2 transition-all duration-200 ${
                     formErrors.email 
                       ? "border-red-500 focus:border-red-600" 
                       : "border-gray-200 focus:border-gray-800 hover:border-gray-300"
                   } placeholder:text-gray-400 focus-visible:ring-0 focus-visible:ring-offset-0`}
-                  disabled={state.loading}
-                />
+                disabled={state.loading}
+              />
               </div>
               {formErrors.email && (
                 <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
@@ -312,19 +340,19 @@ export default function SignUpPage() {
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <Input
-                  id="password"
-                  type="password"
+              <Input
+                id="password"
+                type="password"
                   placeholder="••••••••"
-                  value={formValues.password}
-                  onChange={(e) => handleChange("password", e.target.value)}
+                value={formValues.password}
+                onChange={(e) => handleChange("password", e.target.value)}
                   className={`pl-10 pr-3 py-2.5 rounded-lg border-2 transition-all duration-200 ${
                     formErrors.password 
                       ? "border-red-500 focus:border-red-600" 
                       : "border-gray-200 focus:border-gray-800 hover:border-gray-300"
                   } placeholder:text-gray-400 focus-visible:ring-0 focus-visible:ring-offset-0`}
-                  disabled={state.loading}
-                />
+                disabled={state.loading}
+              />
               </div>
               {formErrors.password && (
                 <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
