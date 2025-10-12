@@ -15,7 +15,7 @@ function DropdownMenuDemo() {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="sm:hidden w-screen rounded-none mt-4 flex flex-col gap-6 py-10 px-6">
         <button
-          onClick={() => navigate("/login")}
+          onClick={() => navigate("/Login")}
           className="px-8 py-4 rounded-full text-center text-foreground border border-foreground hover:border-muted-foreground hover:text-muted-foreground transition-colors"
         >
           Log in

@@ -14,7 +14,7 @@ function NavBar() {
         </button>
         <div className="hidden sm:flex space-x-4">
           <button
-            onClick={() => navigate("/login")}
+            onClick={() => navigate("/Login")}
             className="px-8 py-2 rounded-full text-foreground border border-foreground hover:border-muted-foreground hover:text-muted-foreground transition-colors"
           >
             Log in

@@ -4,6 +4,7 @@ import HomePage from "./pages/HomePage";
 import ViewPostPage from "./pages/ViewPostPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import SignUpPage from "./pages/SignUp";
+import LoginPage from "./pages/Login";
 import { Toaster } from "@/components/ui/sonner";
 import { useAuth } from "@/contexts/authentication";
 import jwtInterceptor from "./utils/jwtinterceptor";
@@ -33,6 +34,18 @@ function App() {
               isAuthenticated={isAuthenticated}
             >
               <SignUpPage />
+            </AuthenticationRoute>
+          }
+        />
+
+        <Route
+          path="/Login"
+          element={
+            <AuthenticationRoute
+              isLoading={state.getUserLoading}
+              isAuthenticated={isAuthenticated}
+            >
+              <LoginPage />
             </AuthenticationRoute>
           }
         />
