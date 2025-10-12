@@ -5,6 +5,7 @@ import LoadingScreen from "./LoadingScreen";
 import ReactMarkdown from "react-markdown";
 import AuthorBio from "./AuthorBio";
 import Share from "./Share";
+import Comment from "./comment";
 
 function ViewPost() {
   const [img, setImg] = useState("");
@@ -82,6 +83,7 @@ function ViewPost() {
             <AuthorBio />
           </div>
           <Share likesAmount={likes} />
+          <Comment />
 
         
         </div>
