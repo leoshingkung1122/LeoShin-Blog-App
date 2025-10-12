@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import LoadingScreen from "./LoadingScreen";
@@ -18,8 +18,10 @@ function ViewPost() {
   const [content, setContent] = useState("");
   const [likes, setLikes] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [postNotFound, setPostNotFound] = useState(false);
   const { postId } = useParams();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     getPost();
@@ -43,11 +45,30 @@ function ViewPost() {
     } catch (error) {
       console.log(error);
       setIsLoading(false);
+      // Check if it's a 404 error (post not found)
+      if (axios.isAxiosError(error) && error.response?.status === 404) {
+        setPostNotFound(true);
+        // Redirect to 404 page after a short delay
+        setTimeout(() => {
+          navigate("/404", { replace: true });
+        }, 1000);
+      }
     }
   };
 
   if (isLoading) {
     return <LoadingScreen />;
+  }
+
+  if (postNotFound) {
+    return (
+      <div className="flex items-center justify-center min-h-[calc(100vh-200px)]">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">Post Not Found</h2>
+          <p className="text-gray-600">Redirecting to 404 page...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
