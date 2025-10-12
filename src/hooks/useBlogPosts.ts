@@ -7,8 +7,10 @@ interface UseBlogPostsReturn {
   isLoading: boolean;
   hasMore: boolean;
   selectedCategory: FilterCategory;
+  searchKeyword: string;
   error: string | null;
   setSelectedCategory: (category: FilterCategory) => void;
+  setSearchKeyword: (keyword: string) => void;
   loadMore: () => void;
   resetPosts: () => void;
 }
@@ -16,19 +18,30 @@ interface UseBlogPostsReturn {
 export const useBlogPosts = (): UseBlogPostsReturn => {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<FilterCategory>("Highlight");
+  const [searchKeyword, setSearchKeyword] = useState<string>("");
   const [page, setPage] = useState<number>(1);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchPosts = useCallback(async (currentPage: number, category: FilterCategory, isNewCategory = false) => {
+  const fetchPosts = useCallback(async (currentPage: number, category: FilterCategory, keyword: string, isNewCategory = false) => {
     setIsLoading(true);
     setError(null);
     
     try {
       let response;
       const baseUrl = "https://blog-post-project-api.vercel.app/posts";
-      const params = `page=${currentPage}&limit=6${category !== "Highlight" ? `&category=${category}` : ""}`;
+      let params = `page=${currentPage}&limit=6`;
+      
+      // Add keyword if searching
+      if (keyword.trim() !== "") {
+        params += `&keyword=${encodeURIComponent(keyword)}`;
+      }  
+      
+      if (category !== "Highlight") {
+        // Only add category filter if not searching
+        params += `&category=${category}`;
+      }
       
       response = await axios.get(`${baseUrl}?${params}`);
       
@@ -51,13 +64,21 @@ export const useBlogPosts = (): UseBlogPostsReturn => {
     }
   }, []);
 
-  // Fetch posts when page or category changes
+  // Fetch posts when page, category, or search keyword changes
   useEffect(() => {
-    fetchPosts(page, selectedCategory, page === 1);
-  }, [page, selectedCategory, fetchPosts]);
+    fetchPosts(page, selectedCategory, searchKeyword, page === 1);
+  }, [page, selectedCategory, searchKeyword, fetchPosts]);
 
   const handleCategoryChange = useCallback((category: FilterCategory) => {
     setSelectedCategory(category);
+    setPosts([]);
+    setPage(1);
+    setHasMore(true);
+    setError(null);
+  }, []);
+
+  const handleSearchKeywordChange = useCallback((keyword: string) => {
+    setSearchKeyword(keyword);
     setPosts([]);
     setPage(1);
     setHasMore(true);
@@ -82,8 +103,10 @@ export const useBlogPosts = (): UseBlogPostsReturn => {
     isLoading,
     hasMore,
     selectedCategory,
+    searchKeyword,
     error,
     setSelectedCategory: handleCategoryChange,
+    setSearchKeyword: handleSearchKeywordChange,
     loadMore,
     resetPosts,
   };

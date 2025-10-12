@@ -8,6 +8,7 @@ import Share from "./Share";
 import Comment from "./comment";
 import CreateAccountModal from "./CreateAccountModal";
 
+
 function ViewPost() {
   const [img, setImg] = useState("");
   const [title, setTitle] = useState("");

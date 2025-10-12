@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import BlogCard from "./BlogCard";
 import SearchBar from "./SearchBar";
 import CategoryFilter from "./CategoryFilter";
@@ -17,20 +17,23 @@ export default function Articles() {
     isLoading,
     hasMore,
     selectedCategory,
+    searchKeyword,
     error,
     setSelectedCategory,
+    setSearchKeyword,
     loadMore,
   } = useBlogPosts();
   
   const { categories } = useCategories();
 
-
-  // Filter posts based on search term
-  const filteredPosts = posts.filter(post =>
-    post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    post.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    post.category.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Debounce search term
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSearchKeyword(searchTerm);
+    }, 500);
+    
+    return () => clearTimeout(timer);
+  }, [searchTerm, setSearchKeyword]);
 
   return (
     <div className="w-full container mx-auto mb-10">
@@ -42,6 +45,7 @@ export default function Articles() {
           searchTerm={searchTerm}
           onSearchChange={setSearchTerm}
           placeholder="Search articles..."
+          selectedCategory={selectedCategory}
         />
         
         <CategoryFilter
@@ -59,7 +63,7 @@ export default function Articles() {
       )}
       {/* Articles Grid */}
       <article className="grid grid-cols-1 md:grid-cols-2 gap-8 px-4 md:px-0 mt-10 mb-20">
-        {filteredPosts.map((post: BlogPost) => (
+        {posts.map((post: BlogPost) => (
           <BlogCard
             key={post.id}
             id={post.id}
@@ -80,16 +84,11 @@ export default function Articles() {
         {isLoading && <LoadingSkeleton count={6} />}
         
         {/* No Results Message */}
-        {!isLoading && filteredPosts.length === 0 && posts.length > 0 && (
-          <div className="col-span-full text-center py-12">
-            <p className="text-gray-500 text-lg">No articles found matching your search.</p>
-          </div>
-        )}
-        
-        {/* No Posts Message */}
         {!isLoading && posts.length === 0 && (
           <div className="col-span-full text-center py-12">
-            <p className="text-gray-500 text-lg">No articles available.</p>
+            <p className="text-gray-500 text-lg">
+              {searchKeyword ? "No articles found matching your search." : "No articles available."}
+            </p>
           </div>
         )}
       </article>
@@ -97,7 +96,7 @@ export default function Articles() {
       {/* Load More Button */}
       <LoadMoreButton
         isLoading={isLoading}
-        hasMore={hasMore && searchTerm === ""}
+        hasMore={hasMore}
         onLoadMore={loadMore}
         buttonText="View more articles"
         loadingText="Loading"
