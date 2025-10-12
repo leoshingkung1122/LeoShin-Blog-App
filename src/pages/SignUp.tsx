@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import NavBar from "@/components/ui/navbar";
 import Footer from "@/components/ui/footer";
 import { useNavigate } from "react-router-dom";
@@ -7,20 +7,34 @@ import { useAuth } from "@/contexts/authentication";
 import { toast } from "sonner";
 import { X, Loader2 } from "lucide-react";
 
+interface FormValues {
+  name: string;
+  username: string;
+  email: string;
+  password: string;
+}
+
+interface FormErrors {
+  name?: string;
+  username?: string;
+  email?: string;
+  password?: string;
+}
+
 export default function SignUpPage() {
   const { register, state } = useAuth();
   const navigate = useNavigate();
 
-  const [formValues, setFormValues] = useState({
+  const [formValues, setFormValues] = useState<FormValues>({
     name: "",
     username: "",
     email: "",
     password: "",
   });
-  const [formErrors, setFormErrors] = useState({});
+  const [formErrors, setFormErrors] = useState<FormErrors>({});
 
-  const validateInputs = () => {
-    const errors = {};
+  const validateInputs = (): FormErrors => {
+    const errors: FormErrors = {};
 
     // Validate name
     if (!formValues.name.trim()) {
@@ -62,7 +76,7 @@ export default function SignUpPage() {
     return errors;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const errors = validateInputs();
     setFormErrors(errors);
@@ -103,7 +117,7 @@ export default function SignUpPage() {
     }
   };
 
-  const handleChange = (key, value) => {
+  const handleChange = (key: keyof FormValues, value: string) => {
     setFormValues((prev) => ({ ...prev, [key]: value }));
   };
 

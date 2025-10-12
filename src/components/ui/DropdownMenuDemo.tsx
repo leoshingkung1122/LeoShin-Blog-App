@@ -21,7 +21,7 @@ function DropdownMenuDemo() {
           Log in
         </button>
         <button
-          onClick={() => navigate("/signup")}
+          onClick={() => navigate("/SignUp")}
           className="px-8 py-4 bg-foreground text-center text-white rounded-full hover:bg-muted-foreground transition-colors"
         >
           Sign up
