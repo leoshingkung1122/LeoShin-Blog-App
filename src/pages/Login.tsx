@@ -349,9 +349,6 @@ export default function LoginPage() {
                     alt="Tang San - Water Master"
                     className="w-full max-w-[400px] h-auto object-contain drop-shadow-2xl transition-all duration-700 group-hover:scale-110 group-hover:-translate-y-2 relative z-10"
                   />
-
-                  {/* Enhanced Water Aura Glow */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-400/40 via-cyan-400/40 to-teal-400/40 blur-3xl -z-10 group-hover:opacity-100 opacity-70 transition-opacity duration-700 animate-pulse-slow"></div>
                 </div>
 
                 {/* Tooltip/Speech Bubble on Hover - Enhanced */}
