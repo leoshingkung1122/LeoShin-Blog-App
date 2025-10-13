@@ -6,6 +6,7 @@ import NotFoundPage from "./pages/NotFoundPage";
 import SignUpPage from "./pages/SignUp";
 import LoginPage from "./pages/Login";
 import ProfilePage from "./pages/ProfilePage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 import { Toaster } from "@/components/ui/sonner";
 import { useAuth } from "@/contexts/authentication";
 import jwtInterceptor from "./utils/jwtinterceptor";
@@ -60,6 +61,7 @@ function App() {
         />
 
         <Route path="/Profile" element={<ProfilePage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
 
         <Route
           path="/admin/article-management"
