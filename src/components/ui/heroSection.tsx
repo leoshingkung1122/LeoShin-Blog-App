@@ -1,3 +1,5 @@
+import LeoShin from "@/assets/ShuLing.jpg";
+
 
 function HeroSection() {
     return (
@@ -15,7 +17,7 @@ function HeroSection() {
             </p>
           </div>
           <img
-            src="https://res.cloudinary.com/dcbpjtd1r/image/upload/v1728449784/my-blog-post/xgfy0xnvyemkklcqodkg.jpg"
+            src={LeoShin}
             alt="Person with a cat"
             className="h-[530px] object-cover rounded-lg shadow-lg lg:w-1/3 mx-4 mb-8 lg:mb-0"
           />
