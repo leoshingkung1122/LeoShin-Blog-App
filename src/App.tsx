@@ -11,7 +11,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { useAuth } from "@/contexts/authentication";
 import jwtInterceptor from "./utils/jwtinterceptor";
 import AuthenticationRoute from "./components/auth/AuthenticationRoute";
-import ProtectedRoute from "./components/auth/ProtectRoute";
+
 
 import AdminArticlePage from "./pages/admin/AdminArticlePage";
 import AdminCategoryPage from "./pages/admin/AdminCategoryPage";
@@ -27,6 +27,9 @@ function App() {
   const { isAuthenticated, state } = useAuth();
 
   // Initialize JWT interceptor
+  useEffect(() => {
+    jwtInterceptor();
+  }, []);
 
   return (
     <>
