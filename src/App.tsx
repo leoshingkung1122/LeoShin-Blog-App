@@ -11,7 +11,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { useAuth } from "@/contexts/authentication";
 import jwtInterceptor from "./utils/jwtinterceptor";
 import AuthenticationRoute from "./components/auth/AuthenticationRoute";
-
+import ProtectedRoute from "./components/auth/ProtectRoute";
 
 import AdminArticlePage from "./pages/admin/AdminArticlePage";
 import AdminCategoryPage from "./pages/admin/AdminCategoryPage";
@@ -63,35 +63,150 @@ function App() {
           }
         />
 
-        <Route path="/Profile" element={<ProfilePage />} />
-        <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute
+              isLoading={state.getUserLoading}
+              isAuthenticated={isAuthenticated}
+              userRole={state.user?.role}
+              requiredRole="user"
+            >
+              <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/reset-password"
+          element={
+            <ProtectedRoute
+              isLoading={state.getUserLoading}
+              isAuthenticated={isAuthenticated}
+              userRole={state.user?.role}
+              requiredRole="user"
+            >
+              <ResetPasswordPage />
+            </ProtectedRoute>
+          }
+        />
 
         <Route
           path="/admin/article-management"
-          element={<AdminArticlePage />}
+          element={
+            <ProtectedRoute
+              isLoading={state.getUserLoading}
+              isAuthenticated={isAuthenticated}
+              userRole={state.user?.role}
+              requiredRole="admin"
+            >
+              <AdminArticlePage />
+            </ProtectedRoute>
+          }
         />
         <Route
           path="/admin/category-management"
-          element={<AdminCategoryPage />}
+          element={
+            <ProtectedRoute
+              isLoading={state.getUserLoading}
+              isAuthenticated={isAuthenticated}
+              userRole={state.user?.role}
+              requiredRole="admin"
+            >
+              <AdminCategoryPage />
+            </ProtectedRoute>
+          }
         />
         <Route
           path="/admin/create-article"
-          element={<AdminCreateArticlePage />}
+          element={
+            <ProtectedRoute
+              isLoading={state.getUserLoading}
+              isAuthenticated={isAuthenticated}
+              userRole={state.user?.role}
+              requiredRole="admin"
+            >
+              <AdminCreateArticlePage />
+            </ProtectedRoute>
+          }
         />
         <Route
           path="/admin/article-management/create"
-          element={<AdminCreateCategoryPage />}
+          element={
+            <ProtectedRoute
+              isLoading={state.getUserLoading}
+              isAuthenticated={isAuthenticated}
+              userRole={state.user?.role}
+              requiredRole="admin"
+            >
+              <AdminCreateCategoryPage />
+            </ProtectedRoute>
+          }
         />
-        <Route path="/admin/article-management/edit/:id" element={<AdminEditArticlePage />} />
+        <Route
+          path="/admin/article-management/edit/:id"
+          element={
+            <ProtectedRoute
+              isLoading={state.getUserLoading}
+              isAuthenticated={isAuthenticated}
+              userRole={state.user?.role}
+              requiredRole="admin"
+            >
+              <AdminEditArticlePage />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/admin/edit-category"
-          element={<AdminEditCategoryPage />}
+          element={
+            <ProtectedRoute
+              isLoading={state.getUserLoading}
+              isAuthenticated={isAuthenticated}
+              userRole={state.user?.role}
+              requiredRole="admin"
+            >
+              <AdminEditCategoryPage />
+            </ProtectedRoute>
+          }
         />
-        <Route path="/admin/notification" element={<AdminNotificationPage />} />
-        <Route path="/admin/profile" element={<AdminProfilePage />} />
+        <Route
+          path="/admin/notification"
+          element={
+            <ProtectedRoute
+              isLoading={state.getUserLoading}
+              isAuthenticated={isAuthenticated}
+              userRole={state.user?.role}
+              requiredRole="admin"
+            >
+              <AdminNotificationPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/profile"
+          element={
+            <ProtectedRoute
+              isLoading={state.getUserLoading}
+              isAuthenticated={isAuthenticated}
+              userRole={state.user?.role}
+              requiredRole="admin"
+            >
+              <AdminProfilePage />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/admin/reset-password"
-          element={<AdminResetPasswordPage />}
+          element={
+            <ProtectedRoute
+              isLoading={state.getUserLoading}
+              isAuthenticated={isAuthenticated}
+              userRole={state.user?.role}
+              requiredRole="admin"
+            >
+              <AdminResetPasswordPage />
+            </ProtectedRoute>
+          }
         />
       </Routes>
 

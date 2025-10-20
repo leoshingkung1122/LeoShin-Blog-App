@@ -59,7 +59,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       setState((prevState) => ({ ...prevState, getUserLoading: true }));
       const response = await axios.get<User>(
-        "https://blog-post-project-api-with-db.vercel.app/auth/get-user"
+        "https://leoshin-blog-app-api-with-db.vercel.app/auth/get-user"
       );
       setState((prevState) => ({
         ...prevState,
@@ -87,7 +87,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       setState((prevState) => ({ ...prevState, loading: true, error: null }));
       const response = await axios.post<{ access_token: string }>(
-        "https://blog-post-project-api-with-db.vercel.app/auth/login",
+        "https://leoshin-blog-app-api-with-db.vercel.app/auth/login",
         data
       );
       const token = response.data.access_token;
@@ -114,7 +114,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       setState((prevState) => ({ ...prevState, loading: true, error: null }));
       await axios.post(
-        "https://blog-post-project-api-with-db.vercel.app/auth/register",
+        "https://leoshin-blog-app-api-with-db.vercel.app/auth/register",
         data
       );
       setState((prevState) => ({ ...prevState, loading: false, error: null }));
