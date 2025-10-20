@@ -23,7 +23,7 @@ interface AuthContextType {
   state: AuthState;
   login: (data: { email: string; password: string }) => Promise<{ error?: string } | void>;
   logout: () => void;
-  register: (data: { email: string; password: string; name?: string }) => Promise<{ error?: string } | void>;
+  register: (data: { email: string; password: string; name?: string; username?: string }) => Promise<{ error?: string } | void>;
   isAuthenticated: boolean;
   fetchUser: () => Promise<void>;
 }
@@ -110,7 +110,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   };
 
   // Register user
-  const register = async (data: { email: string; password: string; name?: string }) => {
+  const register = async (data: { email: string; password: string; name?: string; username?: string }) => {
     try {
       setState((prevState) => ({ ...prevState, loading: true, error: null }));
       await axios.post(
