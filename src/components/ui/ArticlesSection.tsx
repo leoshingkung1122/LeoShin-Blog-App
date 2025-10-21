@@ -25,7 +25,7 @@ export default function Articles() {
     setSelectedCategory,
     setSearchKeyword,
     loadMore,
-  } = useBlogPosts(categories.length > 0 ? categories[0] : "");
+  } = useBlogPosts(""); // Always start with empty string to show all posts
 
   // Debounce search term
   useEffect(() => {

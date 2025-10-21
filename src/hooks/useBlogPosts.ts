@@ -38,8 +38,8 @@ export const useBlogPosts = (defaultCategory?: FilterCategory): UseBlogPostsRetu
         params += `&keyword=${encodeURIComponent(keyword)}`;
       }  
       
-      if (category && category.trim() !== "") {
-        // Only add category filter if category is specified
+      if (category && category.trim() !== "" && category !== "All") {
+        // Only add category filter if category is specified and not "All"
         params += `&category=${category}`;
       }
       

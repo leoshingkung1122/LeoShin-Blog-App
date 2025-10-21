@@ -61,8 +61,8 @@ export default function SearchBar({
           limit: 6,
         };
 
-        // Add category filter if selected and not empty
-        if (selectedCategory && selectedCategory.trim() !== "") {
+        // Add category filter if selected and not empty and not "All"
+        if (selectedCategory && selectedCategory.trim() !== "" && selectedCategory !== "All") {
           params.category = selectedCategory;
         }
 

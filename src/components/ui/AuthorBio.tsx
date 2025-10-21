@@ -37,7 +37,7 @@ function AuthorBio({
         </div>
         <hr className="border-gray-300 mb-4" />
         <div className="text-muted-foreground space-y-4">
-          <p>{authorIntroduction}</p>
+          <p className="whitespace-pre-line">{authorIntroduction}</p>
         </div>
       </div>
     );

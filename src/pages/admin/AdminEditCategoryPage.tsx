@@ -74,6 +74,11 @@ export default function AdminEditCategoryPage() {
         `https://leoshin-blog-app-api-with-db.vercel.app/categories/${categoryId}`,
         {
           name: categoryName,
+        },
+        {
+          headers: {
+            "Authorization": `Bearer ${localStorage.getItem("token")}`
+          }
         }
       );
 
@@ -126,7 +131,12 @@ export default function AdminEditCategoryPage() {
     try {
       navigate("/admin/category-management");
       await axios.delete(
-        `https://leoshin-blog-app-api-with-db.vercel.app/categories/${categoryId}`
+        `https://leoshin-blog-app-api-with-db.vercel.app/categories/${categoryId}`,
+        {
+          headers: {
+            "Authorization": `Bearer ${localStorage.getItem("token")}`
+          }
+        }
       );
 
       toast.custom((t) => (

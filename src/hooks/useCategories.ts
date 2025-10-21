@@ -53,7 +53,10 @@ export const useCategories = (): UseCategoriesReturn => {
   }, []);
 
   const categories: FilterCategory[] = useMemo(
-    () => apiCategories.map(cat => cat.name as FilterCategory),
+    () => {
+      const allCategories = ["All", ...apiCategories.map(cat => cat.name as FilterCategory)];
+      return Array.from(new Set(allCategories)); // Remove duplicates
+    },
     [apiCategories]
   );
 

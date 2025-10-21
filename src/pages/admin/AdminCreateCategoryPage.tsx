@@ -33,6 +33,11 @@ export default function AdminCreateCategoryPage() {
         "https://leoshin-blog-app-api-with-db.vercel.app/categories",
         {
           name: categoryName,
+        },
+        {
+          headers: {
+            "Authorization": `Bearer ${localStorage.getItem("token")}`
+          }
         }
       );
 

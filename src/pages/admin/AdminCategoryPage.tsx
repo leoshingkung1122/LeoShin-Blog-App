@@ -68,7 +68,12 @@ export default function AdminCategoryManagementPage() {
     try {
       setIsLoading(true);
       await axios.delete(
-        `https://leoshin-blog-app-api-with-db.vercel.app/categories/${categoryId}`
+        `https://leoshin-blog-app-api-with-db.vercel.app/categories/${categoryId}`,
+        {
+          headers: {
+            "Authorization": `Bearer ${localStorage.getItem("token")}`
+          }
+        }
       );
       toast.custom((t) => (
         <div className="bg-green-500 text-white p-4 rounded-sm flex justify-between items-start">
@@ -178,9 +183,11 @@ export default function AdminCategoryManagementPage() {
                     >
                       <PenSquare className="h-4 w-4 hover:text-muted-foreground" />
                     </Button>
-                    <DeleteCategoryDialog
-                      onDelete={() => handleDelete(category.id)}
-                    />
+                    {category.name !== "All" && (
+                      <DeleteCategoryDialog
+                        onDelete={() => handleDelete(category.id)}
+                      />
+                    )}
                   </TableCell>
                 </TableRow>
               ))

@@ -31,6 +31,10 @@ export interface BlogPost {
   author?: string;
   status?: string;
   users?: Author; // Author data from join
+  // Additional author fields for transformed data
+  authorUsername?: string;
+  authorProfilePic?: string;
+  authorIntroduction?: string;
 }
 
 export type FilterCategory = string;

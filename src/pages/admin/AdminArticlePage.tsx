@@ -204,7 +204,7 @@ export default function AdminArticleManagementPage() {
       );
     }
 
-    if (selectedCategory) {
+    if (selectedCategory && selectedCategory !== "All") {
       filtered = filtered.filter((post) =>
         post.category?.toLowerCase().includes(selectedCategory.toLowerCase())
       );
