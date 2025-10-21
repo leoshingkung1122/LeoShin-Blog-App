@@ -37,11 +37,11 @@ function ViewPost() {
       const post = response.data.data;
       setImg(post.image);
       setTitle(post.title);
-      setDate(post.date);
+      setDate(post.published_at || post.created_at);
       setDescription(post.description);
       setCategory(post.categories?.name || post.category);
       setContent(post.content);
-      setLikes(post.likes_count || 0);
+      setLikes(post.likes || 0);
       setIsLoading(false);
     } catch (error) {
       console.log(error);

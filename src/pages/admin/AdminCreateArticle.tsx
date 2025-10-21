@@ -230,14 +230,14 @@ export default function AdminCreateArticlePage() {
                 className="px-8 py-2 rounded-full"
                 variant="outline"
                 disabled={isSaving}
-                onClick={() => handleSave(1)}
+                onClick={() => handleSave(2)}
               >
                 Save as draft
               </Button>
               <Button
                 className="px-8 py-2 rounded-full"
                 disabled={isSaving}
-                onClick={() => handleSave(2)}
+                onClick={() => handleSave(1)}
               >
                 Save and publish
               </Button>

@@ -314,7 +314,7 @@ export default function AdminEditArticlePage() {
             <div className="space-x-2">
               <Button
                 className="px-8 py-2 rounded-full"
-                onClick={() => handleSave(1)}
+                onClick={() => handleSave(2)}
                 variant="outline"
                 disabled={isSaving}
               >
@@ -322,7 +322,7 @@ export default function AdminEditArticlePage() {
               </Button>
               <Button
                 className="px-8 py-2 rounded-full"
-                onClick={() => handleSave(2)} // Handle save logic
+                onClick={() => handleSave(1)} // Handle save logic
                 disabled={isSaving}
               >
                 Save
