@@ -8,7 +8,7 @@ interface User {
   email: string;
   name?: string;
   role?: string;
-  profilePic?: string;
+  profile_pic?: string;
   username?: string;
 }
 
@@ -78,7 +78,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
   };
 
   useEffect(() => {
-    fetchUser(); // Load user on initial app load
+    // Load user on initial app load. Delay UI until first fetch completes by toggling getUserLoading.
+    fetchUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -93,10 +94,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
       const token = response.data.access_token;
       localStorage.setItem("token", token);
 
-      // Fetch and set user details
+      // Ensure user state is populated before navigating to avoid flicker
+      await fetchUser();
       setState((prevState) => ({ ...prevState, loading: false, error: null }));
       navigate("/");
-      await fetchUser();
     } catch (error) {
       const axiosError = error as AxiosError<{ error: string }>;
       const errorMessage = axiosError.response?.data?.error || "Login failed";
