@@ -17,7 +17,6 @@ import { useNavigate } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import type { BlogPost } from "@/types/blog";
-import { supabase } from "@/lib/supabaseClient";
 
 interface Category {
   id: number;
@@ -185,39 +184,25 @@ export default function AdminCreateArticlePage() {
       let imageUrl = "https://via.placeholder.com/800x400?text=No+Image";
 
       if (imageFile.file) {
-        // Step 1: Get signed URL from our backend
-        const signedUrlResponse = await axios.post(
-          "https://leoshin-blog-app-api-with-db.vercel.app/posts/signed-url",
-          {
-            fileName: imageFile.file.name,
-            fileType: imageFile.file.type,
-          },
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+        const formData = new FormData();
+        formData.append('image', imageFile.file);
 
-        const { path, token: supabaseToken } = signedUrlResponse.data;
-        
-        // Step 2: Upload file directly to Supabase Storage using the signed URL
-        await axios.post(
-          `${process.env.VITE_SUPABASE_URL}/storage/v1/upload/resumable`,
-          imageFile.file,
+        const uploadResponse = await axios.post(
+          "https://leoshin-blog-app-api-with-db.vercel.app/posts/upload-image",
+          formData,
           {
             headers: {
-              Authorization: `Bearer ${supabaseToken}`,
-              "x-upsert": "true", // or false, depending on whether you want to overwrite
-              "Content-Type": imageFile.file.type,
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'multipart/form-data',
             },
           }
         );
 
-        // Step 3: Get the public URL of the uploaded file
-        const { data: { publicUrl } } = supabase.storage
-          .from("post-images")
-          .getPublicUrl(path);
-        
-        imageUrl = publicUrl;
+        if (!uploadResponse.data.success) {
+          throw new Error(uploadResponse.data.error || "Failed to upload image");
+        }
+
+        imageUrl = uploadResponse.data.imageUrl;
       }
 
       const postData = {

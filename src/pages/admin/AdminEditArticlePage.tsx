@@ -26,13 +26,12 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import type { BlogPost } from "@/types/blog";
-import { supabase } from "@/lib/supabaseClient";
 
 //this component is not finished yet
 export default function AdminEditArticlePage() {
   const { state } = useAuth();
   const navigate = useNavigate();
-  const { postId } = useParams(); // Get postId from the URL
+  const { id } = useParams(); // Get id from the URL (matching the route parameter)
   const [post, setPost] = useState<Partial<BlogPost>>({}); // Store the fetched post data
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -49,7 +48,7 @@ export default function AdminEditArticlePage() {
         );
         setCategories(responseCategories.data.data);
         const response = await axios.get(
-          `https://leoshin-blog-app-api-with-db.vercel.app/posts/admin/${postId}`
+          `https://leoshin-blog-app-api-with-db.vercel.app/posts/admin/${id}`
         );
         setPost(response.data.data);
       } catch {
@@ -76,7 +75,7 @@ export default function AdminEditArticlePage() {
     };
 
     fetchPost();
-  }, [postId, navigate]); // Re-fetch if postId changes
+  }, [id, navigate]); // Re-fetch if id changes
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -110,45 +109,25 @@ export default function AdminEditArticlePage() {
 
       // If a new file is selected, upload it
       if (imageFile.file) {
-        // Step 1: Get signed URL
-        const signedUrlResponse = await axios.post(
-          "https://leoshin-blog-app-api-with-db.vercel.app/posts/signed-url",
-          {
-            fileName: imageFile.file.name,
-            fileType: imageFile.file.type,
-          },
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        const { path, token: supabaseToken } = signedUrlResponse.data;
+        const formData = new FormData();
+        formData.append('image', imageFile.file);
 
-        // Step 2: Upload new file directly to Supabase
-        await axios.post(
-          `${process.env.VITE_SUPABASE_URL}/storage/v1/upload/resumable`,
-          imageFile.file,
+        const uploadResponse = await axios.post(
+          "https://leoshin-blog-app-api-with-db.vercel.app/posts/upload-image",
+          formData,
           {
             headers: {
-              Authorization: `Bearer ${supabaseToken}`,
-              "x-upsert": "true",
-              "Content-Type": imageFile.file.type,
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'multipart/form-data',
             },
           }
         );
-        
-        // Step 3: Get public URL
-        const { data: { publicUrl } } = supabase.storage.from("post-images").getPublicUrl(path);
-        imageUrl = publicUrl;
 
-        // Step 4: Delete old image if it exists and is not a placeholder
-        if (post.image && !post.image.includes('via.placeholder.com')) {
-            const oldFileName = post.image.split('/').pop();
-            if (oldFileName) {
-              // Deletion can be fire-and-forget
-              axios.delete(
-                `https://leoshin-blog-app-api-with-db.vercel.app/posts/storage/delete/${oldFileName}`,
-                { headers: { Authorization: `Bearer ${token}` } }
-              ).catch(err => console.error("Failed to delete old image:", err));
-            }
+        if (!uploadResponse.data.success) {
+          throw new Error(uploadResponse.data.error || "Failed to upload image");
         }
+
+        imageUrl = uploadResponse.data.imageUrl;
       }
 
       const postData = {
@@ -161,7 +140,7 @@ export default function AdminEditArticlePage() {
       };
 
       await axios.put(
-        `https://leoshin-blog-app-api-with-db.vercel.app/posts/${postId}`,
+        `https://leoshin-blog-app-api-with-db.vercel.app/posts/${id}`,
         postData,
         {
           headers: {
@@ -218,11 +197,11 @@ export default function AdminEditArticlePage() {
     }
   };
 
-  const handleDelete = async (postId: string | undefined) => {
+  const handleDelete = async (postIdToDelete: string | undefined) => {
     try {
       navigate("/admin/article-management");
       await axios.delete(
-        `https://leoshin-blog-app-api-with-db.vercel.app/posts/${postId}`
+        `https://leoshin-blog-app-api-with-db.vercel.app/posts/${postIdToDelete}`
       );
       toast.custom((t) => (
         <div className="bg-green-500 text-white p-4 rounded-sm flex justify-between items-start">
@@ -464,7 +443,7 @@ export default function AdminEditArticlePage() {
               />
             </div>
           </form>
-          <DeletePostDialog onDelete={() => handleDelete(postId)} />
+          <DeletePostDialog onDelete={() => handleDelete(id)} />
         </main>
       )}
     </div>
