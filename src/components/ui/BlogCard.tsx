@@ -1,20 +1,26 @@
 import type { BlogPost } from "../../types/blog";
 import { useNavigate } from "react-router-dom";
+import CategoryBadge from "./CategoryBadge";
 
 interface BlogCardProps {
   id: number;
   image: string;
   category: BlogPost["category"];
+  categoryId?: number;
   title: string;
   description: string;
   author: string;
+  authorUsername?: string;
+  authorProfilePic?: string;
+  authorIntroduction?: string;
   date: string;
 }
 
-function BlogCard({ id ,image, category, title, description, author, date }: BlogCardProps) {
-    const navigate = useNavigate();
-    return (
-      <div className="flex flex-col gap-4">
+function BlogCard({ id, image, category, categoryId, title, description, author, authorProfilePic, date }: BlogCardProps) {
+  const navigate = useNavigate();
+
+  return (
+    <div className="flex flex-col gap-4">
       <button
         onClick={() => navigate(`/post/${id}`)}
         className="relative h-[212px] sm:h-[360px]"
@@ -27,9 +33,11 @@ function BlogCard({ id ,image, category, title, description, author, date }: Blo
       </button>
       <div className="flex flex-col">
         <div className="flex">
-          <span className="bg-green-200 rounded-full px-3 py-1 text-sm font-semibold text-green-600 mb-2">
-            {category}
-          </span>
+          <CategoryBadge 
+            category={category} 
+            categoryId={categoryId}
+            className="mb-2"
+          />
         </div>
         <button onClick={() => navigate(`/post/${id}`)}>
           <h2 className="text-start font-bold text-xl mb-2 line-clamp-2 hover:underline">
@@ -40,18 +48,28 @@ function BlogCard({ id ,image, category, title, description, author, date }: Blo
           {description}
         </p>
         <div className="flex items-center text-sm">
-          <img
-            className="w-8 h-8 rounded-full mr-2"
-            src="https://res.cloudinary.com/dcbpjtd1r/image/upload/v1728449784/my-blog-post/xgfy0xnvyemkklcqodkg.jpg"
-            alt={author}
-          />
+          <div className="w-8 h-8 rounded-full mr-2 overflow-hidden">
+            {authorProfilePic ? (
+              <img
+                className="w-8 h-8 object-cover"
+                src={authorProfilePic}
+                alt={author}
+              />
+            ) : (
+              <div className="w-8 h-8 bg-gray-300 flex items-center justify-center">
+                <span className="text-gray-600 text-xs font-semibold">
+                  {author?.charAt(0) || "A"}
+                </span>
+              </div>
+            )}
+          </div>
           <span>{author}</span>
           <span className="mx-2 text-gray-300">|</span>
           <span>{date}</span>
         </div>
       </div>
     </div>
-    );
-  }
+  );
+}
 
 export default BlogCard;

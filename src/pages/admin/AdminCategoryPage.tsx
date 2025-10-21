@@ -23,11 +23,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-
-interface Category {
-  id: number;
-  name: string;
-}
+import type { Category } from "../../types/blog";
 
 export default function AdminCategoryManagementPage() {
   const navigate = useNavigate();
@@ -36,24 +32,29 @@ export default function AdminCategoryManagementPage() {
   const [filteredCategories, setFilteredCategories] = useState<Category[]>([]);
   const [searchKeyword, setSearchKeyword] = useState("");
 
-  // Fetch post data by ID
+  // Fetch categories data
   useEffect(() => {
-    const fetchPost = async () => {
+    const fetchCategories = async () => {
       try {
         setIsLoading(true);
         const responseCategories = await axios.get(
           "https://leoshin-blog-app-api-with-db.vercel.app/categories"
         );
-        setCategories(responseCategories.data.data);
+        
+        if (responseCategories.data.success && responseCategories.data.data) {
+          setCategories(responseCategories.data.data);
+        } else {
+          setCategories([]);
+        }
       } catch (error) {
         console.error("Error fetching categories data:", error);
-        
+        setCategories([]);
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchPost();
+    fetchCategories();
   }, [navigate]);
 
   useEffect(() => {
@@ -162,7 +163,9 @@ export default function AdminCategoryManagementPage() {
             ) : filteredCategories.length > 0 ? (
               filteredCategories.map((category, index) => (
                 <TableRow key={index}>
-                  <TableCell className="font-medium">{category.name}</TableCell>
+                  <TableCell className="font-medium">
+                    {category.name}
+                  </TableCell>
                   <TableCell className="text-right flex">
                     <Button
                       variant="ghost"

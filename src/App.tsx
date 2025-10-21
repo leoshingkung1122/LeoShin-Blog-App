@@ -169,6 +169,32 @@ function App() {
           }
         />
         <Route
+          path="/admin/category-management/create"
+          element={
+            <ProtectedRoute
+              isLoading={state.getUserLoading}
+              isAuthenticated={isAuthenticated}
+              userRole={state.user?.role}
+              requiredRole="admin"
+            >
+              <AdminCreateCategoryPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/category-management/edit/:id"
+          element={
+            <ProtectedRoute
+              isLoading={state.getUserLoading}
+              isAuthenticated={isAuthenticated}
+              userRole={state.user?.role}
+              requiredRole="admin"
+            >
+              <AdminEditCategoryPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/admin/edit-category"
           element={
             <ProtectedRoute

@@ -20,11 +20,11 @@ import {
 
 export default function AdminEditCategoryPage() {
   const navigate = useNavigate();
-  const { categoryId } = useParams(); // Get categoryId from URL params
-  const [categoryName, setCategoryName] = useState(""); // To hold category name input
+  const { categoryId } = useParams();
+  const [categoryName, setCategoryName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [isSaving, setIsSaving] = useState(false); // To manage saving state
-  const [errorMessage, setErrorMessage] = useState(""); // To manage error message
+  const [isSaving, setIsSaving] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   // Fetch the category data when the component mounts
   useEffect(() => {
@@ -34,7 +34,7 @@ export default function AdminEditCategoryPage() {
         const response = await axios.get(
           `https://leoshin-blog-app-api-with-db.vercel.app/categories/${categoryId}`
         );
-        setCategoryName(response.data.data.name); // Set the category name
+        setCategoryName(response.data.data.name);
       } catch {
         toast.custom((t) => (
           <div className="bg-red-500 text-white p-4 rounded-sm flex justify-between items-start">
@@ -52,7 +52,7 @@ export default function AdminEditCategoryPage() {
             </button>
           </div>
         ));
-        navigate("/admin/category-management"); // Redirect to category management page if error
+        navigate("/admin/category-management");
       } finally {
         setIsLoading(false);
       }
@@ -96,7 +96,7 @@ export default function AdminEditCategoryPage() {
         </div>
       ));
 
-      navigate("/admin/category-management"); // Redirect to category management page after saving
+      navigate("/admin/category-management");
     } catch {
       toast.custom((t) => (
         <div className="bg-red-500 text-white p-4 rounded-sm flex justify-between items-start">

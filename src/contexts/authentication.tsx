@@ -10,6 +10,7 @@ interface User {
   role?: string;
   profile_pic?: string;
   username?: string;
+  introduction?: string;
 }
 
 interface AuthState {

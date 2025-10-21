@@ -1,18 +1,17 @@
 import { useState, useEffect, useMemo } from "react";
 import axios from "axios";
-import type { FilterCategory } from "../types/blog";
-
-interface Category {
-  id: number;
-  name: string;
-}
+import type { FilterCategory, Category } from "../types/blog";
+import { getBadgeColors } from "../utils/badgeColors";
 
 interface UseCategoriesReturn {
   categories: FilterCategory[];
+  categoriesWithColors: Category[];
   getCategoryDisplayName: (category: FilterCategory) => string;
+  getCategoryColor: (categoryId: number) => string;
   isValidCategory: (category: string) => category is FilterCategory;
   isLoading: boolean;
   error: string | null;
+  categoryCount: number;
 }
 
 export const useCategories = (): UseCategoriesReturn => {
@@ -30,12 +29,20 @@ export const useCategories = (): UseCategoriesReturn => {
         );
         
         if (response.data.success && response.data.data) {
-          setApiCategories(response.data.data);
+          // Add colors based on category ID
+          const categoriesWithColors = response.data.data.map((apiCat: any) => ({
+            id: apiCat.id,
+            name: apiCat.name,
+            color: getBadgeColors(apiCat.id).dark // Use dark color for legacy compatibility
+          }));
+          
+          setApiCategories(categoriesWithColors);
+        } else {
+          setApiCategories([]);
         }
       } catch (err) {
         console.error("Error fetching categories:", err);
         setError("Failed to load categories");
-        // No fallback categories - let the UI handle empty state
         setApiCategories([]);
       } finally {
         setIsLoading(false);
@@ -50,9 +57,26 @@ export const useCategories = (): UseCategoriesReturn => {
     [apiCategories]
   );
 
+  const categoriesWithColors: Category[] = useMemo(
+    () => apiCategories,
+    [apiCategories]
+  );
+
+  const categoryCount = useMemo(
+    () => apiCategories.length,
+    [apiCategories]
+  );
+
   const getCategoryDisplayName = useMemo(
     () => (category: FilterCategory): string => {
       return category;
+    },
+    []
+  );
+
+  const getCategoryColor = useMemo(
+    () => (categoryId: number): string => {
+      return getBadgeColors(categoryId).dark;
     },
     []
   );
@@ -66,9 +90,12 @@ export const useCategories = (): UseCategoriesReturn => {
 
   return {
     categories,
+    categoriesWithColors,
     getCategoryDisplayName,
+    getCategoryColor,
     isValidCategory,
     isLoading,
     error,
+    categoryCount,
   };
 };

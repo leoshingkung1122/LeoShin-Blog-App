@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/Textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import { AdminSidebar } from "@/components/AdminWebSection";
 import { useAuth } from "@/contexts/authentication";
@@ -15,6 +16,7 @@ export default function AdminProfilePage() {
     name: "",
     username: "",
     email: "",
+    introduction: "",
   });
   const [isSaving, setIsSaving] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -28,6 +30,7 @@ export default function AdminProfilePage() {
           name: state.user?.name || "",
           username: state.user?.username || "",
           email: state.user?.email || "",
+          introduction: state.user?.introduction || "",
         });
       } catch {
         toast.custom((t) => (
@@ -52,7 +55,7 @@ export default function AdminProfilePage() {
     fetchProfile();
   }, [state.user]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setProfile((prev) => ({
       ...prev,
@@ -120,6 +123,7 @@ export default function AdminProfilePage() {
 
       const formData = new FormData();
       formData.append("name", profile.name);
+      formData.append("introduction", profile.introduction);
       // Username is not editable, so we don't send it
 
       if (imageFile) {
@@ -248,6 +252,18 @@ export default function AdminProfilePage() {
                 value={profile.email}
                 disabled
                 className="mt-1 py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground"
+              />
+            </div>
+            <div>
+              <label htmlFor="introduction">Introduction</label>
+              <Textarea
+                id="introduction"
+                name="introduction"
+                value={profile.introduction}
+                onChange={handleInputChange}
+                placeholder="Tell us about yourself..."
+                className="mt-1 py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground resize-none"
+                rows={4}
               />
             </div>
           </form>

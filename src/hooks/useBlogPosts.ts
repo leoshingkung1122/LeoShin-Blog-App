@@ -45,10 +45,20 @@ export const useBlogPosts = (defaultCategory?: FilterCategory): UseBlogPostsRetu
       
       response = await axios.get(`${baseUrl}?${params}`);
       
+      // Transform posts to include category name as string and author data
+      const transformedPosts = response.data.posts.map((post: any) => ({
+        ...post,
+        category: post.categories?.name || "Uncategorized",
+        author: post.users?.name || "Unknown",
+        authorUsername: post.users?.username || "unknown",
+        authorProfilePic: post.users?.profile_pic || "",
+        authorIntroduction: post.users?.introduction || "",
+      }));
+
       setPosts((prevPosts) => 
         isNewCategory || currentPage === 1 
-          ? response.data.posts 
-          : [...prevPosts, ...response.data.posts]
+          ? transformedPosts 
+          : [...prevPosts, ...transformedPosts]
       );
       
       if (response.data.currentPage >= response.data.totalPages) {

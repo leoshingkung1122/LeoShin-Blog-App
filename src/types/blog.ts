@@ -1,4 +1,15 @@
-export type Category = string;
+export interface Category {
+  id: number;
+  name: string;
+  color?: string;
+}
+
+export interface Author {
+  name: string;
+  username: string;
+  profile_pic: string;
+  introduction?: string;
+}
 
 export interface BlogPost {
   id: number;
@@ -19,6 +30,7 @@ export interface BlogPost {
   category?: string;
   author?: string;
   status?: string;
+  users?: Author; // Author data from join
 }
 
 export type FilterCategory = string;

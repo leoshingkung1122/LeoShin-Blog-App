@@ -7,6 +7,7 @@ import AuthorBio from "./AuthorBio";
 import Share from "./Share";
 import Comment from "./comment";
 import CreateAccountModal from "./CreateAccountModal";
+import CategoryBadge from "./CategoryBadge";
 
 
 function ViewPost() {
@@ -15,6 +16,7 @@ function ViewPost() {
   const [date, setDate] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
+  const [categoryId, setCategoryId] = useState<number | null>(null);
   const [content, setContent] = useState("");
   const [likes, setLikes] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -22,6 +24,10 @@ function ViewPost() {
   const { postId } = useParams();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const navigate = useNavigate();
+  const [author, setAuthor] = useState("");
+  const [authorUsername, setAuthorUsername] = useState("");
+  const [authorProfilePic, setAuthorProfilePic] = useState("");
+  const [authorIntroduction, setAuthorIntroduction] = useState("");
 
   useEffect(() => {
     getPost();
@@ -40,8 +46,13 @@ function ViewPost() {
       setDate(post.published_at || post.created_at);
       setDescription(post.description);
       setCategory(post.categories?.name || post.category);
+      setCategoryId(post.category_id);
       setContent(post.content);
       setLikes(post.likes || 0);
+      setAuthor(post.users?.name || "Unknown");
+      setAuthorUsername(post.users?.username || "unknown");
+      setAuthorProfilePic(post.users?.profile_pic || "");
+      setAuthorIntroduction(post.users?.introduction || "");
       setIsLoading(false);
     } catch (error) {
       console.log(error);
@@ -75,19 +86,23 @@ function ViewPost() {
   return (
     <div className="max-w-7xl mx-auto space-y-8 container md:px-8 pb-20 md:pb-28 md:pt-8 lg:pt-16 ">
       <div className="space-y-4 md:px-4">
-        <img
-          src={img}
-          alt={title}
-          className="md:rounded-lg object-cover w-full h-[260px] sm:h-[340px] md:h-[587px]"
-        />
+        {img && (
+          <img
+            src={img}
+            alt={title}
+            className="md:rounded-lg object-cover w-full h-[260px] sm:h-[340px] md:h-[587px]"
+          />
+        )}
       </div>
       <div className="flex flex-col xl:flex-row gap-6">
         <div className="xl:w-3/4 space-y-8">
           <article className="px-4">
             <div className="flex">
-              <span className="bg-green-200 rounded-full px-3 py-1 text-sm font-semibold text-green-600 mb-2">
-                {category}
-              </span>
+              <CategoryBadge 
+                category={category} 
+                categoryId={categoryId}
+                className="mb-2"
+              />
               <span className="px-3 py-1 text-sm font-normal text-muted-foreground">
                 {new Date(date).toLocaleDateString("en-GB", {
                   day: "numeric",
@@ -105,7 +120,12 @@ function ViewPost() {
             </div>
           </article>
           <div className="xl:hidden px-4">
-            <AuthorBio />
+            <AuthorBio 
+              authorName={author}
+              authorUsername={authorUsername}
+              authorProfilePic={authorProfilePic}
+              authorIntroduction={authorIntroduction}
+            />
           </div>
           <Share likesAmount={likes} setDialogState={setIsDialogOpen}/>
           <Comment setDialogState={setIsDialogOpen}/>
@@ -114,7 +134,12 @@ function ViewPost() {
         </div>
         <div className="hidden xl:block xl:w-1/4">
           <div className="sticky top-4">
-            <AuthorBio />
+            <AuthorBio 
+              authorName={author}
+              authorUsername={authorUsername}
+              authorProfilePic={authorProfilePic}
+              authorIntroduction={authorIntroduction}
+            />
           </div>
         </div>
 

@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import type { BlogPost } from "@/types/blog";
+import CategoryBadge from "./CategoryBadge";
 
 interface SearchBarProps {
   searchTerm: string;
@@ -69,7 +70,14 @@ export default function SearchBar({
           `https://leoshin-blog-app-api-with-db.vercel.app/posts`,
           { params }
         );
-        setSearchResults(response.data.posts || []);
+        
+        // Transform posts to include category name as string
+        const transformedPosts = (response.data.posts || []).map((post: any) => ({
+          ...post,
+          category: post.categories?.name || "Uncategorized"
+        }));
+        
+        setSearchResults(transformedPosts);
       } catch (error) {
         console.error("Search error:", error);
         setSearchResults([]);
@@ -131,11 +139,13 @@ export default function SearchBar({
                       {post.description}
                     </p>
                     <div className="flex items-center gap-2 mt-2">
-                      <span className="text-xs px-2 py-1 bg-green-100 text-green-600 rounded-full">
-                        {post.category}
-                      </span>
+                      <CategoryBadge 
+                        category={post.category} 
+                        categoryId={post.category_id}
+                        size="sm"
+                      />
                       <span className="text-xs text-gray-400">
-                        {new Date(post.date).toLocaleDateString("en-GB", {
+                        {new Date(post.published_at).toLocaleDateString("en-GB", {
                           day: "numeric",
                           month: "short",
                           year: "numeric",

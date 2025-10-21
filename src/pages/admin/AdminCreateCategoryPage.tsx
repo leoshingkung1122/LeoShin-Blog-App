@@ -6,24 +6,29 @@ import axios from "axios";
 import { toast } from "sonner";
 import { X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useCategories } from "../../hooks/useCategories";
 
 export default function AdminCreateCategoryPage() {
   const navigate = useNavigate();
-  const [categoryName, setCategoryName] = useState(""); // To hold category name input
-  const [isSaving, setIsSaving] = useState(false); // To manage saving state
+  const { categoryCount } = useCategories();
+  const [categoryName, setCategoryName] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleSave = async () => {
     if (!categoryName) {
-      // Handle validation for empty category name
       setErrorMessage("Category name is required.");
+      return;
+    }
+
+    if (categoryCount >= 6) {
+      setErrorMessage("Maximum 6 categories allowed.");
       return;
     }
 
     setIsSaving(true);
 
     try {
-      // Send POST request to create the category
       await axios.post(
         "https://leoshin-blog-app-api-with-db.vercel.app/categories",
         {
@@ -31,7 +36,6 @@ export default function AdminCreateCategoryPage() {
         }
       );
 
-      // Show success toast
       toast.custom((t) => (
         <div className="bg-green-500 text-white p-4 rounded-sm flex justify-between items-start">
           <div>
@@ -51,8 +55,7 @@ export default function AdminCreateCategoryPage() {
         </div>
       ));
 
-      // Optionally reset the form and show a success message
-      setCategoryName(""); // Clear the input after saving
+      setCategoryName("");
       navigate("/admin/category-management");
     } catch {
       toast.custom((t) => (
@@ -81,16 +84,19 @@ export default function AdminCreateCategoryPage() {
 
   return (
     <div className="flex h-screen bg-gray-100">
-      {/* Sidebar */}
       <AdminSidebar />
-      {/* Main content */}
       <main className="flex-1 p-8 bg-gray-50 overflow-auto">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-semibold">Create Category</h2>
+          <div>
+            <h2 className="text-2xl font-semibold">Create Category</h2>
+            <p className="text-sm text-gray-600 mt-1">
+              Categories created: {categoryCount}/6
+            </p>
+          </div>
           <Button
             className="px-8 py-2 rounded-full"
-            onClick={handleSave} // Trigger the save function when clicked
-            disabled={isSaving} // Disable button while saving
+            onClick={handleSave}
+            disabled={isSaving || categoryCount >= 6}
           >
             Save
           </Button>
@@ -107,7 +113,7 @@ export default function AdminCreateCategoryPage() {
               id="category-name"
               type="text"
               value={categoryName}
-              onChange={(e) => setCategoryName(e.target.value)} // Bind input value to state
+              onChange={(e) => setCategoryName(e.target.value)}
               placeholder="Category name"
               className={`mt-1 py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground ${
                 errorMessage ? "border-red-500" : ""
@@ -117,6 +123,14 @@ export default function AdminCreateCategoryPage() {
               <p className="text-red-500 text-xs absolute">{errorMessage}</p>
             )}
           </div>
+          
+          {categoryCount >= 6 && (
+            <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded">
+              <p className="text-sm">
+                Maximum number of categories reached. Delete a category to create a new one.
+              </p>
+            </div>
+          )}
         </div>
       </main>
     </div>

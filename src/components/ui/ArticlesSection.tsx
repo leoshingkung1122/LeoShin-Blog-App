@@ -75,10 +75,14 @@ export default function Articles() {
             id={post.id}
             image={post.image}
             category={post.category}
+            categoryId={post.category_id}
             title={post.title}
             description={post.description}
-            author={post.author}
-            date={new Date(post.date).toLocaleDateString("en-GB", {
+            author={post.author || "Unknown"}
+            authorUsername={post.authorUsername}
+            authorProfilePic={post.authorProfilePic}
+            authorIntroduction={post.authorIntroduction}
+            date={new Date(post.published_at).toLocaleDateString("en-GB", {
               day: "numeric",
               month: "long",
               year: "numeric",
