@@ -30,7 +30,7 @@ export const useBlogPosts = (): UseBlogPostsReturn => {
     
     try {
       let response;
-      const baseUrl = "https://blog-post-project-api.vercel.app/posts";
+      const baseUrl = "https://leoshin-blog-app-api-with-db.vercel.app/posts";
       let params = `page=${currentPage}&limit=6`;
       
       // Add keyword if searching

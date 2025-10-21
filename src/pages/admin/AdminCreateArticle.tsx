@@ -59,9 +59,9 @@ export default function AdminCreateArticlePage() {
       try {
         setIsLoading(true);
         const responseCategories = await axios.get(
-          "https://blog-post-project-api-with-db.vercel.app/categories"
+          "https://leoshin-blog-app-api-with-db.vercel.app/categories"
         );
-        setCategories(responseCategories.data);
+        setCategories(responseCategories.data.data);
       } catch (error) {
         console.error("Error fetching categories data:", error);
         navigate("*");
@@ -105,7 +105,7 @@ export default function AdminCreateArticlePage() {
 
     try {
       await axios.post(
-        "https://blog-post-project-api-with-db.vercel.app/posts",
+        "https://leoshin-blog-app-api-with-db.vercel.app/posts",
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },

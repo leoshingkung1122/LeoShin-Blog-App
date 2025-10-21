@@ -66,7 +66,7 @@ export default function SearchBar({
         }
 
         const response = await axios.get(
-          `https://blog-post-project-api.vercel.app/posts`,
+          `https://leoshin-blog-app-api-with-db.vercel.app/posts`,
           { params }
         );
         setSearchResults(response.data.posts || []);

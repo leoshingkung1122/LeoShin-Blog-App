@@ -67,13 +67,13 @@ export default function AdminEditArticlePage() {
       try {
         setIsLoading(true);
         const responseCategories = await axios.get(
-          "https://blog-post-project-api-with-db.vercel.app/categories"
+          "https://leoshin-blog-app-api-with-db.vercel.app/categories"
         );
-        setCategories(responseCategories.data);
+        setCategories(responseCategories.data.data);
         const response = await axios.get(
-          `https://blog-post-project-api-with-db.vercel.app/posts/admin/${postId}`
+          `https://leoshin-blog-app-api-with-db.vercel.app/posts/admin/${postId}`
         );
-        setPost(response.data);
+        setPost(response.data.data);
       } catch {
         toast.custom((t) => (
           <div className="bg-red-500 text-white p-4 rounded-sm flex justify-between items-start">
@@ -132,7 +132,7 @@ export default function AdminEditArticlePage() {
         formData.append("imageFile", imageFile.file!);
 
         await axios.put(
-          `https://blog-post-project-api-with-db.vercel.app/posts/${postId}`,
+          `https://leoshin-blog-app-api-with-db.vercel.app/posts/${postId}`,
           formData,
           {
             headers: { "Content-Type": "multipart/form-data" },
@@ -141,7 +141,7 @@ export default function AdminEditArticlePage() {
       } else {
         // If the image is not changed, use the old method
         await axios.put(
-          `https://blog-post-project-api-with-db.vercel.app/posts/${postId}`,
+          `https://leoshin-blog-app-api-with-db.vercel.app/posts/${postId}`,
           {
             title: post.title,
             image: post.image, // Existing image URL
@@ -205,7 +205,7 @@ export default function AdminEditArticlePage() {
     try {
       navigate("/admin/article-management");
       await axios.delete(
-        `https://blog-post-project-api-with-db.vercel.app/posts/${postId}`
+        `https://leoshin-blog-app-api-with-db.vercel.app/posts/${postId}`
       );
       toast.custom((t) => (
         <div className="bg-green-500 text-white p-4 rounded-sm flex justify-between items-start">

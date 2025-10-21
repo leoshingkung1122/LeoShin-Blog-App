@@ -32,15 +32,16 @@ function ViewPost() {
     setIsLoading(true);
     try {
       const response = await axios.get(
-        `https://blog-post-project-api.vercel.app/posts/${postId}`
+        `https://leoshin-blog-app-api-with-db.vercel.app/posts/${postId}`
       );
-      setImg(response.data.image);
-      setTitle(response.data.title);
-      setDate(response.data.date);
-      setDescription(response.data.description);
-      setCategory(response.data.category);
-      setContent(response.data.content);
-      setLikes(response.data.likes);
+      const post = response.data.data;
+      setImg(post.image);
+      setTitle(post.title);
+      setDate(post.date);
+      setDescription(post.description);
+      setCategory(post.categories?.name || post.category);
+      setContent(post.content);
+      setLikes(post.likes_count || 0);
       setIsLoading(false);
     } catch (error) {
       console.log(error);

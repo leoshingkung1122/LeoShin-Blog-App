@@ -32,9 +32,9 @@ export default function AdminEditCategoryPage() {
       try {
         setIsLoading(true);
         const response = await axios.get(
-          `https://blog-post-project-api-with-db.vercel.app/categories/${categoryId}`
+          `https://leoshin-blog-app-api-with-db.vercel.app/categories/${categoryId}`
         );
-        setCategoryName(response.data.name); // Set the category name
+        setCategoryName(response.data.data.name); // Set the category name
       } catch {
         toast.custom((t) => (
           <div className="bg-red-500 text-white p-4 rounded-sm flex justify-between items-start">
@@ -71,7 +71,7 @@ export default function AdminEditCategoryPage() {
 
     try {
       await axios.put(
-        `https://blog-post-project-api-with-db.vercel.app/categories/${categoryId}`,
+        `https://leoshin-blog-app-api-with-db.vercel.app/categories/${categoryId}`,
         {
           name: categoryName,
         }
@@ -126,7 +126,7 @@ export default function AdminEditCategoryPage() {
     try {
       navigate("/admin/category-management");
       await axios.delete(
-        `https://blog-post-project-api-with-db.vercel.app/categories/${categoryId}`
+        `https://leoshin-blog-app-api-with-db.vercel.app/categories/${categoryId}`
       );
 
       toast.custom((t) => (

@@ -30,6 +30,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
+import { useAuth } from "@/contexts/authentication";
 
 interface Post {
   id: number;
@@ -47,6 +48,7 @@ interface Category {
 
 export default function AdminArticleManagementPage() {
   const navigate = useNavigate();
+  const { isAuthenticated, state } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [posts, setPosts] = useState<Post[]>([]);
   const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
@@ -55,28 +57,74 @@ export default function AdminArticleManagementPage() {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
 
+  // Check authentication and admin role
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/login");
+      return;
+    }
+    
+    if (state.user?.role !== 'admin') {
+      navigate("/");
+      return;
+    }
+  }, [isAuthenticated, state.user?.role, navigate]);
+
+  // Show loading while checking authentication
+  if (!isAuthenticated || state.user?.role !== 'admin') {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-800 mb-4">Loading...</h1>
+          <p className="text-gray-600">Checking permissions...</p>
+        </div>
+      </div>
+    );
+  }
+
   useEffect(() => {
     setIsLoading(true);
     const fetchPosts = async () => {
       try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          navigate("/login");
+          return;
+        }
+
         const response = await axios.get(
-          "https://blog-post-project-api-with-db.vercel.app/posts/admin"
+          "https://leoshin-blog-app-api-with-db.vercel.app/posts/admin",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
         );
         setPosts(response.data.posts);
         setFilteredPosts(response.data.posts);
+        
         const responseCategories = await axios.get(
-          "https://blog-post-project-api-with-db.vercel.app/categories"
+          "https://leoshin-blog-app-api-with-db.vercel.app/categories",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
         );
-        setCategories(responseCategories.data);
+        setCategories(responseCategories.data.data);
       } catch (error) {
-        console.error(error);
+        console.error("Error fetching data:", error);
+        // If unauthorized, redirect to login
+        if (axios.isAxiosError(error) && error.response?.status === 401) {
+          navigate("/login");
+        }
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchPosts();
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
     let filtered = posts;
@@ -110,8 +158,19 @@ export default function AdminArticleManagementPage() {
   const handleDelete = async (postId: number) => {
     try {
       setIsLoading(true);
+      const token = localStorage.getItem("token");
+      if (!token) {
+        navigate("/login");
+        return;
+      }
+
       await axios.delete(
-        `https://blog-post-project-api-with-db.vercel.app/posts/${postId}`
+        `https://leoshin-blog-app-api-with-db.vercel.app/posts/${postId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
       );
       toast.custom((t) => (
         <div className="bg-green-500 text-white p-4 rounded-sm flex justify-between items-start">
@@ -130,7 +189,8 @@ export default function AdminArticleManagementPage() {
         </div>
       ));
       setPosts(posts.filter((post) => post.id !== postId));
-    } catch {
+    } catch (error) {
+      console.error("Error deleting post:", error);
       toast.custom((t) => (
         <div className="bg-red-500 text-white p-4 rounded-sm flex justify-between items-start">
           <div>
@@ -147,6 +207,11 @@ export default function AdminArticleManagementPage() {
           </button>
         </div>
       ));
+      
+      // If unauthorized, redirect to login
+      if (axios.isAxiosError(error) && error.response?.status === 401) {
+        navigate("/login");
+      }
     } finally {
       setIsLoading(false);
     }

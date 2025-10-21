@@ -26,7 +26,7 @@ export default function ProfilePage() {
     const fetchProfile = async () => {
       try {
         setProfile({
-          image: state.user?.profilePic || "",
+          image: state.user?.profile_pic || "",
           name: state.user?.name || "",
           username: state.user?.username || "",
           email: state.user?.email || "",
@@ -130,7 +130,7 @@ export default function ProfilePage() {
       }
 
       await axios.put(
-        "https://blog-post-project-api-with-db.vercel.app/profile",
+        "https://leoshin-blog-app-api-with-db.vercel.app/profiles",
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },

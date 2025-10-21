@@ -9,7 +9,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
-import { Bell, ChevronDown, LogOut, User as UserIcon, KeyRound } from "lucide-react";
+import { Bell, ChevronDown, LogOut, User as UserIcon, KeyRound, Settings } from "lucide-react";
 
 function NavBar() {
   const navigate = useNavigate();
@@ -56,6 +56,16 @@ function NavBar() {
                   <KeyRound className="w-5 h-5 text-gray-600" />
                   <span className="text-gray-800">Reset password</span>
                 </DropdownMenuItem>
+                {/* Admin Panel - Only show for admin users */}
+                {state.user?.role === 'admin' && (
+                  <>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => navigate("/admin")} className="gap-3 py-3">
+                      <Settings className="w-5 h-5 text-blue-600" />
+                      <span className="text-blue-600 font-medium">Admin Panel</span>
+                    </DropdownMenuItem>
+                  </>
+                )}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem variant="destructive" onClick={logout} className="gap-3 py-3">
                   <LogOut className="w-5 h-5" />

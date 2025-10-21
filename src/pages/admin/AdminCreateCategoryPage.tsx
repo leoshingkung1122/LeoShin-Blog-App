@@ -25,7 +25,7 @@ export default function AdminCreateCategoryPage() {
     try {
       // Send POST request to create the category
       await axios.post(
-        "https://blog-post-project-api-with-db.vercel.app/categories",
+        "https://leoshin-blog-app-api-with-db.vercel.app/categories",
         {
           name: categoryName,
         }

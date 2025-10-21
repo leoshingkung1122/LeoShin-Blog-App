@@ -127,7 +127,7 @@ export default function AdminProfilePage() {
       }
 
       await axios.put(
-        "https://blog-post-project-api-with-db.vercel.app/profile",
+        "https://leoshin-blog-app-api-with-db.vercel.app/profiles",
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },

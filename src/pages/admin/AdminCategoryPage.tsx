@@ -42,9 +42,9 @@ export default function AdminCategoryManagementPage() {
       try {
         setIsLoading(true);
         const responseCategories = await axios.get(
-          "https://blog-post-project-api-with-db.vercel.app/categories"
+          "https://leoshin-blog-app-api-with-db.vercel.app/categories"
         );
-        setCategories(responseCategories.data);
+        setCategories(responseCategories.data.data);
       } catch (error) {
         console.error("Error fetching categories data:", error);
         
@@ -67,7 +67,7 @@ export default function AdminCategoryManagementPage() {
     try {
       setIsLoading(true);
       await axios.delete(
-        `https://blog-post-project-api-with-db.vercel.app/categories/${categoryId}`
+        `https://leoshin-blog-app-api-with-db.vercel.app/categories/${categoryId}`
       );
       toast.custom((t) => (
         <div className="bg-green-500 text-white p-4 rounded-sm flex justify-between items-start">

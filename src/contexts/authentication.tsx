@@ -63,7 +63,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
       );
       setState((prevState) => ({
         ...prevState,
-        user: response.data,
+        user: {
+          ...response.data,
+          profile_pic: response.data.profilePic // Map profilePic to profile_pic
+        },
         getUserLoading: false,
       }));
     } catch (error) {

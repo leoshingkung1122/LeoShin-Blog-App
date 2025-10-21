@@ -12,6 +12,7 @@ import { useAuth } from "@/contexts/authentication";
 import AuthenticationRoute from "./components/auth/AuthenticationRoute";
 import ProtectedRoute from "./components/auth/ProtectRoute";
 
+import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminArticlePage from "./pages/admin/AdminArticlePage";
 import AdminCategoryPage from "./pages/admin/AdminCategoryPage";
 import AdminCreateArticlePage from "./pages/admin/AdminCreateArticle";
@@ -84,6 +85,20 @@ function App() {
               requiredRole="user"
             >
               <ResetPasswordPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute
+              isLoading={state.getUserLoading}
+              isAuthenticated={isAuthenticated}
+              userRole={state.user?.role}
+              requiredRole="admin"
+            >
+              <AdminDashboard />
             </ProtectedRoute>
           }
         />
