@@ -60,8 +60,8 @@ export default function SearchBar({
           limit: 6,
         };
 
-        // Add category filter if selected and not "Highlight"
-        if (selectedCategory && selectedCategory !== "Highlight") {
+        // Add category filter if selected and not empty
+        if (selectedCategory && selectedCategory.trim() !== "") {
           params.category = selectedCategory;
         }
 

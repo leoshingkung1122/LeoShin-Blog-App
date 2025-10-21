@@ -16,21 +16,12 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
+import type { BlogPost } from "@/types/blog";
+import { supabase } from "@/lib/supabaseClient";
 
 interface Category {
   id: number;
   name: string;
-}
-
-interface PostData {
-  image: string;
-  category_id: number | null;
-  title: string;
-  description: string;
-  date: string | null;
-  content: string;
-  status_id: number | null;
-  category?: string;
 }
 
 interface ImageFileData {
@@ -40,15 +31,14 @@ interface ImageFileData {
 export default function AdminCreateArticlePage() {
   const { state } = useAuth();
   const navigate = useNavigate();
-  const [post, setPost] = useState<PostData>({
+  const [post, setPost] = useState<Partial<BlogPost>>({
     image: "",
-    category_id: null,
+    category_id: undefined,
     title: "",
     description: "",
-    date: null,
     content: "",
-    status_id: null,
-  }); // Store the fetched post data
+    status_id: undefined,
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -86,32 +76,169 @@ export default function AdminCreateArticlePage() {
     setPost((prevData) => ({
       ...prevData,
       category: value, // The category name
-      category_id: selectedCategory?.id || null, // Update the category_id
+      category_id: selectedCategory?.id || undefined, // Update the category_id
     }));
   };
 
   const handleSave = async (postStatusId: number) => {
     setIsSaving(true);
-    const formData = new FormData();
+    
+    // Validate required fields
+    if (!post.title?.trim()) {
+      toast.custom((t) => (
+        <div className="bg-red-500 text-white p-4 rounded-sm flex justify-between items-start">
+          <div>
+            <h2 className="font-bold text-lg mb-1">Validation Error</h2>
+            <p className="text-sm">Title is required.</p>
+          </div>
+          <button
+            onClick={() => toast.dismiss(t)}
+            className="text-white hover:text-gray-200"
+          >
+            <X size={20} />
+          </button>
+        </div>
+      ));
+      setIsSaving(false);
+      return;
+    }
 
-    formData.append("title", post.title);
-    formData.append("category_id", String(post.category_id ?? ""));
-    formData.append("description", post.description);
-    formData.append("content", post.content);
-    formData.append("status_id", String(postStatusId));
-    if (imageFile.file) {
-      formData.append("imageFile", imageFile.file);
+    if (!post.description?.trim()) {
+      toast.custom((t) => (
+        <div className="bg-red-500 text-white p-4 rounded-sm flex justify-between items-start">
+          <div>
+            <h2 className="font-bold text-lg mb-1">Validation Error</h2>
+            <p className="text-sm">Description is required.</p>
+          </div>
+          <button
+            onClick={() => toast.dismiss(t)}
+            className="text-white hover:text-gray-200"
+          >
+            <X size={20} />
+          </button>
+        </div>
+      ));
+      setIsSaving(false);
+      return;
+    }
+
+    if (!post.content?.trim()) {
+      toast.custom((t) => (
+        <div className="bg-red-500 text-white p-4 rounded-sm flex justify-between items-start">
+          <div>
+            <h2 className="font-bold text-lg mb-1">Validation Error</h2>
+            <p className="text-sm">Content is required.</p>
+          </div>
+          <button
+            onClick={() => toast.dismiss(t)}
+            className="text-white hover:text-gray-200"
+          >
+            <X size={20} />
+          </button>
+        </div>
+      ));
+      setIsSaving(false);
+      return;
+    }
+
+    if (!post.category_id) {
+      toast.custom((t) => (
+        <div className="bg-red-500 text-white p-4 rounded-sm flex justify-between items-start">
+          <div>
+            <h2 className="font-bold text-lg mb-1">Validation Error</h2>
+            <p className="text-sm">Please select a category.</p>
+          </div>
+          <button
+            onClick={() => toast.dismiss(t)}
+            className="text-white hover:text-gray-200"
+          >
+            <X size={20} />
+          </button>
+        </div>
+      ));
+      setIsSaving(false);
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      toast.custom((t) => (
+        <div className="bg-red-500 text-white p-4 rounded-sm flex justify-between items-start">
+          <div>
+            <h2 className="font-bold text-lg mb-1">Authentication Error</h2>
+            <p className="text-sm">Please login again.</p>
+          </div>
+          <button
+            onClick={() => toast.dismiss(t)}
+            className="text-white hover:text-gray-200"
+          >
+            <X size={20} />
+          </button>
+        </div>
+      ));
+      setIsSaving(false);
+      return;
     }
 
     try {
+      let imageUrl = "https://via.placeholder.com/800x400?text=No+Image";
+
+      if (imageFile.file) {
+        // Step 1: Get signed URL from our backend
+        const signedUrlResponse = await axios.post(
+          "https://leoshin-blog-app-api-with-db.vercel.app/posts/signed-url",
+          {
+            fileName: imageFile.file.name,
+            fileType: imageFile.file.type,
+          },
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        const { path, token: supabaseToken } = signedUrlResponse.data;
+        
+        // Step 2: Upload file directly to Supabase Storage using the signed URL
+        await axios.post(
+          `${process.env.VITE_SUPABASE_URL}/storage/v1/upload/resumable`,
+          imageFile.file,
+          {
+            headers: {
+              Authorization: `Bearer ${supabaseToken}`,
+              "x-upsert": "true", // or false, depending on whether you want to overwrite
+              "Content-Type": imageFile.file.type,
+            },
+          }
+        );
+
+        // Step 3: Get the public URL of the uploaded file
+        const { data: { publicUrl } } = supabase.storage
+          .from("post-images")
+          .getPublicUrl(path);
+        
+        imageUrl = publicUrl;
+      }
+
+      const postData = {
+        title: post.title,
+        description: post.description,
+        content: post.content,
+        category_id: post.category_id,
+        status_id: postStatusId,
+        image: imageUrl,
+      };
+
       await axios.post(
         "https://leoshin-blog-app-api-with-db.vercel.app/posts",
-        formData,
+        postData,
         {
-          headers: { "Content-Type": "multipart/form-data" },
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
         }
       );
-
+      // Success toast
       toast.custom((t) => (
         <div className="bg-green-500 text-white p-4 rounded-sm flex justify-between items-start">
           <div>
@@ -135,15 +262,26 @@ export default function AdminCreateArticlePage() {
         </div>
       ));
       navigate("/admin/article-management"); // Redirect after saving
-    } catch {
+    } catch (error) {
+      console.error("Error creating post:", error);
+      
+      let errorMessage = "Something went wrong while trying to create article. Please try again later.";
+      
+      if (error instanceof Error) {
+        if (error.message.includes('413')) {
+          errorMessage = "Image file is too large. Please choose a smaller image (max 10MB).";
+        } else if (error.message.includes('500')) {
+          errorMessage = "Server error occurred. Please check your data and try again.";
+        } else if (error.message.includes('Network Error')) {
+          errorMessage = "Network error. Please check your internet connection.";
+        }
+      }
+      
       toast.custom((t) => (
         <div className="bg-red-500 text-white p-4 rounded-sm flex justify-between items-start">
           <div>
             <h2 className="font-bold text-lg mb-1">Failed to create article</h2>
-            <p className="text-sm">
-              Something went wrong while trying to update article. Please try
-              again later.
-            </p>
+            <p className="text-sm">{errorMessage}</p>
           </div>
           <button
             onClick={() => toast.dismiss(t)}
@@ -189,15 +327,15 @@ export default function AdminCreateArticlePage() {
       return; // Stop further processing if it's not a valid image
     }
 
-    // Optionally check file size (e.g., max 5MB)
-    const maxSize = 5 * 1024 * 1024; // 5MB
+    // Check file size (e.g., max 10MB)
+    const maxSize = 10 * 1024 * 1024; // 10MB
     if (file.size > maxSize) {
       toast.custom((t) => (
         <div className="bg-red-500 text-white p-4 rounded-sm flex justify-between items-start">
           <div>
             <h2 className="font-bold text-lg mb-1">Failed to upload file</h2>
             <p className="text-sm">
-              The file is too large. Please upload an image smaller than 5MB.
+              The file is too large. Please upload an image smaller than 10MB.
             </p>
           </div>
           <button
@@ -211,7 +349,15 @@ export default function AdminCreateArticlePage() {
       return;
     }
 
-    setImageFile({ file }); // Store the file object
+    // เก็บข้อมูลไฟล์
+    setImageFile({ file });
+    
+    // Create preview URL for immediate display
+    const previewUrl = URL.createObjectURL(file);
+    setPost((prevData) => ({
+      ...prevData,
+      image: previewUrl,
+    }));
   };
   return (
     <div className="flex h-screen bg-gray-100">
@@ -285,7 +431,7 @@ export default function AdminCreateArticlePage() {
             <div>
               <label htmlFor="category">Category</label>
               <Select
-                value={post.category}
+                value={categories.find(c => c.id === post.category_id)?.name || ""}
                 onValueChange={(value) => {
                   handleCategoryChange(value);
                 }}

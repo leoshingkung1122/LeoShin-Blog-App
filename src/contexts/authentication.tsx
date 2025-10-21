@@ -37,7 +37,7 @@ interface AuthProviderProps {
 export function AuthProvider({ children }: AuthProviderProps) {
   const [state, setState] = useState<AuthState>({
     loading: false,
-    getUserLoading: false,
+    getUserLoading: true, // Start with true to prevent flicker
     error: null,
     user: null,
   });
@@ -58,23 +58,29 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     try {
       setState((prevState) => ({ ...prevState, getUserLoading: true }));
-      const response = await axios.get<User>(
-        "https://leoshin-blog-app-api-with-db.vercel.app/auth/get-user"
+      const response = await axios.get<any>(
+        "https://leoshin-blog-app-api-with-db.vercel.app/auth/get-user",
+        {
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        }
       );
       setState((prevState) => ({
         ...prevState,
         user: {
           ...response.data,
-          profile_pic: response.data.profilePic // Map profilePic to profile_pic
+          profile_pic: response.data.profilePic || response.data.profile_pic // Map profilePic to profile_pic
         },
         getUserLoading: false,
       }));
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Failed to fetch user";
+      console.error("Error fetching user:", error);
       setState((prevState) => ({
         ...prevState,
         error: errorMessage,
-        user: null,
+        // Don't set user to null on error, keep existing user data
         getUserLoading: false,
       }));
     }

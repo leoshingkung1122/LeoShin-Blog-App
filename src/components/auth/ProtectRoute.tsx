@@ -6,7 +6,7 @@ interface ProtectedRouteProps {
   isLoading: boolean;
   isAuthenticated: boolean;
   userRole?: string;
-  requiredRole?: string;
+  requiredRole?: string | string[];
   children: ReactNode;
 }
 
@@ -34,8 +34,11 @@ function ProtectedRoute({
   }
 
   // If role is required and doesn't match, redirect to home
-  if (requiredRole && userRole !== requiredRole) {
-    return <Navigate to="/" replace />;
+  if (requiredRole) {
+    const allowedRoles = Array.isArray(requiredRole) ? requiredRole : [requiredRole];
+    if (!userRole || !allowedRoles.includes(userRole)) {
+      return <Navigate to="/" replace />;
+    }
   }
 
   // User is authenticated (and has correct role if required)

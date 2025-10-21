@@ -25,37 +25,15 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import type { BlogPost } from "@/types/blog";
+import { supabase } from "@/lib/supabaseClient";
 
 //this component is not finished yet
 export default function AdminEditArticlePage() {
   const { state } = useAuth();
   const navigate = useNavigate();
   const { postId } = useParams(); // Get postId from the URL
-  const [post, setPost] = useState<{
-    id: null;
-    image: string;
-    category_id: number | null;
-    title: string;
-    description: string;
-    date: null;
-    content: string;
-    status_id: null;
-    likes_count: null;
-    category: string;
-    status: string;
-  }>({
-    id: null,
-    image: "",
-    category_id: null,
-    title: "",
-    description: "",
-    date: null,
-    content: "",
-    status_id: null,
-    likes_count: null,
-    category: "",
-    status: "",
-  }); // Store the fetched post data
+  const [post, setPost] = useState<Partial<BlogPost>>({}); // Store the fetched post data
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [categories, setCategories] = useState<Array<{ id: number; name: string }>>([]);
@@ -113,45 +91,84 @@ export default function AdminEditArticlePage() {
     setPost((prevData) => ({
       ...prevData,
       category: value, // The category name
-      category_id: selectedCategory?.id || null, // Update the category_id
+      category_id: selectedCategory?.id || undefined, // Update the category_id
     }));
   };
 
   const handleSave = async (postStatusId: number) => {
     setIsSaving(true);
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      toast.error("Authentication error. Please log in again.");
+      setIsSaving(false);
+      return;
+    }
 
     try {
-      if (imageFile?.file) {
-        // If the image has been changed, use FormData
-        const formData = new FormData();
-        formData.append("title", post.title);
-        formData.append("category_id", String(post.category_id));
-        formData.append("description", post.description);
-        formData.append("content", post.content);
-        formData.append("status_id", String(postStatusId));
-        formData.append("imageFile", imageFile.file!);
+      let imageUrl = post.image; // Default to current image
 
-        await axios.put(
-          `https://leoshin-blog-app-api-with-db.vercel.app/posts/${postId}`,
-          formData,
+      // If a new file is selected, upload it
+      if (imageFile.file) {
+        // Step 1: Get signed URL
+        const signedUrlResponse = await axios.post(
+          "https://leoshin-blog-app-api-with-db.vercel.app/posts/signed-url",
           {
-            headers: { "Content-Type": "multipart/form-data" },
+            fileName: imageFile.file.name,
+            fileType: imageFile.file.type,
+          },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        const { path, token: supabaseToken } = signedUrlResponse.data;
+
+        // Step 2: Upload new file directly to Supabase
+        await axios.post(
+          `${process.env.VITE_SUPABASE_URL}/storage/v1/upload/resumable`,
+          imageFile.file,
+          {
+            headers: {
+              Authorization: `Bearer ${supabaseToken}`,
+              "x-upsert": "true",
+              "Content-Type": imageFile.file.type,
+            },
           }
         );
-      } else {
-        // If the image is not changed, use the old method
-        await axios.put(
-          `https://leoshin-blog-app-api-with-db.vercel.app/posts/${postId}`,
-          {
-            title: post.title,
-            image: post.image, // Existing image URL
-            category_id: post.category_id,
-            description: post.description,
-            content: post.content,
-            status_id: postStatusId,
-          }
-        );
+        
+        // Step 3: Get public URL
+        const { data: { publicUrl } } = supabase.storage.from("post-images").getPublicUrl(path);
+        imageUrl = publicUrl;
+
+        // Step 4: Delete old image if it exists and is not a placeholder
+        if (post.image && !post.image.includes('via.placeholder.com')) {
+            const oldFileName = post.image.split('/').pop();
+            if (oldFileName) {
+              // Deletion can be fire-and-forget
+              axios.delete(
+                `https://leoshin-blog-app-api-with-db.vercel.app/posts/storage/delete/${oldFileName}`,
+                { headers: { Authorization: `Bearer ${token}` } }
+              ).catch(err => console.error("Failed to delete old image:", err));
+            }
+        }
       }
+
+      const postData = {
+        title: post.title,
+        description: post.description,
+        content: post.content,
+        category_id: post.category_id,
+        status_id: postStatusId,
+        image: imageUrl,
+      };
+
+      await axios.put(
+        `https://leoshin-blog-app-api-with-db.vercel.app/posts/${postId}`,
+        postData,
+        {
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        }
+      );
 
       // Success toast
       toast.custom((t) => (
@@ -296,7 +313,15 @@ export default function AdminEditArticlePage() {
       return;
     }
 
-    setImageFile({ file }); // Store the file object
+    // เก็บข้อมูลไฟล์
+    setImageFile({ file });
+    
+    // Create preview URL for immediate display
+    const previewUrl = URL.createObjectURL(file);
+    setPost((prevData) => ({
+      ...prevData,
+      image: previewUrl,
+    }));
   };
 
   return (
@@ -369,7 +394,7 @@ export default function AdminEditArticlePage() {
             <div>
               <label htmlFor="category">Category</label>
               <Select
-                value={post.category}
+                value={categories.find(c => c.id === post.category_id)?.name || ""}
                 onValueChange={(value) => {
                   handleCategoryChange(value);
                 }}

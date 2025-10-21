@@ -11,6 +11,16 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 function DropdownMenuDemo() {
   const navigate = useNavigate();
   const { isAuthenticated, logout, state } = useAuth();
+  
+  // Show loading state while fetching user data
+  if (state.getUserLoading) {
+    return (
+      <div className="sm:hidden">
+        <div className="size-8 bg-gray-200 rounded animate-pulse"></div>
+      </div>
+    );
+  }
+  
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="sm:hidden focus:outline-none">

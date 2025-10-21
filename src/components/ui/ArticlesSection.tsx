@@ -11,7 +11,10 @@ import type { BlogPost } from "../../types/blog";
 export default function Articles() {
   const [searchTerm, setSearchTerm] = useState<string>("");
   
-  // Use custom hooks
+  // Get categories first
+  const { categories, error: categoriesError } = useCategories();
+  
+  // Use custom hooks with first category as default (only when categories are loaded)
   const {
     posts,
     isLoading,
@@ -22,9 +25,7 @@ export default function Articles() {
     setSelectedCategory,
     setSearchKeyword,
     loadMore,
-  } = useBlogPosts();
-  
-  const { categories } = useCategories();
+  } = useBlogPosts(categories.length > 0 ? categories[0] : "");
 
   // Debounce search term
   useEffect(() => {
@@ -55,10 +56,15 @@ export default function Articles() {
         />
       </div>
       
-      {/* Error Message */}
+      {/* Error Messages */}
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mt-4">
           <p>Error loading articles: {error}</p>
+        </div>
+      )}
+      {categoriesError && (
+        <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mt-4">
+          <p>Error loading categories: {categoriesError}</p>
         </div>
       )}
       {/* Articles Grid */}

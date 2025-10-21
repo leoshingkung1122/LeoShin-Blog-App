@@ -68,7 +68,7 @@ function App() {
               isLoading={state.getUserLoading}
               isAuthenticated={isAuthenticated}
               userRole={state.user?.role}
-              requiredRole="user"
+              requiredRole={["user", "admin"]}
             >
               <ProfilePage />
             </ProtectedRoute>
@@ -82,7 +82,7 @@ function App() {
               isLoading={state.getUserLoading}
               isAuthenticated={isAuthenticated}
               userRole={state.user?.role}
-              requiredRole="user"
+              requiredRole={["user", "admin"]}
             >
               <ResetPasswordPage />
             </ProtectedRoute>
@@ -151,7 +151,7 @@ function App() {
               userRole={state.user?.role}
               requiredRole="admin"
             >
-              <AdminCreateCategoryPage />
+              <AdminCreateArticlePage />
             </ProtectedRoute>
           }
         />

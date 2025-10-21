@@ -22,6 +22,28 @@ export default function ProfilePage() {
   const [isSaving, setIsSaving] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
 
+  // Add error boundary for component
+  if (!state.user && !state.getUserLoading) {
+    return (
+      <div className="flex flex-col min-h-screen bg-white">
+        <NavBar />
+        <main className="flex-grow flex items-center justify-center">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">Unable to load profile</h2>
+            <p className="text-gray-600 mb-4">Please try refreshing the page or logging in again.</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+            >
+              Refresh Page
+            </button>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -123,7 +145,7 @@ export default function ProfilePage() {
 
       const formData = new FormData();
       formData.append("name", profile.name);
-      formData.append("username", profile.username);
+      // Username is not editable, so we don't send it
 
       if (imageFile) {
         formData.append("imageFile", imageFile);
@@ -133,7 +155,10 @@ export default function ProfilePage() {
         "https://leoshin-blog-app-api-with-db.vercel.app/profiles",
         formData,
         {
-          headers: { "Content-Type": "multipart/form-data" },
+          headers: { 
+            "Content-Type": "multipart/form-data",
+            "Authorization": `Bearer ${localStorage.getItem("token")}`
+          },
         }
       );
 
@@ -153,12 +178,27 @@ export default function ProfilePage() {
           </button>
         </div>
       ));
-    } catch {
+    } catch (error) {
+      console.error("Profile update error:", error);
+      
+      // Safely extract error message to prevent React rendering errors
+      let errorMessage = "Something went wrong. Please try again.";
+      
+      if (axios.isAxiosError(error)) {
+        if (error.response?.data?.error) {
+          errorMessage = String(error.response.data.error);
+        } else if (error.message) {
+          errorMessage = String(error.message);
+        }
+      } else if (error instanceof Error) {
+        errorMessage = String(error.message);
+      }
+      
       toast.custom((t) => (
         <div className="bg-red-500 text-white p-4 rounded-sm flex justify-between items-start">
           <div>
             <h2 className="font-bold text-lg mb-1">Failed to update profile</h2>
-            <p className="text-sm">Please try again later.</p>
+            <p className="text-sm">{errorMessage}</p>
           </div>
           <button
             onClick={() => toast.dismiss(t)}
@@ -286,9 +326,9 @@ export default function ProfilePage() {
                       id="username"
                       name="username"
                       value={profile.username}
-                      onChange={handleInputChange}
-                      className="py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 hover:border-purple-300 focus:shadow-lg focus:shadow-purple-100 placeholder:text-gray-400 focus-visible:ring-0 focus-visible:ring-offset-0 bg-gradient-to-r from-white to-purple-50/30"
-                      placeholder="Choose a username"
+                      readOnly
+                      className="py-3 rounded-xl border-2 border-gray-200 bg-gray-50 text-gray-500 cursor-not-allowed focus-visible:ring-0 focus-visible:ring-offset-0"
+                      placeholder="Username cannot be changed"
                     />
                   </div>
 

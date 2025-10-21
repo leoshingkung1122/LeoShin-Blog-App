@@ -24,7 +24,7 @@ export default function AdminProfilePage() {
       try {
         // Set initial profile data from auth state
         setProfile({
-          image: state.user?.profilePic || "",
+          image: state.user?.profile_pic || "",
           name: state.user?.name || "",
           username: state.user?.username || "",
           email: state.user?.email || "",
@@ -120,7 +120,7 @@ export default function AdminProfilePage() {
 
       const formData = new FormData();
       formData.append("name", profile.name);
-      formData.append("username", profile.username);
+      // Username is not editable, so we don't send it
 
       if (imageFile) {
         formData.append("imageFile", imageFile);
@@ -130,7 +130,10 @@ export default function AdminProfilePage() {
         "https://leoshin-blog-app-api-with-db.vercel.app/profiles",
         formData,
         {
-          headers: { "Content-Type": "multipart/form-data" },
+          headers: { 
+            "Content-Type": "multipart/form-data",
+            "Authorization": `Bearer ${localStorage.getItem("token")}`
+          },
         }
       );
 
@@ -150,12 +153,13 @@ export default function AdminProfilePage() {
           </button>
         </div>
       ));
-    } catch {
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.error || "Failed to update profile";
       toast.custom((t) => (
         <div className="bg-red-500 text-white p-4 rounded-sm flex justify-between items-start">
           <div>
             <h2 className="font-bold text-lg mb-1">Failed to update profile</h2>
-            <p className="text-sm">Please try again later.</p>
+            <p className="text-sm">{errorMessage}</p>
           </div>
           <button
             onClick={() => toast.dismiss(t)}
@@ -230,8 +234,9 @@ export default function AdminProfilePage() {
                 id="username"
                 name="username"
                 value={profile.username}
-                onChange={handleInputChange}
-                className="mt-1 py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground"
+                readOnly
+                className="mt-1 py-3 rounded-sm bg-gray-50 text-gray-500 cursor-not-allowed focus-visible:ring-0 focus-visible:ring-offset-0"
+                placeholder="Username cannot be changed"
               />
             </div>
             <div>

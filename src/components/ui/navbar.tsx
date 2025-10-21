@@ -14,6 +14,30 @@ import { Bell, ChevronDown, LogOut, User as UserIcon, KeyRound, Settings } from 
 function NavBar() {
   const navigate = useNavigate();
   const { isAuthenticated, state, logout } = useAuth();
+  
+  // Show loading state while fetching user data
+  if (state.getUserLoading) {
+    return (
+      <header className="bg-[var(--brown-100)]/80 backdrop-blur border-b">
+        <nav className="container mx-auto flex items-center justify-between py-3 px-4 sm:py-4 sm:px-8">
+          <button
+            onClick={() => navigate("/")}
+            className="text-2xl font-extrabold cursor-pointer tracking-tight hover:opacity-90 transition-opacity"
+          >
+            LeoShin<span className="text-green-500">.</span>
+          </button>
+          <div className="hidden sm:flex items-center gap-4">
+            {/* Loading skeleton */}
+            <div className="flex items-center gap-3">
+              <div className="size-9 bg-gray-200 rounded-full animate-pulse"></div>
+              <div className="h-4 w-20 bg-gray-200 rounded animate-pulse"></div>
+            </div>
+          </div>
+        </nav>
+      </header>
+    );
+  }
+  
   return (
     <header className="bg-[var(--brown-100)]/80 backdrop-blur border-b">
       <nav className="container mx-auto flex items-center justify-between py-3 px-4 sm:py-4 sm:px-8">

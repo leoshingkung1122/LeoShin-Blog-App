@@ -15,9 +15,9 @@ interface UseBlogPostsReturn {
   resetPosts: () => void;
 }
 
-export const useBlogPosts = (): UseBlogPostsReturn => {
+export const useBlogPosts = (defaultCategory?: FilterCategory): UseBlogPostsReturn => {
   const [posts, setPosts] = useState<BlogPost[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<FilterCategory>("Highlight");
+  const [selectedCategory, setSelectedCategory] = useState<FilterCategory>(defaultCategory || "");
   const [searchKeyword, setSearchKeyword] = useState<string>("");
   const [page, setPage] = useState<number>(1);
   const [hasMore, setHasMore] = useState<boolean>(true);
@@ -38,8 +38,8 @@ export const useBlogPosts = (): UseBlogPostsReturn => {
         params += `&keyword=${encodeURIComponent(keyword)}`;
       }  
       
-      if (category !== "Highlight") {
-        // Only add category filter if not searching
+      if (category && category.trim() !== "") {
+        // Only add category filter if category is specified
         params += `&category=${category}`;
       }
       
