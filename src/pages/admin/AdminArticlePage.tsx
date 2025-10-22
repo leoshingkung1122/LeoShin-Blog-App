@@ -20,7 +20,6 @@ import { AdminSidebar } from "@/components/AdminWebSection";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -296,155 +295,207 @@ export default function AdminArticleManagementPage() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
       <AdminSidebar />
-      <main className="flex-1 p-8 overflow-auto">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-semibold">Article management</h2>
-          <Button
-            className="px-8 py-2 rounded-full"
-            onClick={() => navigate("/admin/article-management/create")}
-          >
-            <PenSquare className="mr-2 h-4 w-4" /> Create article
-          </Button>
-        </div>
-        <div className="flex space-x-4 mb-6">
-          <div className="flex-1">
-            <Input
-              type="text"
-              placeholder="Search..."
-              value={searchKeyword}
-              onChange={(e) => setSearchKeyword(e.target.value)}
-              className="w-full py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground"
-            />
-          </div>
-          <Select
-            value={selectedStatus}
-            onValueChange={(value) => setSelectedStatus(value)}
-          >
-            <SelectTrigger className="w-[180px] py-3 rounded-sm text-muted-foreground focus:ring-0 focus:ring-offset-0 focus:border-muted-foreground">
-              <SelectValue placeholder="Status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="published">Published</SelectItem>
-              <SelectItem value="draft">Draft</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select
-            value={selectedCategory}
-            onValueChange={(value) => setSelectedCategory(value)}
-          >
-            <SelectTrigger className="w-[180px] py-3 rounded-sm text-muted-foreground focus:ring-0 focus:ring-offset-0 focus:border-muted-foreground">
-              <SelectValue placeholder="Category" />
-            </SelectTrigger>
-            <SelectContent>
-              {categories.map((cat) => (
-                <SelectItem key={cat.id} value={cat.name}>
-                  {cat.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[50%]">Article title</TableHead>
-              <TableHead>Category</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right"></TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {isLoading ? (
-              Array(9)
-                .fill(null)
-                .map((_, index) => (
-                  <TableRow key={index}>
-                    <TableCell>
-                      <Skeleton className="h-6 w-[250px] bg-[#EFEEEB]" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-6 w-[150px] bg-[#EFEEEB]" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-6 w-[100px] bg-[#EFEEEB]" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-6 w-[50px] bg-[#EFEEEB]" />
-                    </TableCell>
-                  </TableRow>
-                ))
-            ) : filteredPosts.length > 0 ? (
-              filteredPosts.map((article) => (
-                <TableRow key={article.id}>
-                  <TableCell className="font-medium">
-                    {typeof article.title === 'string' ? article.title : 'Untitled'}
-                  </TableCell>
-                  <TableCell>
-                    {typeof article.category === 'string' ? article.category : 'Uncategorized'}
-                  </TableCell>
-                  <TableCell>
-                    <span
-                      className={`inline-flex capitalize items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                        article.status === "draft"
-                          ? "bg-yellow-100 text-yellow-800"
-                          : "bg-green-100 text-green-800"
-                      }`}
-                    >
-                      {typeof article.status === 'string' ? article.status : 'unknown'}
-                    </span>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => {
-                        if (article.id) {
-                          navigate(`/admin/article-management/edit/${article.id}`);
-                        } else {
-                          console.error("Attempted to edit post with undefined ID:", article);
-                          toast.error("Cannot edit post: Invalid Post ID.");
-                        }
-                      }}
-                    >
-                      <PenSquare className="h-4 w-4 hover:text-muted-foreground" />
-                    </Button>
-                    <DeletePostDialog
-                      onDelete={() => {
-                        if (article.id) {
-                          handleDelete(article.id)
-                        } else {
-                          console.error("Attempted to delete post with undefined ID:", article);
-                          toast.error("Cannot delete post: Invalid Post ID.");
-                        }
-                      }}
-                    />
-                  </TableCell>
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={4} className="text-center font-medium pt-8">
-                  No posts found matching your search.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+      <div className="flex-1 lg:ml-0">
+        {/* Mobile spacing */}
+        <div className="lg:hidden h-16" />
         
-        {/* เพิ่ม Pagination */}
-        {!isLoading && filteredPosts.length > 0 && (
-          <div className="mt-6">
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-              isLoading={isLoading}
-            />
+        <main className="p-4 lg:p-8">
+          <div className="max-w-7xl mx-auto">
+            {/* Header Section */}
+            <div className="mb-8">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <h2 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 bg-clip-text text-transparent mb-2">
+                    Article Management
+                  </h2>
+                  <p className="text-slate-600">Manage your blog posts and content</p>
+                </div>
+                <div className="mt-4 sm:mt-0">
+                  <Button
+                    className="px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                    onClick={() => navigate("/admin/article-management/create")}
+                  >
+                    <PenSquare className="mr-2 h-5 w-5" /> Create Article
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Search and Filter Section */}
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6 mb-8">
+              <div className="flex flex-col lg:flex-row gap-4">
+                <div className="flex-1">
+                  <Input
+                    type="text"
+                    placeholder="Search articles..."
+                    value={searchKeyword}
+                    onChange={(e) => setSearchKeyword(e.target.value)}
+                    className="w-full py-3 px-4 rounded-xl border-slate-200 focus:border-blue-500 focus:ring-blue-500/20 transition-all duration-200 bg-white/50 backdrop-blur-sm"
+                  />
+                </div>
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <Select
+                    value={selectedStatus}
+                    onValueChange={(value) => setSelectedStatus(value)}
+                  >
+                    <SelectTrigger className="w-full sm:w-[180px] py-3 px-4 rounded-xl border-slate-200 focus:border-blue-500 focus:ring-blue-500/20 transition-all duration-200 bg-white/50 backdrop-blur-sm">
+                      <SelectValue placeholder="Status" />
+                    </SelectTrigger>
+                    <SelectContent className="rounded-xl border-slate-200 shadow-xl">
+                      <SelectItem value="published" className="rounded-lg">Published</SelectItem>
+                      <SelectItem value="draft" className="rounded-lg">Draft</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Select
+                    value={selectedCategory}
+                    onValueChange={(value) => setSelectedCategory(value)}
+                  >
+                    <SelectTrigger className="w-full sm:w-[180px] py-3 px-4 rounded-xl border-slate-200 focus:border-blue-500 focus:ring-blue-500/20 transition-all duration-200 bg-white/50 backdrop-blur-sm">
+                      <SelectValue placeholder="Category" />
+                    </SelectTrigger>
+                    <SelectContent className="rounded-xl border-slate-200 shadow-xl">
+                      {categories.map((cat) => (
+                        <SelectItem key={cat.id} value={cat.name} className="rounded-lg">
+                          {cat.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </div>
+
+            {/* Table Section */}
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 overflow-hidden">
+              <div className="overflow-x-auto">
+                <Table className="min-w-full">
+                  <TableHeader>
+                    <TableRow className="bg-gradient-to-r from-slate-50 to-blue-50 border-slate-200">
+                      <TableHead className="min-w-[300px] font-semibold text-slate-700 py-4 px-4 lg:px-6">Article Title</TableHead>
+                      <TableHead className="min-w-[120px] font-semibold text-slate-700 py-4 px-4 lg:px-6">Category</TableHead>
+                      <TableHead className="min-w-[100px] font-semibold text-slate-700 py-4 px-4 lg:px-6">Status</TableHead>
+                      <TableHead className="min-w-[120px] text-right font-semibold text-slate-700 py-4 px-4 lg:px-6">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                <TableBody>
+                  {isLoading ? (
+                    Array(5)
+                      .fill(null)
+                      .map((_, index) => (
+                        <TableRow key={index} className="hover:bg-slate-50/50 transition-colors">
+                          <TableCell className="py-4 px-4 lg:px-6">
+                            <div className="h-4 bg-slate-200 rounded animate-pulse w-3/4"></div>
+                          </TableCell>
+                          <TableCell className="py-4 px-4 lg:px-6">
+                            <div className="h-4 bg-slate-200 rounded animate-pulse w-1/2"></div>
+                          </TableCell>
+                          <TableCell className="py-4 px-4 lg:px-6">
+                            <div className="h-6 bg-slate-200 rounded-full animate-pulse w-20"></div>
+                          </TableCell>
+                          <TableCell className="py-4 px-4 lg:px-6">
+                            <div className="h-8 bg-slate-200 rounded animate-pulse w-16 ml-auto"></div>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                  ) : filteredPosts.length > 0 ? (
+                    filteredPosts.map((article) => (
+                      <TableRow key={article.id} className="hover:bg-slate-50/50 transition-colors border-slate-100">
+                        <TableCell className="py-4 px-4 lg:px-6">
+                          <div className="font-medium text-slate-900 group-hover:text-blue-600 transition-colors break-words">
+                            {typeof article.title === 'string' ? article.title : 'Untitled'}
+                          </div>
+                        </TableCell>
+                        <TableCell className="py-4 px-4 lg:px-6">
+                          <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                            {typeof article.category === 'string' ? article.category : 'Uncategorized'}
+                          </span>
+                        </TableCell>
+                        <TableCell className="py-4 px-4 lg:px-6">
+                          <span
+                            className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                              article.status === "draft"
+                                ? "bg-amber-100 text-amber-800"
+                                : "bg-green-100 text-green-800"
+                            }`}
+                          >
+                            {typeof article.status === 'string' ? article.status : 'unknown'}
+                          </span>
+                        </TableCell>
+                        <TableCell className="py-4 px-4 lg:px-6">
+                          <div className="flex items-center justify-end space-x-1 lg:space-x-2">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => {
+                                if (article.id) {
+                                  navigate(`/admin/article-management/edit/${article.id}`);
+                                } else {
+                                  console.error("Attempted to edit post with undefined ID:", article);
+                                  toast.error("Cannot edit post: Invalid Post ID.");
+                                }
+                              }}
+                              className="p-1 lg:p-2 hover:bg-blue-100 hover:text-blue-600 transition-all duration-200 rounded-lg"
+                            >
+                              <PenSquare className="h-4 w-4" />
+                            </Button>
+                            <DeletePostDialog
+                              onDelete={() => {
+                                if (article.id) {
+                                  handleDelete(article.id)
+                                } else {
+                                  console.error("Attempted to delete post with undefined ID:", article);
+                                  toast.error("Cannot delete post: Invalid Post ID.");
+                                }
+                              }}
+                            />
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={4} className="text-center py-12">
+                        <div className="flex flex-col items-center">
+                          <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4">
+                            <svg className="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                          </div>
+                          <h3 className="text-lg font-semibold text-slate-900 mb-2">No articles found</h3>
+                          <p className="text-slate-600 mb-4">No posts match your search criteria.</p>
+                          <Button
+                            onClick={() => navigate("/admin/article-management/create")}
+                            className="px-6 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold"
+                          >
+                            Create Your First Article
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+              </div>
+            </div>
+            
+            {/* Pagination */}
+            {!isLoading && filteredPosts.length > 0 && (
+              <div className="mt-8 flex justify-center">
+                <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-4">
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={handlePageChange}
+                    isLoading={isLoading}
+                  />
+                </div>
+              </div>
+            )}
           </div>
-        )}
-      </main>
+        </main>
+      </div>
     </div>
   );
 }

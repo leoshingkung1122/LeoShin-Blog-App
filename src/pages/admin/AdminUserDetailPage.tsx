@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '../../components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '../../components/ui/Avatar';
 import Badge from '../../components/ui/badge';
-import LoadingSkeleton from '../../components/ui/LoadingSkeleton';
 import { AdminSidebar } from '../../components/AdminWebSection';
 import { useAuth } from '../../contexts/authentication';
 import { toast } from 'sonner';
@@ -315,19 +314,29 @@ const AdminUserDetailPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="flex h-screen bg-gray-100">
+      <div className="flex min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
         <AdminSidebar />
-        <div className="flex-1 overflow-auto">
-          <div className="container mx-auto px-4 py-8">
-            <div className="mb-8">
-              <LoadingSkeleton className="h-8 w-64" />
+        <div className="flex-1 lg:ml-0">
+          <div className="lg:hidden h-16" />
+          <main className="p-4 lg:p-8">
+            <div className="max-w-7xl mx-auto">
+              <div className="mb-8">
+                <div className="h-8 bg-slate-200 rounded-xl animate-pulse w-64 mb-2"></div>
+                <div className="h-4 bg-slate-200 rounded-xl animate-pulse w-48"></div>
+              </div>
+              <div className="space-y-6">
+                <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6">
+                  <div className="h-32 bg-slate-200 rounded-xl animate-pulse"></div>
+                </div>
+                <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6">
+                  <div className="h-64 bg-slate-200 rounded-xl animate-pulse"></div>
+                </div>
+                <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6">
+                  <div className="h-64 bg-slate-200 rounded-xl animate-pulse"></div>
+                </div>
+              </div>
             </div>
-            <div className="space-y-4">
-              <LoadingSkeleton className="h-32" />
-              <LoadingSkeleton className="h-64" />
-              <LoadingSkeleton className="h-64" />
-            </div>
-          </div>
+          </main>
         </div>
       </div>
     );
@@ -335,17 +344,29 @@ const AdminUserDetailPage: React.FC = () => {
 
   if (!userDetail) {
     return (
-      <div className="flex h-screen bg-gray-100">
+      <div className="flex min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
         <AdminSidebar />
-        <div className="flex-1 overflow-auto">
-          <div className="container mx-auto px-4 py-8">
-            <div className="text-center">
-              <h1 className="text-2xl font-bold text-gray-900 mb-4">User not found</h1>
-              <Button onClick={() => navigate('/admin/users')}>
-                Back to User List
-              </Button>
+        <div className="flex-1 lg:ml-0">
+          <div className="lg:hidden h-16" />
+          <main className="p-4 lg:p-8">
+            <div className="max-w-7xl mx-auto">
+              <div className="text-center py-12">
+                <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <svg className="w-10 h-10 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+                  </svg>
+                </div>
+                <h1 className="text-2xl font-bold text-slate-900 mb-4">User not found</h1>
+                <p className="text-slate-600 mb-6">The user you're looking for doesn't exist or has been removed.</p>
+                <Button 
+                  onClick={() => navigate('/admin/users')}
+                  className="px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                >
+                  Back to User List
+                </Button>
+              </div>
             </div>
-          </div>
+          </main>
         </div>
       </div>
     );
@@ -354,69 +375,92 @@ const AdminUserDetailPage: React.FC = () => {
   const { user, comments, likes } = userDetail;
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
       <AdminSidebar />
-      <div className="flex-1 overflow-auto">
-        <div className="container mx-auto px-4 py-8">
-          <div className="mb-8">
-            <Button
-              variant="outline"
-              onClick={() => navigate('/admin/users')}
-              className="mb-4"
-            >
-              ← Back to User List
-            </Button>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">User Details</h1>
-          </div>
+      <div className="flex-1 lg:ml-0">
+        <div className="lg:hidden h-16" />
+        <main className="p-4 lg:p-8">
+          <div className="max-w-7xl mx-auto">
+            {/* Header Section */}
+            <div className="mb-8">
+              <Button
+                variant="outline"
+                onClick={() => navigate('/admin/users')}
+                className="mb-6 px-6 py-3 rounded-xl border-blue-200 text-blue-600 hover:bg-blue-50 hover:border-blue-300 transition-all duration-200"
+              >
+                ← Back to User List
+              </Button>
+              <h1 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 bg-clip-text text-transparent mb-2">
+                User Details
+              </h1>
+              <p className="text-slate-600">View detailed information about this user</p>
+            </div>
 
-      {/* ข้อมูลผู้ใช้ */}
-      <div className="bg-white rounded-lg shadow-sm border p-6 mb-8">
-        <div className="flex items-start justify-between">
-          <div className="flex items-center">
-            <Avatar className="h-16 w-16 mr-6">
-              <AvatarImage src={user.profile_pic} alt={user.username} />
-              <AvatarFallback>{user.username.charAt(0).toUpperCase()}</AvatarFallback>
-            </Avatar>
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                {user.name || user.username}
-              </h2>
-              <p className="text-gray-600 mb-1">@{user.username}</p>
-              <div className="flex items-center space-x-4">
-                <Badge
-                  variant={user.role === 'admin' ? 'default' : 'secondary'}
-                >
-                  {user.role === 'admin' ? 'Admin' : 'User'}
-                </Badge>
-                <Badge
-                  variant={user.status === 'active' ? 'default' : 'destructive'}
-                >
-                  {user.status === 'active' ? 'Active' : 'Banned'}
-                </Badge>
-                <span className="text-sm text-gray-500">
-                  Last Updated: {new Date(user.updated_at).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                  })}
-                </span>
+            {/* User Info Section */}
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6 lg:p-8 mb-8">
+              <div className="flex flex-col lg:flex-row items-start justify-between gap-6">
+                <div className="flex items-center gap-6">
+                  <Avatar className="h-20 w-20 ring-4 ring-white shadow-xl">
+                    <AvatarImage src={user.profile_pic} alt={user.username} />
+                    <AvatarFallback className="bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold text-2xl">
+                      {user.username.charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <h2 className="text-2xl lg:text-3xl font-bold text-slate-900 mb-2">
+                      {user.name || user.username}
+                    </h2>
+                    <p className="text-slate-600 mb-3">@{user.username}</p>
+                    <div className="flex flex-wrap items-center gap-3">
+                      <Badge
+                        variant={user.role === 'admin' ? 'default' : 'secondary'}
+                        className={`px-3 py-1 rounded-full font-medium ${
+                          user.role === 'admin' 
+                            ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white' 
+                            : 'bg-slate-100 text-slate-700'
+                        }`}
+                      >
+                        {user.role === 'admin' ? 'Admin' : 'User'}
+                      </Badge>
+                      <Badge
+                        variant={user.status === 'active' ? 'default' : 'destructive'}
+                        className={`px-3 py-1 rounded-full font-medium ${
+                          user.status === 'active' 
+                            ? 'bg-green-100 text-green-800' 
+                            : 'bg-red-100 text-red-800'
+                        }`}
+                      >
+                        {user.status === 'active' ? 'Active' : 'Banned'}
+                      </Badge>
+                      <span className="text-sm text-slate-500 bg-slate-100 px-3 py-1 rounded-full">
+                        Last Updated: {new Date(user.updated_at).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                        })}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  {user.role !== 'admin' && (
+                    <Button
+                      variant={user.status === 'active' ? 'destructive' : 'default'}
+                      onClick={() => handleStatusChange(user.status === 'active' ? 'ban' : 'active')}
+                      disabled={actionLoading}
+                      className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 ${
+                        user.status === 'active' 
+                          ? 'bg-red-600 hover:bg-red-700 text-white' 
+                          : 'bg-green-600 hover:bg-green-700 text-white'
+                      }`}
+                    >
+                      {actionLoading ? 'Processing...' : 
+                       user.status === 'active' ? 'Ban User' : 'Unban User'}
+                    </Button>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-          <div className="flex space-x-2">
-            {user.role !== 'admin' && (
-              <Button
-                variant={user.status === 'active' ? 'destructive' : 'default'}
-                onClick={() => handleStatusChange(user.status === 'active' ? 'ban' : 'active')}
-                disabled={actionLoading}
-              >
-                {actionLoading ? 'Processing...' : 
-                 user.status === 'active' ? 'Ban User' : 'Unban User'}
-              </Button>
-            )}
-          </div>
-        </div>
-      </div>
 
       {/* สถิติ */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -565,7 +609,8 @@ const AdminUserDetailPage: React.FC = () => {
           </div>
         )}
       </div>
-        </div>
+          </div>
+        </main>
       </div>
     </div>
   );

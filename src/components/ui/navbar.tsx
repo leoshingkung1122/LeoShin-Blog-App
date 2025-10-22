@@ -84,7 +84,7 @@ function NavBar() {
                 {state.user?.role === 'admin' && (
                   <>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => navigate("/admin")} className="gap-3 py-3">
+                    <DropdownMenuItem onClick={() => navigate("/admin/dashboard")} className="gap-3 py-3">
                       <Settings className="w-5 h-5 text-blue-600" />
                       <span className="text-blue-600 font-medium">Admin Panel</span>
                     </DropdownMenuItem>

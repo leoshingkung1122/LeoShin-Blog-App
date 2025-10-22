@@ -14,7 +14,6 @@ import { useAuth } from "@/contexts/authentication";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import type { BlogPost } from "@/types/blog";
 
@@ -345,204 +344,257 @@ export default function AdminCreateArticlePage() {
     }));
   };
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
       {/* Sidebar */}
       <AdminSidebar />
 
       {/* Main content */}
-      {isLoading ? (
-        <SkeletonLoading />
-      ) : (
-        <main className="flex-1 p-8 bg-gray-50 overflow-auto">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-semibold">Create article</h2>
-            <div className="space-x-2">
-              <Button
-                className="px-8 py-2 rounded-full"
-                variant="outline"
-                disabled={isSaving}
-                onClick={() => handleSave(2)}
-              >
-                Save as draft
-              </Button>
-              <Button
-                className="px-8 py-2 rounded-full"
-                disabled={isSaving}
-                onClick={() => handleSave(1)}
-              >
-                Save and publish
-              </Button>
-            </div>
-          </div>
+      <div className="flex-1 lg:ml-0">
+        <div className="lg:hidden h-16" />
+        {isLoading ? (
+          <SkeletonLoading />
+        ) : (
+          <main className="p-4 lg:p-8">
+            <div className="max-w-7xl mx-auto">
+              {/* Header Section */}
+              <div className="mb-8">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <h2 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 bg-clip-text text-transparent mb-2">
+                      Create Article
+                    </h2>
+                    <p className="text-slate-600">Write and publish your new blog post</p>
+                  </div>
+                  <div className="mt-4 sm:mt-0 flex flex-col sm:flex-row gap-3">
+                    <Button
+                      className="px-6 py-3 rounded-xl border-2 border-blue-200 text-blue-600 hover:bg-blue-50 hover:border-blue-300 transition-all duration-200 font-semibold"
+                      variant="outline"
+                      disabled={isSaving}
+                      onClick={() => handleSave(2)}
+                    >
+                      {isSaving ? "Saving..." : "Save as Draft"}
+                    </Button>
+                    <Button
+                      className="px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                      disabled={isSaving}
+                      onClick={() => handleSave(1)}
+                    >
+                      {isSaving ? "Publishing..." : "Publish Article"}
+                    </Button>
+                  </div>
+                </div>
+              </div>
 
-          <form className="space-y-7 max-w-4xl">
-            <div>
-              <label
-                htmlFor="thumbnail"
-                className="block text-gray-700 font-medium mb-2"
-              >
-                Thumbnail image
-              </label>
-              <div className="flex items-end space-x-4">
-                {imageFile.file ? (
-                  <img
-                    src={URL.createObjectURL(imageFile.file)}
-                    alt="Uploaded"
-                    className="rounded-md object-cover max-w-lg h-80"
-                  />
-                ) : (
-                  <div className="flex justify-center items-center w-full max-w-lg h-80 px-6 py-20 border-2 border-gray-300 border-dashed rounded-md bg-gray-50">
-                    <div className="text-center space-y-2">
-                      <ImageIcon className="mx-auto h-8 w-8 text-gray-400" />
+              {/* Form Section */}
+              <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6 lg:p-8">
+                <form className="space-y-8">
+                  {/* Image Upload Section */}
+                  <div>
+                    <label
+                      htmlFor="thumbnail"
+                      className="block text-lg font-semibold text-slate-900 mb-4"
+                    >
+                      Thumbnail Image
+                    </label>
+                    <div className="flex flex-col lg:flex-row lg:items-end gap-6">
+                      {imageFile.file ? (
+                        <div className="relative group">
+                          <img
+                            src={URL.createObjectURL(imageFile.file)}
+                            alt="Uploaded"
+                            className="rounded-2xl object-cover w-full max-w-lg h-80 shadow-lg"
+                          />
+                          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 rounded-2xl"></div>
+                        </div>
+                      ) : (
+                        <div className="flex justify-center items-center w-full max-w-lg h-80 px-6 py-20 border-2 border-slate-300 border-dashed rounded-2xl bg-gradient-to-br from-slate-50 to-blue-50 hover:from-blue-50 hover:to-indigo-50 transition-all duration-300">
+                          <div className="text-center space-y-4">
+                            <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto">
+                              <ImageIcon className="h-8 w-8 text-white" />
+                            </div>
+                            <div>
+                              <p className="text-slate-600 font-medium">No image selected</p>
+                              <p className="text-sm text-slate-500">Upload a thumbnail for your article</p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                      <label
+                        htmlFor="file-upload"
+                        className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 cursor-pointer text-center"
+                      >
+                        <span>Upload Thumbnail</span>
+                        <input
+                          id="file-upload"
+                          name="file-upload"
+                          type="file"
+                          className="sr-only"
+                          onChange={handleFileChange}
+                        />
+                      </label>
                     </div>
                   </div>
-                )}
-                <label
-                  htmlFor="file-upload"
-                  className="px-8 py-2 bg-background rounded-full text-foreground border border-foreground hover:border-muted-foreground hover:text-muted-foreground transition-colors cursor-pointer"
-                >
-                  <span>Upload thumbnail image</span>
-                  <input
-                    id="file-upload"
-                    name="file-upload"
-                    type="file"
-                    className="sr-only"
-                    onChange={handleFileChange}
-                  />
-                </label>
+
+                  {/* Category Selection */}
+                  <div>
+                    <label htmlFor="category" className="block text-lg font-semibold text-slate-900 mb-3">
+                      Category
+                    </label>
+                    <Select
+                      value={categories.find(c => c.id === post.category_id)?.name || ""}
+                      onValueChange={(value) => {
+                        handleCategoryChange(value);
+                      }}
+                    >
+                      <SelectTrigger className="w-full lg:max-w-lg py-3 px-4 rounded-xl border-slate-200 focus:border-blue-500 focus:ring-blue-500/20 transition-all duration-200 bg-white/50 backdrop-blur-sm">
+                        <SelectValue placeholder="Select category" />
+                      </SelectTrigger>
+                      <SelectContent className="rounded-xl border-slate-200 shadow-xl">
+                        {categories.map((cat) => (
+                          <SelectItem key={cat.id} value={cat.name} className="rounded-lg">
+                            {cat.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Author Name */}
+                  <div>
+                    <label htmlFor="author" className="block text-lg font-semibold text-slate-900 mb-3">
+                      Author Name
+                    </label>
+                    <Input
+                      id="author"
+                      name="author"
+                      value={state.user?.name || ""}
+                      className="w-full lg:max-w-lg py-3 px-4 rounded-xl border-slate-200 bg-slate-50 text-slate-600"
+                      disabled
+                    />
+                  </div>
+
+                  {/* Article Title */}
+                  <div>
+                    <label htmlFor="title" className="block text-lg font-semibold text-slate-900 mb-3">
+                      Article Title
+                    </label>
+                    <Input
+                      id="title"
+                      name="title"
+                      placeholder="Enter your article title..."
+                      value={post.title}
+                      onChange={handleInputChange}
+                      className="w-full py-3 px-4 rounded-xl border-slate-200 focus:border-blue-500 focus:ring-blue-500/20 transition-all duration-200 bg-white/50 backdrop-blur-sm"
+                    />
+                  </div>
+
+                  {/* Introduction */}
+                  <div>
+                    <label htmlFor="introduction" className="block text-lg font-semibold text-slate-900 mb-3">
+                      Introduction <span className="text-sm text-slate-500 font-normal">(max 120 characters)</span>
+                    </label>
+                    <Textarea
+                      id="introduction"
+                      name="description"
+                      placeholder="Write a brief introduction to your article..."
+                      rows={3}
+                      value={post.description}
+                      onChange={handleInputChange}
+                      className="w-full py-3 px-4 rounded-xl border-slate-200 focus:border-blue-500 focus:ring-blue-500/20 transition-all duration-200 bg-white/50 backdrop-blur-sm resize-none"
+                      maxLength={120}
+                    />
+                    <div className="text-right text-sm text-slate-500 mt-1">
+                      {post.description?.length || 0}/120 characters
+                    </div>
+                  </div>
+
+                  {/* Content */}
+                  <div>
+                    <label htmlFor="content" className="block text-lg font-semibold text-slate-900 mb-3">
+                      Article Content
+                    </label>
+                    <Textarea
+                      id="content"
+                      name="content"
+                      placeholder="Write your article content here..."
+                      rows={20}
+                      value={post.content}
+                      onChange={handleInputChange}
+                      className="w-full py-3 px-4 rounded-xl border-slate-200 focus:border-blue-500 focus:ring-blue-500/20 transition-all duration-200 bg-white/50 backdrop-blur-sm resize-none"
+                    />
+                  </div>
+                </form>
               </div>
             </div>
-
-            <div>
-              <label htmlFor="category">Category</label>
-              <Select
-                value={categories.find(c => c.id === post.category_id)?.name || ""}
-                onValueChange={(value) => {
-                  handleCategoryChange(value);
-                }}
-              >
-                <SelectTrigger className="max-w-lg mt-1 py-3 rounded-sm text-muted-foreground focus:ring-0 focus:ring-offset-0 focus:border-muted-foreground">
-                  <SelectValue placeholder="Select category" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.map((cat) => (
-                    <SelectItem key={cat.id} value={cat.name}>
-                      {cat.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <label htmlFor="author">Author name</label>
-              <Input
-                id="author"
-                name="author"
-                value={state.user?.name || ""}
-                className="mt-1 max-w-lg"
-                disabled
-              />
-            </div>
-
-            <div>
-              <label htmlFor="title">Title</label>
-              <Input
-                id="title"
-                name="title"
-                placeholder="Article title"
-                value={post.title} // Prefill with the fetched title
-                onChange={handleInputChange}
-                className="mt-1 py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="introduction">
-                Introduction (max 120 letters)
-              </label>
-              <Textarea
-                id="introduction"
-                name="description"
-                placeholder="Introduction"
-                rows={3}
-                value={post.description} // Prefill with the fetched description
-                onChange={handleInputChange}
-                className="mt-1 py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground"
-                maxLength={120}
-              />
-            </div>
-
-            <div>
-              <label htmlFor="content">Content</label>
-              <Textarea
-                id="content"
-                name="content"
-                placeholder="Content"
-                rows={20}
-                value={post.content} // Prefill with the fetched content
-                onChange={handleInputChange}
-                className="mt-1 py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground"
-              />
-            </div>
-          </form>
-        </main>
-      )}
+          </main>
+        )}
+      </div>
     </div>
   );
 }
 
 function SkeletonLoading() {
   return (
-    <main className="flex-1 p-8 bg-gray-50 overflow-auto">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-semibold">Create article</h2>
-        <div className="space-x-2">
-          <Button className="px-8 py-2 rounded-full" variant="outline" disabled>
-            Save as draft
-          </Button>
-          <Button className="px-8 py-2 rounded-full" disabled>
-            Save and publish
-          </Button>
-        </div>
-      </div>
-
-      <div className="space-y-7 max-w-4xl">
-        <div>
-          <Skeleton className="h-4 w-32 mb-2 bg-[#EFEEEB]" />
-          <div className="flex items-end space-x-4">
-            <Skeleton className="h-64 w-full max-w-lg bg-[#EFEEEB]" />
-            <Skeleton className="h-10 w-48 bg-[#EFEEEB]" />
+    <main className="p-4 lg:p-8">
+      <div className="max-w-7xl mx-auto">
+        {/* Header Section */}
+        <div className="mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <div className="h-8 bg-slate-200 rounded-xl animate-pulse w-64 mb-2"></div>
+              <div className="h-4 bg-slate-200 rounded-xl animate-pulse w-48"></div>
+            </div>
+            <div className="mt-4 sm:mt-0 flex flex-col sm:flex-row gap-3">
+              <div className="h-12 bg-slate-200 rounded-xl animate-pulse w-32"></div>
+              <div className="h-12 bg-slate-200 rounded-xl animate-pulse w-36"></div>
+            </div>
           </div>
         </div>
 
-        <div>
-          <Skeleton className="h-4 w-24 mb-2 bg-[#EFEEEB]" />
-          <Skeleton className="h-10 w-full max-w-lg bg-[#EFEEEB]" />
-        </div>
+        {/* Form Section */}
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6 lg:p-8">
+          <div className="space-y-8">
+            {/* Image Upload Section */}
+            <div>
+              <div className="h-6 bg-slate-200 rounded-xl animate-pulse w-32 mb-4"></div>
+              <div className="flex flex-col lg:flex-row lg:items-end gap-6">
+                <div className="h-80 bg-slate-200 rounded-2xl animate-pulse w-full max-w-lg"></div>
+                <div className="h-12 bg-slate-200 rounded-xl animate-pulse w-40"></div>
+              </div>
+            </div>
 
-        <div>
-          <Skeleton className="h-4 w-32 mb-2 bg-[#EFEEEB]" />
-          <Skeleton className="h-10 w-full max-w-lg bg-[#EFEEEB]" />
-        </div>
+            {/* Category */}
+            <div>
+              <div className="h-6 bg-slate-200 rounded-xl animate-pulse w-20 mb-3"></div>
+              <div className="h-12 bg-slate-200 rounded-xl animate-pulse w-full lg:max-w-lg"></div>
+            </div>
 
-        <div>
-          <Skeleton className="h-4 w-16 mb-2 bg-[#EFEEEB]" />
-          <Skeleton className="h-10 w-full bg-[#EFEEEB]" />
-        </div>
+            {/* Author */}
+            <div>
+              <div className="h-6 bg-slate-200 rounded-xl animate-pulse w-24 mb-3"></div>
+              <div className="h-12 bg-slate-200 rounded-xl animate-pulse w-full lg:max-w-lg"></div>
+            </div>
 
-        <div>
-          <Skeleton className="h-4 w-64 mb-2 bg-[#EFEEEB]" />
-          <Skeleton className="h-24 w-full bg-[#EFEEEB]" />
-        </div>
+            {/* Title */}
+            <div>
+              <div className="h-6 bg-slate-200 rounded-xl animate-pulse w-28 mb-3"></div>
+              <div className="h-12 bg-slate-200 rounded-xl animate-pulse w-full"></div>
+            </div>
 
-        <div>
-          <Skeleton className="h-4 w-24 mb-2 bg-[#EFEEEB]" />
-          <Skeleton className="h-80 w-full bg-[#EFEEEB]" />
+            {/* Introduction */}
+            <div>
+              <div className="h-6 bg-slate-200 rounded-xl animate-pulse w-32 mb-3"></div>
+              <div className="h-24 bg-slate-200 rounded-xl animate-pulse w-full"></div>
+            </div>
+
+            {/* Content */}
+            <div>
+              <div className="h-6 bg-slate-200 rounded-xl animate-pulse w-36 mb-3"></div>
+              <div className="h-80 bg-slate-200 rounded-xl animate-pulse w-full"></div>
+            </div>
+          </div>
         </div>
       </div>
-
-      <Skeleton className="h-6 w-32 mt-4 bg-[#EFEEEB]" />
     </main>
   );
 }

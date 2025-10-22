@@ -179,96 +179,152 @@ export default function AdminProfilePage() {
     }
   };
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
       <AdminSidebar />
-      <main className="flex-1 p-8 bg-gray-50 overflow-auto">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-semibold">Profile</h2>
-          <Button
-            className="px-8 py-2 rounded-full"
-            onClick={handleSave}
-            disabled={isSaving}
-          >
-            {isSaving ? "Saving..." : "Save"}
-          </Button>
-        </div>
+      <div className="flex-1 lg:ml-0">
+        <div className="lg:hidden h-16" />
+        <main className="p-4 lg:p-8">
+          <div className="max-w-7xl mx-auto">
+            {/* Header Section */}
+            <div className="mb-8">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <h2 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 bg-clip-text text-transparent mb-2">
+                    Profile Settings
+                  </h2>
+                  <p className="text-slate-600">Manage your personal information and preferences</p>
+                </div>
+                <div className="mt-4 sm:mt-0">
+                  <Button
+                    className="px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                    onClick={handleSave}
+                    disabled={isSaving}
+                  >
+                    {isSaving ? "Saving..." : "Save Changes"}
+                  </Button>
+                </div>
+              </div>
+            </div>
 
-        <div>
-          <div className="flex items-center mb-6">
-            <Avatar className="w-24 h-24 mr-4">
-              <AvatarImage
-                src={profile.image}
-                alt="Profile picture"
-                className="object-cover"
-              />
-              <AvatarFallback>{profile.name?.charAt(0) || "U"}</AvatarFallback>
-            </Avatar>
-            <label
-              htmlFor="profile-upload"
-              className="px-8 py-2 bg-background rounded-full text-foreground border border-foreground hover:border-muted-foreground hover:text-muted-foreground transition-colors cursor-pointer"
-            >
-              <span>Upload profile picture</span>
-              <input
-                id="profile-upload"
-                type="file"
-                className="sr-only"
-                onChange={handleFileChange}
-                accept="image/*"
-              />
-            </label>
+            {/* Profile Section */}
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6 lg:p-8">
+              {/* Avatar Section */}
+              <div className="flex flex-col lg:flex-row items-center lg:items-start gap-6 mb-8">
+                <div className="relative group">
+                  <Avatar className="w-32 h-32 ring-4 ring-white shadow-xl">
+                    <AvatarImage
+                      src={profile.image}
+                      alt="Profile picture"
+                      className="object-cover"
+                    />
+                    <AvatarFallback className="bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold text-4xl">
+                      {profile.name?.charAt(0) || profile.username?.charAt(0) || "U"}
+                    </AvatarFallback>
+                  </Avatar>
+                </div>
+                <div className="text-center lg:text-left">
+                  <h3 className="text-2xl font-bold text-slate-900 mb-2">
+                    {profile.name || "Your Name"}
+                  </h3>
+                  <p className="text-slate-600 mb-4">@{profile.username}</p>
+                  <label
+                    htmlFor="profile-upload"
+                    className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 cursor-pointer"
+                  >
+                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    Change Profile Picture
+                    <input
+                      id="profile-upload"
+                      type="file"
+                      className="sr-only"
+                      onChange={handleFileChange}
+                      accept="image/*"
+                    />
+                  </label>
+                </div>
+              </div>
+
+              {/* Form Section */}
+              <form
+                className="space-y-6"
+                onSubmit={(e) => e.preventDefault()}
+              >
+                {/* Name Field */}
+                <div>
+                  <label htmlFor="name" className="block text-lg font-semibold text-slate-900 mb-3">
+                    Full Name
+                  </label>
+                  <Input
+                    id="name"
+                    name="name"
+                    value={profile.name}
+                    onChange={handleInputChange}
+                    placeholder="Enter your full name"
+                    className="w-full py-3 px-4 rounded-xl border-slate-200 focus:border-blue-500 focus:ring-blue-500/20 transition-all duration-200 bg-white/50 backdrop-blur-sm"
+                  />
+                </div>
+
+                {/* Username Field */}
+                <div>
+                  <label htmlFor="username" className="block text-lg font-semibold text-slate-900 mb-3">
+                    Username
+                  </label>
+                  <Input
+                    id="username"
+                    name="username"
+                    value={profile.username}
+                    readOnly
+                    className="w-full py-3 px-4 rounded-xl border-slate-200 bg-slate-50 text-slate-600 cursor-not-allowed"
+                    placeholder="Username cannot be changed"
+                  />
+                  <p className="text-sm text-slate-500 mt-2">
+                    Username cannot be changed after account creation
+                  </p>
+                </div>
+
+                {/* Email Field */}
+                <div>
+                  <label htmlFor="email" className="block text-lg font-semibold text-slate-900 mb-3">
+                    Email Address
+                  </label>
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    value={profile.email}
+                    disabled
+                    className="w-full py-3 px-4 rounded-xl border-slate-200 bg-slate-50 text-slate-600 cursor-not-allowed"
+                  />
+                  <p className="text-sm text-slate-500 mt-2">
+                    Email address cannot be changed. Contact support if needed.
+                  </p>
+                </div>
+
+                {/* Introduction Field */}
+                <div>
+                  <label htmlFor="introduction" className="block text-lg font-semibold text-slate-900 mb-3">
+                    Bio / Introduction
+                  </label>
+                  <Textarea
+                    id="introduction"
+                    name="introduction"
+                    value={profile.introduction}
+                    onChange={handleInputChange}
+                    placeholder="Tell us about yourself..."
+                    className="w-full py-3 px-4 rounded-xl border-slate-200 focus:border-blue-500 focus:ring-blue-500/20 transition-all duration-200 bg-white/50 backdrop-blur-sm resize-none"
+                    rows={4}
+                  />
+                  <p className="text-sm text-slate-500 mt-2">
+                    A brief description about yourself (optional)
+                  </p>
+                </div>
+              </form>
+            </div>
           </div>
-
-          <form
-            className="space-y-7 max-w-2xl"
-            onSubmit={(e) => e.preventDefault()}
-          >
-            <div>
-              <label htmlFor="name">Name</label>
-              <Input
-                id="name"
-                name="name"
-                value={profile.name}
-                onChange={handleInputChange}
-                className="mt-1 py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground"
-              />
-            </div>
-            <div>
-              <label htmlFor="username">Username</label>
-              <Input
-                id="username"
-                name="username"
-                value={profile.username}
-                readOnly
-                className="mt-1 py-3 rounded-sm bg-gray-50 text-gray-500 cursor-not-allowed focus-visible:ring-0 focus-visible:ring-offset-0"
-                placeholder="Username cannot be changed"
-              />
-            </div>
-            <div>
-              <label htmlFor="email">Email</label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                value={profile.email}
-                disabled
-                className="mt-1 py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground"
-              />
-            </div>
-            <div>
-              <label htmlFor="introduction">Introduction</label>
-              <Textarea
-                id="introduction"
-                name="introduction"
-                value={profile.introduction}
-                onChange={handleInputChange}
-                placeholder="Tell us about yourself..."
-                className="mt-1 py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground resize-none"
-                rows={4}
-              />
-            </div>
-          </form>
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
   );
 }

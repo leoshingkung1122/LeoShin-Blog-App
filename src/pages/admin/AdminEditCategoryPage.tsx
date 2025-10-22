@@ -2,21 +2,11 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Trash2 } from "lucide-react";
 import { AdminSidebar } from "@/components/AdminWebSection";
 import axios from "axios";
 import { toast } from "sonner";
 import { X } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Skeleton } from "@/components/ui/skeleton";
-import {
-  AlertDialog,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 
 export default function AdminEditCategoryPage() {
   const navigate = useNavigate();
@@ -181,107 +171,160 @@ export default function AdminEditCategoryPage() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
       {/* Sidebar */}
       <AdminSidebar />
       {/* Main content */}
-      {isLoading ? (
-        <SkeletonLoading />
-      ) : (
-        <main className="flex-1 p-8 bg-gray-50 overflow-auto">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-semibold">Edit Category</h2>
-            <Button
-              className="px-8 py-2 rounded-full"
-              onClick={handleSave}
-              disabled={isSaving}
-            >
-              Save
-            </Button>
-          </div>
-          <div className="space-y-7 max-w-md">
-            <div className="relative space-y-1">
-              <label
-                htmlFor="category-name"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Category Name
-              </label>
-              <Input
-                id="category-name"
-                type="text"
-                value={categoryName}
-                onChange={(e) => setCategoryName(e.target.value)}
-                placeholder="Category name"
-                className={`mt-1 py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground ${
-                  errorMessage ? "border-red-500" : ""
-                }`}
-              />
-              {errorMessage && (
-                <p className="text-red-500 text-xs absolute">{errorMessage}</p>
-              )}
+      <div className="flex-1 lg:ml-0">
+        <div className="lg:hidden h-16" />
+        {isLoading ? (
+          <SkeletonLoading />
+        ) : (
+          <main className="p-4 lg:p-8">
+            <div className="max-w-7xl mx-auto">
+              {/* Header Section */}
+              <div className="mb-8">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <h2 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 bg-clip-text text-transparent mb-2">
+                      Edit Category
+                    </h2>
+                    <p className="text-slate-600">Update your category information</p>
+                  </div>
+                  <div className="mt-4 sm:mt-0 flex flex-col sm:flex-row gap-3">
+                    <Button
+                      className="px-6 py-3 rounded-xl border-2 border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 transition-all duration-200 font-semibold"
+                      variant="outline"
+                      onClick={handleDelete}
+                      disabled={isSaving}
+                    >
+                      Delete Category
+                    </Button>
+                    <Button
+                      className="px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                      onClick={handleSave}
+                      disabled={isSaving}
+                    >
+                      {isSaving ? "Updating..." : "Update Category"}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+              {/* Form Section */}
+              <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6 lg:p-8">
+                <div className="max-w-md">
+                  <div className="space-y-6">
+                    {/* Category Name Input */}
+                    <div className="relative">
+                      <label
+                        htmlFor="category-name"
+                        className="block text-lg font-semibold text-slate-900 mb-3"
+                      >
+                        Category Name
+                      </label>
+                      <Input
+                        id="category-name"
+                        type="text"
+                        value={categoryName}
+                        onChange={(e) => {
+                          setCategoryName(e.target.value);
+                          setErrorMessage(""); // Clear error when user types
+                        }}
+                        placeholder="Enter category name..."
+                        className={`w-full py-3 px-4 rounded-xl border-slate-200 focus:border-blue-500 focus:ring-blue-500/20 transition-all duration-200 bg-white/50 backdrop-blur-sm ${
+                          errorMessage ? "border-red-500 focus:border-red-500 focus:ring-red-500/20" : ""
+                        }`}
+                      />
+                      {errorMessage && (
+                        <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-xl">
+                          <p className="text-red-600 text-sm font-medium">{errorMessage}</p>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Warning Message */}
+                    <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-4">
+                      <div className="flex items-start space-x-3">
+                        <div className="w-6 h-6 bg-amber-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                          </svg>
+                        </div>
+                        <div>
+                          <h3 className="text-amber-800 font-semibold mb-1">Important Notice</h3>
+                          <p className="text-amber-700 text-sm">
+                            Deleting this category will remove it from all associated articles. This action cannot be undone.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Help Text */}
+                    <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+                      <div className="flex items-start space-x-3">
+                        <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        </div>
+                        <div>
+                          <h3 className="text-blue-800 font-semibold mb-1">Editing Guidelines</h3>
+                          <ul className="text-blue-700 text-sm space-y-1">
+                            <li>• Choose a clear, descriptive name for your category</li>
+                            <li>• Changes will affect all articles using this category</li>
+                            <li>• Make sure the new name is meaningful to your readers</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-          <DeleteCategoryDialog
-            onDelete={handleDelete}
-          />
-        </main>
-      )}
+          </main>
+        )}
+      </div>
     </div>
   );
 }
 
 function SkeletonLoading() {
   return (
-    <main className="flex-1 p-8 bg-gray-50 overflow-auto">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-semibold">Edit Category</h2>
-        <Button className="px-8 py-2 rounded-full" disabled>
-          Save
-        </Button>
-      </div>
-      <div className="space-y-7 max-w-md">
-        <div className="relative space-y-1">
-          <Skeleton className="h-5 w-32 mb-1 bg-[#EFEEEB]" />
-          <Skeleton className="h-10 w-full rounded-sm bg-[#EFEEEB]" />
+    <main className="p-4 lg:p-8">
+      <div className="max-w-7xl mx-auto">
+        {/* Header Section */}
+        <div className="mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <div className="h-8 bg-slate-200 rounded-xl animate-pulse w-64 mb-2"></div>
+              <div className="h-4 bg-slate-200 rounded-xl animate-pulse w-48"></div>
+            </div>
+            <div className="mt-4 sm:mt-0 flex flex-col sm:flex-row gap-3">
+              <div className="h-12 bg-slate-200 rounded-xl animate-pulse w-36"></div>
+              <div className="h-12 bg-slate-200 rounded-xl animate-pulse w-40"></div>
+            </div>
+          </div>
         </div>
-      </div>
-      <Skeleton className="h-6 w-36 mt-6 bg-[#EFEEEB]" />
-    </main>
-  );
-}
 
-function DeleteCategoryDialog({ onDelete }: { onDelete: () => void }) {
-  return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>
-        <button className="underline underline-offset-2 hover:text-muted-foreground text-sm font-medium flex items-center gap-1 mt-6">
-          <Trash2 className="h-5 w-5" />
-          Delete Category
-        </button>
-      </AlertDialogTrigger>
-      <AlertDialogContent className="bg-white rounded-md pt-16 pb-6 max-w-[22rem] sm:max-w-md flex flex-col items-center">
-        <AlertDialogTitle className="text-3xl font-semibold pb-2 text-center">
-          Delete Category
-        </AlertDialogTitle>
-        <AlertDialogDescription className="flex flex-row mb-2 justify-center font-medium text-center text-muted-foreground">
-          Do you want to delete this Category?
-        </AlertDialogDescription>
-        <div className="flex flex-row gap-4">
-          <AlertDialogCancel className="bg-background px-10 py-6 rounded-full text-foreground border border-foreground hover:border-muted-foreground hover:text-muted-foreground transition-colors">
-            Cancel
-          </AlertDialogCancel>
-          <Button
-            onClick={onDelete}
-            className="rounded-full text-white bg-foreground hover:bg-muted-foreground transition-colors py-6 text-lg px-10"
-          >
-            Delete
-          </Button>
+        {/* Form Section */}
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6 lg:p-8">
+          <div className="max-w-md">
+            <div className="space-y-6">
+              {/* Category Name Input */}
+              <div>
+                <div className="h-6 bg-slate-200 rounded-xl animate-pulse w-32 mb-3"></div>
+                <div className="h-12 bg-slate-200 rounded-xl animate-pulse w-full"></div>
+              </div>
+
+              {/* Warning Message */}
+              <div className="h-20 bg-slate-200 rounded-2xl animate-pulse"></div>
+
+              {/* Help Text */}
+              <div className="h-24 bg-slate-200 rounded-xl animate-pulse"></div>
+            </div>
+          </div>
         </div>
-        <AlertDialogCancel className="absolute right-4 top-2 sm:top-4 p-1 border-none">
-          <X className="h-6 w-6" />
-        </AlertDialogCancel>
-      </AlertDialogContent>
-    </AlertDialog>
+      </div>
+    </main>
   );
 }

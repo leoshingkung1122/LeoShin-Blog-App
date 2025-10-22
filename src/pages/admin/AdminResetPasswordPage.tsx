@@ -106,90 +106,147 @@ export default function AdminResetPasswordPage() {
     }
   };
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
       {/* Sidebar */}
       <AdminSidebar />
       {/* Main content */}
-      <main className="flex-1 p-8 bg-gray-50 overflow-auto">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-semibold">Reset Password</h2>
-          <Button className="px-8 py-2 rounded-full" onClick={handleSubmit}>
-            Reset Password
-          </Button>
-        </div>
+      <div className="flex-1 lg:ml-0">
+        <div className="lg:hidden h-16" />
+        <main className="p-4 lg:p-8">
+          <div className="max-w-7xl mx-auto">
+            {/* Header Section */}
+            <div className="mb-8">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <h2 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 bg-clip-text text-transparent mb-2">
+                    Reset Password
+                  </h2>
+                  <p className="text-slate-600">Change your account password for security</p>
+                </div>
+                <div className="mt-4 sm:mt-0">
+                  <Button 
+                    className="px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                    onClick={handleSubmit}
+                  >
+                    Reset Password
+                  </Button>
+                </div>
+              </div>
+            </div>
 
-        <div className="space-y-7 max-w-md">
-          <div className="relative">
-            <label
-              htmlFor="current-password"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              Current password
-            </label>
-            <Input
-              id="current-password"
-              type="password"
-              placeholder="Current password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className={`mt-1 py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground ${
-                !valid.password ? "border-red-500" : ""
-              }`}
-            />
-            {!valid.password && (
-              <p className="text-red-500 text-xs absolute mt-1">
-                This field is required
-              </p>
-            )}
+            {/* Form Section */}
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6 lg:p-8">
+              <div className="max-w-md">
+                <div className="space-y-6">
+                  {/* Current Password */}
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="current-password"
+                      className="block text-lg font-semibold text-slate-900"
+                    >
+                      Current Password
+                    </label>
+                    <Input
+                      id="current-password"
+                      type="password"
+                      placeholder="Enter your current password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className={`w-full py-3 px-4 rounded-xl border-slate-200 focus:border-blue-500 focus:ring-blue-500/20 transition-all duration-200 bg-white/50 backdrop-blur-sm ${
+                        !valid.password ? "border-red-500 focus:border-red-500 focus:ring-red-500/20" : ""
+                      }`}
+                    />
+                    {!valid.password && (
+                      <div className="flex items-center space-x-2 text-red-600 text-sm">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>This field is required</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* New Password */}
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="new-password"
+                      className="block text-lg font-semibold text-slate-900"
+                    >
+                      New Password
+                    </label>
+                    <Input
+                      id="new-password"
+                      type="password"
+                      placeholder="Enter your new password"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      className={`w-full py-3 px-4 rounded-xl border-slate-200 focus:border-blue-500 focus:ring-blue-500/20 transition-all duration-200 bg-white/50 backdrop-blur-sm ${
+                        !valid.newPassword ? "border-red-500 focus:border-red-500 focus:ring-red-500/20" : ""
+                      }`}
+                    />
+                    {!valid.newPassword && (
+                      <div className="flex items-center space-x-2 text-red-600 text-sm">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>Password must be at least 8 characters</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Confirm New Password */}
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="confirm-new-password"
+                      className="block text-lg font-semibold text-slate-900"
+                    >
+                      Confirm New Password
+                    </label>
+                    <Input
+                      id="confirm-new-password"
+                      type="password"
+                      placeholder="Confirm your new password"
+                      value={confirmNewPassword}
+                      onChange={(e) => setConfirmNewPassword(e.target.value)}
+                      className={`w-full py-3 px-4 rounded-xl border-slate-200 focus:border-blue-500 focus:ring-blue-500/20 transition-all duration-200 bg-white/50 backdrop-blur-sm ${
+                        !valid.confirmNewPassword ? "border-red-500 focus:border-red-500 focus:ring-red-500/20" : ""
+                      }`}
+                    />
+                    {!valid.confirmNewPassword && (
+                      <div className="flex items-center space-x-2 text-red-600 text-sm">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>Passwords do not match</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Security Notice */}
+                  <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-4">
+                    <div className="flex items-start space-x-3">
+                      <div className="w-6 h-6 bg-amber-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <h3 className="text-amber-800 font-semibold mb-1">Security Notice</h3>
+                        <ul className="text-amber-700 text-sm space-y-1">
+                          <li>• Choose a strong password with at least 8 characters</li>
+                          <li>• Include numbers, letters, and special characters</li>
+                          <li>• Avoid using personal information</li>
+                          <li>• You will need to log in again after changing your password</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="relative">
-            <label
-              htmlFor="new-password"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              New password
-            </label>
-            <Input
-              id="new-password"
-              type="password"
-              placeholder="New password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              className={`mt-1 py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground ${
-                !valid.newPassword ? "border-red-500" : ""
-              }`}
-            />
-            {!valid.newPassword && (
-              <p className="text-red-500 text-xs absolute mt-1">
-                Password must be at least 8 characters
-              </p>
-            )}
-          </div>
-          <div className="relative">
-            <label
-              htmlFor="confirm-new-password"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              Confirm new password
-            </label>
-            <Input
-              id="confirm-new-password"
-              type="password"
-              placeholder="Confirm new password"
-              value={confirmNewPassword}
-              onChange={(e) => setConfirmNewPassword(e.target.value)}
-              className={`mt-1 py-3 rounded-sm placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-muted-foreground ${
-                !valid.confirmNewPassword ? "border-red-500" : ""
-              }`}
-            />
-            {!valid.confirmNewPassword && (
-              <p className="text-red-500 text-xs absolute mt-1">
-                Passwords do not match
-              </p>
-            )}
-          </div>
-        </div>
-      </main>
+        </main>
+      </div>
       <ResetPasswordModal
         dialogState={isDialogOpen}
         setDialogState={setIsDialogOpen}

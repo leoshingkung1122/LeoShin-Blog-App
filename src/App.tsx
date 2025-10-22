@@ -92,7 +92,7 @@ function App() {
         />
 
         <Route
-          path="/admin"
+          path="/admin/dashboard"
           element={
             <ProtectedRoute
               isLoading={state.getUserLoading}
