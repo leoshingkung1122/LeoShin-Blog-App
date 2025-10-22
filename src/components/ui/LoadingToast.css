@@ -1,0 +1,299 @@
+/* LoadingToast Component Styles */
+.loading-toast-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 32px;
+}
+
+.loading-toast-image-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-toast-glow-effect {
+  position: absolute;
+  width: 120%;
+  height: 120%;
+  background: radial-gradient(circle, 
+    rgba(147, 51, 234, 0.3) 0%, 
+    rgba(59, 130, 246, 0.2) 30%, 
+    rgba(236, 72, 153, 0.1) 60%, 
+    transparent 100%);
+  border-radius: 50%;
+  animation: glowPulse 2s ease-in-out infinite;
+  z-index: 1;
+}
+
+.loading-toast-image {
+  animation: bounceUpDown 1.5s ease-in-out infinite;
+  filter: drop-shadow(0 8px 16px rgba(147, 51, 234, 0.3));
+  z-index: 2;
+  position: relative;
+}
+
+.loading-toast-sparkles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 3;
+}
+
+.sparkle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: linear-gradient(45deg, #fbbf24, #f59e0b);
+  border-radius: 50%;
+  animation: sparkleFloat 2s ease-in-out infinite;
+}
+
+.sparkle-1 {
+  top: 10%;
+  left: 20%;
+  animation-delay: 0s;
+}
+
+.sparkle-2 {
+  top: 20%;
+  right: 15%;
+  animation-delay: 0.5s;
+}
+
+.sparkle-3 {
+  bottom: 25%;
+  left: 10%;
+  animation-delay: 1s;
+}
+
+.sparkle-4 {
+  bottom: 15%;
+  right: 20%;
+  animation-delay: 1.5s;
+}
+
+.loading-toast-text {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.text-letter {
+  background: linear-gradient(135deg, #7c3aed, #3b82f6, #ec4899, #f59e0b);
+  background-size: 300% 300%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: textGlow 2s ease-in-out infinite, gradientShift 3s ease-in-out infinite, letterBounce 1.5s ease-in-out infinite;
+  text-shadow: 0 0 20px rgba(124, 58, 237, 0.5);
+  display: inline-block;
+}
+
+.text-letter:nth-child(1) { animation-delay: 0s; }
+.text-letter:nth-child(2) { animation-delay: 0.1s; }
+.text-letter:nth-child(3) { animation-delay: 0.2s; }
+.text-letter:nth-child(4) { animation-delay: 0.3s; }
+.text-letter:nth-child(5) { animation-delay: 0.4s; }
+.text-letter:nth-child(6) { animation-delay: 0.5s; }
+.text-letter:nth-child(7) { animation-delay: 0.6s; }
+
+.loading-dots {
+  display: inline-block;
+}
+
+.dot {
+  animation: dotBounce 1.4s ease-in-out infinite both;
+}
+
+.dot:nth-child(1) { animation-delay: -0.32s; }
+.dot:nth-child(2) { animation-delay: -0.16s; }
+.dot:nth-child(3) { animation-delay: 0s; }
+
+/* Size variations */
+.loading-toast-small .loading-toast-image {
+  width: 150px;
+  height: 150px;
+}
+
+.loading-toast-small .loading-toast-text {
+  font-size: 20px;
+}
+
+.loading-toast-small {
+  gap: 8px;
+}
+
+.loading-toast-medium .loading-toast-image {
+  width: 200px;
+  height: 200px;
+}
+
+.loading-toast-medium .loading-toast-text {
+  font-size: 28px;
+}
+
+.loading-toast-medium {
+  gap: 10px;
+}
+
+.loading-toast-large .loading-toast-image {
+  width: 300px;
+  height: 300px;
+}
+
+.loading-toast-large .loading-toast-text {
+  font-size: 32px;
+}
+
+.loading-toast-large {
+  gap: 12px;
+}
+
+.loading-toast-extra-large .loading-toast-image {
+  width: 350px;
+  height: 350px;
+}
+
+.loading-toast-extra-large .loading-toast-text {
+  font-size: 40px;
+}
+
+.loading-toast-extra-large {
+  gap: 14px;
+}
+
+/* Animations */
+@keyframes bounceUpDown {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes sparkleFloat {
+  0%, 100% {
+    opacity: 0.3;
+    transform: translateY(0px) scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-8px) scale(1.2);
+  }
+}
+
+@keyframes letterBounce {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-3px) scale(1.1);
+  }
+}
+
+@keyframes textGlow {
+  0%, 100% {
+    filter: brightness(1) drop-shadow(0 0 10px rgba(124, 58, 237, 0.3));
+    transform: scale(1);
+  }
+  50% {
+    filter: brightness(1.3) drop-shadow(0 0 20px rgba(124, 58, 237, 0.6));
+    transform: scale(1.05);
+  }
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes dotBounce {
+  0%, 80%, 100% {
+    transform: scale(0) translateY(0px);
+    opacity: 0.3;
+  }
+  40% {
+    transform: scale(1.2) translateY(-5px);
+    opacity: 1;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .text-letter {
+    background: linear-gradient(135deg, #a855f7, #60a5fa, #f472b6, #fbbf24);
+    background-size: 300% 300%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 20px rgba(168, 85, 247, 0.6);
+  }
+  
+  .loading-toast-image {
+    filter: drop-shadow(0 8px 16px rgba(147, 51, 234, 0.5));
+  }
+  
+  .loading-toast-glow-effect {
+    background: radial-gradient(circle, 
+      rgba(168, 85, 247, 0.4) 0%, 
+      rgba(96, 165, 250, 0.3) 30%, 
+      rgba(244, 114, 182, 0.2) 60%, 
+      transparent 100%);
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .loading-toast-container {
+    gap: 8px;
+    padding: 24px;
+  }
+  
+  .loading-toast-medium .loading-toast-image {
+    width: 200px;
+    height: 200px;
+  }
+  
+  .loading-toast-large .loading-toast-image {
+    width: 250px;
+    height: 250px;
+  }
+  
+  .loading-toast-extra-large .loading-toast-image {
+    width: 300px;
+    height: 300px;
+  }
+  
+  .loading-toast-text {
+    font-size: 30px;
+  }
+}

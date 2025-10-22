@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import LoadingScreen from "./LoadingScreen";
+import LoadingToast from "./LoadingToast";
 import ReactMarkdown from "react-markdown";
 import AuthorBio from "./AuthorBio";
 import Share from "./Share";
@@ -69,7 +69,11 @@ function ViewPost() {
   };
 
   if (isLoading) {
-    return <LoadingScreen />;
+    return (
+      <div className="flex items-center justify-center min-h-[calc(100vh-200px)]">
+        <LoadingToast size="extra-large" text="Loading" />
+      </div>
+    );
   }
 
   if (postNotFound) {

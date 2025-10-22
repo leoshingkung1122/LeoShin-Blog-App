@@ -6,7 +6,8 @@ import {
     LogOut,
     User,
     Globe,
-    Bell
+    Bell,
+    Users
   } from "lucide-react";
   import { useLocation, Link } from "react-router-dom";
   import { useAuth } from "@/contexts/authentication";
@@ -48,6 +49,17 @@ import {
           >
             <FolderOpen className="mr-3 h-5 w-5" />
             Category management
+          </Link>
+          <Link
+            to="/admin/users"
+            className={`flex items-center px-4 py-2 ${
+              isActive("/admin/users")
+                ? "bg-gray-200 text-gray-700"
+                : "text-gray-600 hover:bg-gray-100"
+            }`}
+          >
+            <Users className="mr-3 h-5 w-5" />
+            User management
           </Link>
           <Link
             to="/admin/profile"

@@ -22,6 +22,8 @@ import AdminEditCategoryPage from "./pages/admin/AdminEditCategoryPage";
 import AdminNotificationPage from "./pages/admin/AdminNotificationPage";
 import AdminProfilePage from "./pages/admin/AdminProfilePage";
 import AdminResetPasswordPage from "./pages/admin/AdminResetPasswordPage";
+import AdminUsersPage from "./pages/admin/AdminUsersPage";
+import AdminUserDetailPage from "./pages/admin/AdminUserDetailPage";
 
 function App() {
   const { isAuthenticated, state } = useAuth();
@@ -230,6 +232,32 @@ function App() {
               requiredRole="admin"
             >
               <AdminResetPasswordPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/users"
+          element={
+            <ProtectedRoute
+              isLoading={state.getUserLoading}
+              isAuthenticated={isAuthenticated}
+              userRole={state.user?.role}
+              requiredRole="admin"
+            >
+              <AdminUsersPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/users/:id"
+          element={
+            <ProtectedRoute
+              isLoading={state.getUserLoading}
+              isAuthenticated={isAuthenticated}
+              userRole={state.user?.role}
+              requiredRole="admin"
+            >
+              <AdminUserDetailPage />
             </ProtectedRoute>
           }
         />
