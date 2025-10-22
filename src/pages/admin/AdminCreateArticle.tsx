@@ -404,7 +404,14 @@ export default function AdminCreateArticlePage() {
                             alt="Uploaded"
                             className="rounded-2xl object-cover w-full max-w-lg h-80 shadow-lg"
                           />
-                          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 rounded-2xl"></div>
+                        </div>
+                      ) : post.image ? (
+                        <div className="relative group">
+                          <img
+                            src={post.image}
+                            alt="Current thumbnail"
+                            className="rounded-2xl object-cover w-full max-w-lg h-80 shadow-lg"
+                          />
                         </div>
                       ) : (
                         <div className="flex justify-center items-center w-full max-w-lg h-80 px-6 py-20 border-2 border-slate-300 border-dashed rounded-2xl bg-gradient-to-br from-slate-50 to-blue-50 hover:from-blue-50 hover:to-indigo-50 transition-all duration-300">

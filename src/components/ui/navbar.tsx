@@ -99,18 +99,20 @@ function NavBar() {
             </DropdownMenu>
           </div>
         ) : (
-          <div className="hidden sm:flex space-x-4">
+          <div className="hidden sm:flex items-center gap-3">
             <button
               onClick={() => navigate("/Login")}
-              className="px-8 py-2 rounded-full text-foreground border border-foreground hover:border-muted-foreground hover:text-muted-foreground transition-colors"
+              className="relative px-6 py-3 rounded-full text-black border-2 border-black bg-white font-semibold overflow-hidden group transition-all duration-300 hover:scale-105"
             >
-              Log in
+              <span className="relative z-10">Log in</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-blue-600 opacity-0 group-hover:opacity-100 transition-all duration-500 ease-out transform scale-x-0 group-hover:scale-x-100 origin-left"></div>
             </button>
             <button
               onClick={() => navigate("/SignUp")}
-              className="px-8 py-2 bg-foreground text-white rounded-full hover:bg-muted-foreground transition-colors"
+              className="relative px-6 py-3 rounded-full bg-gradient-to-r from-slate-800 to-slate-900 text-white font-semibold overflow-hidden group transition-all duration-300 hover:scale-105"
             >
-              Sign up
+              <span className="relative z-10">Sign up</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-all duration-500 ease-out transform scale-x-0 group-hover:scale-x-100 origin-left"></div>
             </button>
           </div>
         )}

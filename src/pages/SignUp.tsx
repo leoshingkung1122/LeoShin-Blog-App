@@ -7,6 +7,8 @@ import { useAuth } from "@/contexts/authentication";
 import { toast } from "sonner";
 import { X, Loader2, User, AtSign, Mail, Lock, Sparkles } from "lucide-react";
 import FrirenHappy from "@/assets/FrirenWithBook.png";
+import Leo1 from "@/assets/Leo1.png";
+
 
 interface FormValues {
   name: string;
@@ -169,7 +171,7 @@ export default function SignUpPage() {
                 <div className="absolute top-44 left-36 w-1 h-1 bg-fuchsia-200/80 rounded-full animate-pulse" style={{ animationDelay: '1.6s' }}></div>
                 
                 <img 
-                  src={FrirenHappy} 
+                  src={Leo1} 
                   alt="Frieren - Mage" 
                   className="w-full max-w-[400px] h-auto object-contain drop-shadow-2xl transition-all duration-700 group-hover:scale-110 group-hover:-translate-y-2 relative z-10"
                 />

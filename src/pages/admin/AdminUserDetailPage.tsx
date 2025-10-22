@@ -484,11 +484,11 @@ const AdminUserDetailPage: React.FC = () => {
       </div>
 
       {/* รายการความคิดเห็น */}
-      <div className="bg-white rounded-lg shadow-sm border mb-8">
-        <div className="p-6 border-b">
-          <h3 className="text-xl font-semibold text-gray-900">Comments ({comments.length})</h3>
+      <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 mb-8">
+        <div className="p-4 sm:p-6 border-b border-gray-100">
+          <h3 className="text-lg sm:text-xl font-bold text-gray-900">Comments ({comments.length})</h3>
         </div>
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           {commentsLoading ? (
             <div className="space-y-4">
               {Array.from({ length: 5 }, (_, index) => (
@@ -509,29 +509,42 @@ const AdminUserDetailPage: React.FC = () => {
           ) : (
             <div className="space-y-4">
               {comments.map((comment) => (
-                <div key={comment.id} className="border rounded-lg p-4">
-                  <div className="flex justify-between items-start mb-2">
-                    <h4 className="font-medium text-gray-900">
-                      In post: {comment.blog_posts.title}
-                    </h4>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => handleDeleteComment(comment.id)}
-                    >
-                      Delete
-                    </Button>
+                <div key={comment.id} className="bg-white rounded-2xl shadow-lg border border-gray-100 p-4 sm:p-6 hover:shadow-xl transition-all duration-300">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 mb-4">
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-semibold text-gray-900 text-sm sm:text-base break-words">
+                        In post: <span className="text-blue-600">{comment.blog_posts.title}</span>
+                      </h4>
+                    </div>
+                    <div className="flex-shrink-0">
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => handleDeleteComment(comment.id)}
+                        className="w-full sm:w-auto px-4 py-2 text-xs sm:text-sm"
+                      >
+                        Delete
+                      </Button>
+                    </div>
                   </div>
-                  <p className="text-gray-700 mb-2">{comment.comment}</p>
-                  <p className="text-sm text-gray-500">
-                    {new Date(comment.created_at).toLocaleDateString('en-US', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}
-                  </p>
+                  
+                  <div className="bg-gray-50 rounded-xl p-4 mb-4">
+                    <p className="text-gray-700 text-sm sm:text-base leading-relaxed whitespace-normal break-all">
+                      {comment.comment}
+                    </p>
+                  </div>
+                  
+                  <div className="flex justify-between items-center text-xs sm:text-sm text-gray-500">
+                    <span className="bg-gray-100 px-3 py-1 rounded-full">
+                      {new Date(comment.created_at).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </span>
+                  </div>
                 </div>
               ))}
             </div>
@@ -540,7 +553,7 @@ const AdminUserDetailPage: React.FC = () => {
 
         {/* Comments Pagination */}
         {pagination && pagination.comments.totalPages > 1 && (
-          <div className="p-6 border-t">
+          <div className="p-4 sm:p-6 border-t border-gray-100">
             <Pagination
               currentPage={pagination.comments.currentPage}
               totalPages={pagination.comments.totalPages}
@@ -552,11 +565,11 @@ const AdminUserDetailPage: React.FC = () => {
       </div>
 
       {/* รายการการกดไลค์ */}
-      <div className="bg-white rounded-lg shadow-sm border">
-        <div className="p-6 border-b">
-          <h3 className="text-xl font-semibold text-gray-900">Likes ({likes.length})</h3>
+      <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20">
+        <div className="p-4 sm:p-6 border-b border-gray-100">
+          <h3 className="text-lg sm:text-xl font-bold text-gray-900">Likes ({likes.length})</h3>
         </div>
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           {likesLoading ? (
             <div className="space-y-3">
               {Array.from({ length: 5 }, (_, index) => (
@@ -573,24 +586,30 @@ const AdminUserDetailPage: React.FC = () => {
           ) : likes.length === 0 ? (
             <p className="text-gray-500 text-center py-8">User has no likes yet</p>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-4">
               {likes.map((like) => (
-                <div key={like.id} className="flex justify-between items-center border rounded-lg p-4">
-                  <div>
-                    <h4 className="font-medium text-gray-900">
-                      {like.blog_posts.title}
-                    </h4>
-                    <p className="text-sm text-gray-500">
-                      {new Date(like.created_at).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })}
-                    </p>
+                <div key={like.id} className="bg-white rounded-2xl shadow-lg border border-gray-100 p-4 sm:p-6 hover:shadow-xl transition-all duration-300">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-semibold text-gray-900 text-sm sm:text-base break-words mb-2">
+                        {like.blog_posts.title}
+                      </h4>
+                      <span className="bg-gray-100 px-3 py-1 rounded-full text-xs sm:text-sm text-gray-500">
+                        {new Date(like.created_at).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
+                      </span>
+                    </div>
+                    <div className="flex-shrink-0">
+                      <Badge variant="secondary" className="bg-green-100 text-green-800 px-3 py-1">
+                        ❤️ Like
+                      </Badge>
+                    </div>
                   </div>
-                  <Badge variant="secondary">Like</Badge>
                 </div>
               ))}
             </div>
@@ -599,7 +618,7 @@ const AdminUserDetailPage: React.FC = () => {
 
         {/* Likes Pagination */}
         {pagination && pagination.likes.totalPages > 1 && (
-          <div className="p-6 border-t">
+          <div className="p-4 sm:p-6 border-t border-gray-100">
             <Pagination
               currentPage={pagination.likes.currentPage}
               totalPages={pagination.likes.totalPages}
