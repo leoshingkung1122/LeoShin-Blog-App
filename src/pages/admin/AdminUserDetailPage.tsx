@@ -9,6 +9,7 @@ import { useAuth } from '../../contexts/authentication';
 import { toast } from 'sonner';
 import { X } from 'lucide-react';
 import Pagination from '../../components/ui/Pagination';
+import axios from 'axios';
 
 interface User {
   id: string;
@@ -76,6 +77,8 @@ const AdminUserDetailPage: React.FC = () => {
   const [actionLoading, setActionLoading] = useState(false);
   const [commentsPage, setCommentsPage] = useState(1);
   const [likesPage, setLikesPage] = useState(1);
+  const [commentsLoading, setCommentsLoading] = useState(false);
+  const [likesLoading, setLikesLoading] = useState(false);
   const [pagination, setPagination] = useState<{
     comments: PaginationInfo;
     likes: PaginationInfo;
@@ -107,23 +110,26 @@ const AdminUserDetailPage: React.FC = () => {
     );
   }
 
-  const fetchUserDetail = async (commentsPageNum: number = commentsPage, likesPageNum: number = likesPage) => {
+  const fetchUserDetail = async (commentsPageNum: number = commentsPage, likesPageNum: number = likesPage, showLoading: boolean = true) => {
     if (!id) return;
     
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`https://leoshin-blog-app-api-with-db.vercel.app/users/${id}?commentsPage=${commentsPageNum}&likesPage=${likesPageNum}&commentsLimit=5&likesLimit=5`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch user detail');
+      if (showLoading) {
+        setLoading(true);
       }
+      
+      const token = localStorage.getItem('token');
+      const response = await axios.get(
+        `https://leoshin-blog-app-api-with-db.vercel.app/users/${id}?commentsPage=${commentsPageNum}&likesPage=${likesPageNum}&commentsLimit=5&likesLimit=5`,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
 
-      const data: UserDetailResponse = await response.json();
+      const data: UserDetailResponse = response.data;
       setUserDetail({
         user: data.data.user,
         comments: data.data.comments,
@@ -147,7 +153,9 @@ const AdminUserDetailPage: React.FC = () => {
         </div>
       ));
     } finally {
-      setLoading(false);
+      if (showLoading) {
+        setLoading(false);
+      }
     }
   };
 
@@ -275,14 +283,30 @@ const AdminUserDetailPage: React.FC = () => {
     }
   };
 
-  const handleCommentsPageChange = (page: number) => {
+  const handleCommentsPageChange = async (page: number) => {
+    if (page === commentsPage || commentsLoading) return;
+    
+    setCommentsLoading(true);
     setCommentsPage(page);
-    fetchUserDetail(page, likesPage);
+    
+    try {
+      await fetchUserDetail(page, likesPage, false);
+    } finally {
+      setCommentsLoading(false);
+    }
   };
 
-  const handleLikesPageChange = (page: number) => {
+  const handleLikesPageChange = async (page: number) => {
+    if (page === likesPage || likesLoading) return;
+    
+    setLikesLoading(true);
     setLikesPage(page);
-    fetchUserDetail(commentsPage, page);
+    
+    try {
+      await fetchUserDetail(commentsPage, page, false);
+    } finally {
+      setLikesLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -421,7 +445,22 @@ const AdminUserDetailPage: React.FC = () => {
           <h3 className="text-xl font-semibold text-gray-900">Comments ({comments.length})</h3>
         </div>
         <div className="p-6">
-          {comments.length === 0 ? (
+          {commentsLoading ? (
+            <div className="space-y-4">
+              {Array.from({ length: 5 }, (_, index) => (
+                <div key={`comment-skeleton-${index}`} className="animate-pulse">
+                  <div className="border rounded-lg p-4">
+                    <div className="flex justify-between items-start mb-2">
+                      <div className="h-4 bg-gray-300 rounded w-3/4"></div>
+                      <div className="h-4 bg-gray-300 rounded w-16"></div>
+                    </div>
+                    <div className="h-4 bg-gray-300 rounded w-full mb-2"></div>
+                    <div className="h-3 bg-gray-300 rounded w-1/2"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : comments.length === 0 ? (
             <p className="text-gray-500 text-center py-8">User has no comments yet</p>
           ) : (
             <div className="space-y-4">
@@ -462,6 +501,7 @@ const AdminUserDetailPage: React.FC = () => {
               currentPage={pagination.comments.currentPage}
               totalPages={pagination.comments.totalPages}
               onPageChange={handleCommentsPageChange}
+              isLoading={commentsLoading}
             />
           </div>
         )}
@@ -473,7 +513,20 @@ const AdminUserDetailPage: React.FC = () => {
           <h3 className="text-xl font-semibold text-gray-900">Likes ({likes.length})</h3>
         </div>
         <div className="p-6">
-          {likes.length === 0 ? (
+          {likesLoading ? (
+            <div className="space-y-3">
+              {Array.from({ length: 5 }, (_, index) => (
+                <div key={`like-skeleton-${index}`} className="animate-pulse">
+                  <div className="flex justify-between items-center border rounded-lg p-4">
+                    <div className="space-y-2">
+                      <div className="h-4 bg-gray-300 rounded w-3/4"></div>
+                      <div className="h-3 bg-gray-300 rounded w-1/2"></div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : likes.length === 0 ? (
             <p className="text-gray-500 text-center py-8">User has no likes yet</p>
           ) : (
             <div className="space-y-3">
@@ -507,6 +560,7 @@ const AdminUserDetailPage: React.FC = () => {
               currentPage={pagination.likes.currentPage}
               totalPages={pagination.likes.totalPages}
               onPageChange={handleLikesPageChange}
+              isLoading={likesLoading}
             />
           </div>
         )}

@@ -19,6 +19,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import Pagination from "@/components/ui/Pagination";
 
 interface NotificationUser {
   id: string;
@@ -58,6 +59,10 @@ export default function AdminNotificationPage() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<number | null>(null);
+  
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   // Check authentication and admin role
   useEffect(() => {
@@ -83,8 +88,14 @@ export default function AdminNotificationPage() {
           return;
         }
 
+        // สร้าง query parameters สำหรับ pagination
+        const params = new URLSearchParams({
+          page: currentPage.toString(),
+          limit: '8'
+        });
+
         const response = await axios.get(
-          "https://leoshin-blog-app-api-with-db.vercel.app/notifications",
+          `https://leoshin-blog-app-api-with-db.vercel.app/notifications?${params}`,
           {
             headers: {
               Authorization: `Bearer ${token}`
@@ -92,7 +103,19 @@ export default function AdminNotificationPage() {
           }
         );
         
-        setNotifications(response.data.data);
+        if (response.data.success && response.data.data) {
+          setNotifications(response.data.data);
+          
+          // Set pagination data if available
+          if (response.data.pagination) {
+            setTotalPages(response.data.pagination.totalPages);
+          } else {
+            // Fallback pagination for old API
+            setTotalPages(1);
+          }
+        } else {
+          setNotifications([]);
+        }
       } catch (error) {
         console.error("Error fetching notifications:", error);
         if (axios.isAxiosError(error) && error.response?.status === 401) {
@@ -117,6 +140,7 @@ export default function AdminNotificationPage() {
             </div>
           ));
         }
+        setNotifications([]);
       } finally {
         setIsLoading(false);
       }
@@ -125,7 +149,12 @@ export default function AdminNotificationPage() {
     if (isAuthenticated && state.user?.role === 'admin') {
       fetchNotifications();
     }
-  }, [isAuthenticated, state.user?.role, navigate]);
+  }, [currentPage, isAuthenticated, state.user?.role, navigate]);
+
+  // เพิ่มฟังก์ชันสำหรับเปลี่ยนหน้า
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
   // Handle delete notification
   const handleDeleteNotification = async (notificationId: number) => {
@@ -251,88 +280,102 @@ export default function AdminNotificationPage() {
             <p className="text-gray-500">You don't have any notifications yet.</p>
           </div>
         ) : (
-          <div className="space-y-4">
-            {notifications.map((notification) => (
-              <div key={notification.id} className={`p-4 rounded-lg ${!notification.is_read ? 'bg-blue-50 border-l-4 border-blue-400' : 'bg-white'}`}>
-                <div className="flex items-start justify-between">
-                  <div className="flex items-start space-x-4 flex-1">
-                    <Avatar className="w-10 h-10">
-                      <AvatarImage
-                        src={notification.user?.profile_pic || "/placeholder.svg?height=40&width=40"}
-                        alt={notification.user?.name || "User"}
-                      />
-                      <AvatarFallback>
-                        {notification.user?.name?.charAt(0) || "U"}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1">
-                      <h3 className="text-sm font-bold inline">
-                        {notification.user?.name || notification.user?.username || "Anonymous"}
-                      </h3>
-                      <p className="text-sm font-normal inline">
-                        {notification.type === "comment"
-                          ? " commented on "
-                          : notification.type === "like"
-                          ? " liked "
-                          : " posted "}
-                        your article: {notification.post?.title || "Unknown Post"}
-                      </p>
-                      {notification.type === "comment" && notification.comment && (
-                        <p className="mt-1 text-sm text-gray-500 bg-gray-100 p-2 rounded">
-                          "{notification.comment.content}"
+          <>
+            <div className="space-y-4">
+              {notifications.map((notification) => (
+                <div key={notification.id} className={`p-4 rounded-lg ${!notification.is_read ? 'bg-blue-50 border-l-4 border-blue-400' : 'bg-white'}`}>
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-start space-x-4 flex-1">
+                      <Avatar className="w-10 h-10">
+                        <AvatarImage
+                          src={notification.user?.profile_pic || "/placeholder.svg?height=40&width=40"}
+                          alt={notification.user?.name || "User"}
+                        />
+                        <AvatarFallback>
+                          {notification.user?.name?.charAt(0) || "U"}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1">
+                        <h3 className="text-sm font-bold inline">
+                          {notification.user?.name || notification.user?.username || "Anonymous"}
+                        </h3>
+                        <p className="text-sm font-normal inline">
+                          {notification.type === "comment"
+                            ? " commented on "
+                            : notification.type === "like"
+                            ? " liked "
+                            : " posted "}
+                          your article: {notification.post?.title || "Unknown Post"}
                         </p>
-                      )}
-                      <p className="mt-1 text-xs text-orange-400">
-                        {notification.time}
-                      </p>
+                        {notification.type === "comment" && notification.comment && (
+                          <p className="mt-1 text-sm text-gray-500 bg-gray-100 p-2 rounded">
+                            "{notification.comment.content}"
+                          </p>
+                        )}
+                        <p className="mt-1 text-xs text-orange-400">
+                          {notification.time}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-2 ml-4">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleViewPost(notification)}
+                        className="text-blue-600 hover:text-blue-700"
+                      >
+                        <Eye className="w-4 h-4 mr-1" />
+                        View
+                      </Button>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="text-red-600 hover:text-red-700"
+                            disabled={deletingId === notification.id}
+                          >
+                            <Trash2 className="w-4 h-4 mr-1" />
+                            {deletingId === notification.id ? "Deleting..." : "Delete"}
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Delete Notification</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Are you sure you want to delete this notification? This action cannot be undone.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={() => handleDeleteNotification(notification.id)}
+                              className="bg-red-600 hover:bg-red-700"
+                            >
+                              Delete
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </div>
                   </div>
-                  <div className="flex items-center space-x-2 ml-4">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleViewPost(notification)}
-                      className="text-blue-600 hover:text-blue-700"
-                    >
-                      <Eye className="w-4 h-4 mr-1" />
-                      View
-                    </Button>
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="text-red-600 hover:text-red-700"
-                          disabled={deletingId === notification.id}
-                        >
-                          <Trash2 className="w-4 h-4 mr-1" />
-                          {deletingId === notification.id ? "Deleting..." : "Delete"}
-                        </Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Delete Notification</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            Are you sure you want to delete this notification? This action cannot be undone.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction
-                            onClick={() => handleDeleteNotification(notification.id)}
-                            className="bg-red-600 hover:bg-red-700"
-                          >
-                            Delete
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                  </div>
+                  <hr className="border-t border-gray-200 my-4" />
                 </div>
-                <hr className="border-t border-gray-200 my-4" />
+              ))}
+            </div>
+            
+            {/* เพิ่ม Pagination */}
+            {!isLoading && notifications.length > 0 && (
+              <div className="mt-6">
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={handlePageChange}
+                  isLoading={isLoading}
+                />
               </div>
-            ))}
-          </div>
+            )}
+          </>
         )}
       </main>
     </div>

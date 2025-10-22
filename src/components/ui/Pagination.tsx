@@ -7,13 +7,15 @@ interface PaginationProps {
   totalPages: number;
   onPageChange: (page: number) => void;
   className?: string;
+  isLoading?: boolean;
 }
 
 const Pagination: React.FC<PaginationProps> = ({
   currentPage,
   totalPages,
   onPageChange,
-  className = ''
+  className = '',
+  isLoading = false
 }) => {
   if (totalPages <= 1) return null;
 
@@ -52,8 +54,8 @@ const Pagination: React.FC<PaginationProps> = ({
         variant="outline"
         size="sm"
         onClick={() => onPageChange(currentPage - 1)}
-        disabled={currentPage === 1}
-        className="flex items-center"
+        disabled={currentPage === 1 || isLoading}
+        className="flex items-center transition-all duration-200 hover:scale-105 disabled:opacity-50"
       >
         <ChevronLeft className="h-4 w-4 mr-1" />
         Previous
@@ -70,7 +72,12 @@ const Pagination: React.FC<PaginationProps> = ({
                 variant={currentPage === page ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => onPageChange(page as number)}
-                className="min-w-[40px]"
+                disabled={isLoading}
+                className={`min-w-[40px] transition-all duration-200 hover:scale-105 ${
+                  currentPage === page 
+                    ? 'bg-black text-white shadow-lg' 
+                    : 'hover:bg-gray-50'
+                } ${isLoading ? 'opacity-70' : ''}`}
               >
                 {page}
               </Button>
@@ -84,8 +91,8 @@ const Pagination: React.FC<PaginationProps> = ({
         variant="outline"
         size="sm"
         onClick={() => onPageChange(currentPage + 1)}
-        disabled={currentPage === totalPages}
-        className="flex items-center"
+        disabled={currentPage === totalPages || isLoading}
+        className="flex items-center transition-all duration-200 hover:scale-105 disabled:opacity-50"
       >
         Next
         <ChevronRight className="h-4 w-4 ml-1" />

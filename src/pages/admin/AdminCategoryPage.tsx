@@ -172,17 +172,19 @@ export default function AdminCategoryManagementPage() {
                     {category.name}
                   </TableCell>
                   <TableCell className="text-right flex">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => {
-                        navigate(
-                          `/admin/category-management/edit/${category.id}`
-                        );
-                      }}
-                    >
-                      <PenSquare className="h-4 w-4 hover:text-muted-foreground" />
-                    </Button>
+                    {category.name !== "All" && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          navigate(
+                            `/admin/category-management/edit/${category.id}`
+                          );
+                        }}
+                      >
+                        <PenSquare className="h-4 w-4 hover:text-muted-foreground" />
+                      </Button>
+                    )}
                     {category.name !== "All" && (
                       <DeleteCategoryDialog
                         onDelete={() => handleDelete(category.id)}

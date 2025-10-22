@@ -32,6 +32,7 @@ import {
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/authentication";
 import type { BlogPost } from "@/types/blog";
+import Pagination from "@/components/ui/Pagination";
 
 interface Category {
   id: number;
@@ -48,6 +49,12 @@ export default function AdminArticleManagementPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
+  
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
+  
 
   // Check authentication and admin role
   useEffect(() => {
@@ -84,11 +91,21 @@ export default function AdminArticleManagementPage() {
           return;
         }
 
+        // สร้าง query parameters สำหรับ pagination และ filters
+        const params = new URLSearchParams({
+          page: currentPage.toString(),
+          limit: '10',
+          ...(searchKeyword && { keyword: searchKeyword }),
+          ...(selectedStatus && { status: selectedStatus }),
+          ...(selectedCategory && selectedCategory !== "All" && { category: selectedCategory })
+        });
+
         let postsData = [];
+        let paginationData = null;
         
         try {
           const response = await axios.get(
-            "https://leoshin-blog-app-api-with-db.vercel.app/posts/admin",
+            `https://leoshin-blog-app-api-with-db.vercel.app/posts/admin?${params}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`
@@ -100,6 +117,7 @@ export default function AdminArticleManagementPage() {
           
           if (response.data.success && response.data.posts) {
             postsData = response.data.posts;
+            paginationData = response.data.pagination;
           }
         } catch (postsError) {
           console.error("Error fetching posts from /posts/admin:", postsError);
@@ -128,6 +146,16 @@ export default function AdminArticleManagementPage() {
                 category: post.categories?.name || 'Uncategorized',
                 status: post.post_status?.name?.toLowerCase() || 'published'
               }));
+              
+              // Create mock pagination for fallback
+              paginationData = {
+                currentPage: 1,
+                totalPages: 1,
+                totalPosts: postsData.length,
+                limit: 100,
+                hasNextPage: false,
+                hasPrevPage: false
+              };
             }
           } catch (fallbackError) {
             console.error("Fallback posts fetch also failed:", fallbackError);
@@ -136,6 +164,11 @@ export default function AdminArticleManagementPage() {
         
         setPosts(postsData);
         setFilteredPosts(postsData);
+        
+        // Set pagination data
+        if (paginationData) {
+          setTotalPages(paginationData.totalPages);
+        }
         
         let categoriesData = [];
         
@@ -188,36 +221,17 @@ export default function AdminArticleManagementPage() {
     };
 
     fetchPosts();
-  }, [navigate]);
+  }, [currentPage, searchKeyword, selectedStatus, selectedCategory, navigate]);
 
+  // เพิ่มฟังก์ชันสำหรับเปลี่ยนหน้า
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  // Reset page เมื่อมีการเปลี่ยนแปลง filter
   useEffect(() => {
-    let filtered = posts;
-
-    if (searchKeyword) {
-      filtered = filtered.filter(
-        (post) =>
-          post.title.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-          post.description
-            .toLowerCase()
-            .includes(searchKeyword.toLowerCase()) ||
-          post.content.toLowerCase().includes(searchKeyword.toLowerCase())
-      );
-    }
-
-    if (selectedCategory && selectedCategory !== "All") {
-      filtered = filtered.filter((post) =>
-        post.category?.toLowerCase().includes(selectedCategory.toLowerCase())
-      );
-    }
-
-    if (selectedStatus) {
-      filtered = filtered.filter((post) =>
-        post.status?.toLowerCase().includes(selectedStatus.toLowerCase())
-      );
-    }
-
-    setFilteredPosts(filtered);
-  }, [searchKeyword, selectedCategory, selectedStatus, posts]);
+    setCurrentPage(1);
+  }, [searchKeyword, selectedStatus, selectedCategory]);
 
   const handleDelete = async (postId: number) => {
     try {
@@ -418,6 +432,18 @@ export default function AdminArticleManagementPage() {
             )}
           </TableBody>
         </Table>
+        
+        {/* เพิ่ม Pagination */}
+        {!isLoading && filteredPosts.length > 0 && (
+          <div className="mt-6">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+              isLoading={isLoading}
+            />
+          </div>
+        )}
       </main>
     </div>
   );
