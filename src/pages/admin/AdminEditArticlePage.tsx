@@ -393,7 +393,7 @@ export default function AdminEditArticlePage() {
                   {/* Article Title */}
                   <div>
                     <label htmlFor="title" className="block text-lg font-semibold text-slate-900 mb-3">
-                      Article Title
+                      Article Title <span className="text-sm text-slate-500 font-normal">(max 80 characters)</span>
                     </label>
                     <Input
                       id="title"
@@ -402,7 +402,11 @@ export default function AdminEditArticlePage() {
                       value={post.title}
                       onChange={handleInputChange}
                       className="w-full py-3 px-4 rounded-xl border-slate-200 focus:border-blue-500 focus:ring-blue-500/20 transition-all duration-200 bg-white/50 backdrop-blur-sm"
+                      maxLength={80}
                     />
+                    <div className="text-right text-sm text-slate-500 mt-1">
+                      {post.title?.length || 0}/80 characters
+                    </div>
                   </div>
 
                   {/* Introduction */}

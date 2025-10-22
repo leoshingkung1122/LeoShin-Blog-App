@@ -121,13 +121,13 @@ export default function AdminDashboard() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-slate-600 mb-1">Total Posts</p>
-                    <p className="text-3xl font-bold text-slate-900">
+                    <div className="text-3xl font-bold text-slate-900">
                       {isLoading ? (
                         <div className="w-8 h-8 bg-slate-200 rounded animate-pulse" />
                       ) : (
                         stats.totalPosts
                       )}
-                    </p>
+                    </div>
                     <p className="text-xs text-slate-500 mt-1">
                       {stats.publishedPosts} published, {stats.draftPosts} drafts
                     </p>
@@ -144,13 +144,13 @@ export default function AdminDashboard() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-slate-600 mb-1">Total Comments</p>
-                    <p className="text-3xl font-bold text-slate-900">
+                    <div className="text-3xl font-bold text-slate-900">
                       {isLoading ? (
                         <div className="w-8 h-8 bg-slate-200 rounded animate-pulse" />
                       ) : (
                         stats.totalComments
                       )}
-                    </p>
+                    </div>
                     <p className="text-xs text-slate-500 mt-1">User engagement</p>
                   </div>
                   <div className="p-3 bg-gradient-to-r from-green-500 to-green-600 rounded-xl shadow-lg">
@@ -165,13 +165,13 @@ export default function AdminDashboard() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-slate-600 mb-1">Total Users</p>
-                    <p className="text-3xl font-bold text-slate-900">
+                    <div className="text-3xl font-bold text-slate-900">
                       {isLoading ? (
                         <div className="w-8 h-8 bg-slate-200 rounded animate-pulse" />
                       ) : (
                         stats.totalUsers
                       )}
-                    </p>
+                    </div>
                     <p className="text-xs text-slate-500 mt-1">Registered users</p>
                   </div>
                   <div className="p-3 bg-gradient-to-r from-amber-500 to-orange-500 rounded-xl shadow-lg">
@@ -186,13 +186,13 @@ export default function AdminDashboard() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-slate-600 mb-1">Categories</p>
-                    <p className="text-3xl font-bold text-slate-900">
+                    <div className="text-3xl font-bold text-slate-900">
                       {isLoading ? (
                         <div className="w-8 h-8 bg-slate-200 rounded animate-pulse" />
                       ) : (
                         stats.totalCategories
                       )}
-                    </p>
+                    </div>
                     <p className="text-xs text-slate-500 mt-1">Content organization</p>
                   </div>
                   <div className="p-3 bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl shadow-lg">

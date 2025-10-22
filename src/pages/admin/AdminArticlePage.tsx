@@ -295,7 +295,7 @@ export default function AdminArticleManagementPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+    <div className="flex min-h-screen w-full bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
       <AdminSidebar />
       <div className="flex-1 lg:ml-0">
         {/* Mobile spacing */}
@@ -369,14 +369,15 @@ export default function AdminArticleManagementPage() {
 
             {/* Table Section */}
             <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 overflow-hidden">
-              <div className="overflow-x-auto">
+              {/* Desktop Table View */}
+              <div className="hidden xl:block overflow-x-auto">
                 <Table className="min-w-full">
                   <TableHeader>
                     <TableRow className="bg-gradient-to-r from-slate-50 to-blue-50 border-slate-200">
-                      <TableHead className="min-w-[300px] font-semibold text-slate-700 py-4 px-4 lg:px-6">Article Title</TableHead>
-                      <TableHead className="min-w-[120px] font-semibold text-slate-700 py-4 px-4 lg:px-6">Category</TableHead>
-                      <TableHead className="min-w-[100px] font-semibold text-slate-700 py-4 px-4 lg:px-6">Status</TableHead>
-                      <TableHead className="min-w-[120px] text-right font-semibold text-slate-700 py-4 px-4 lg:px-6">Actions</TableHead>
+                      <TableHead className="w-[40%] font-semibold text-slate-700 py-3 px-6">Article Title</TableHead>
+                      <TableHead className="w-[15%] font-semibold text-slate-700 py-3 px-6">Category</TableHead>
+                      <TableHead className="w-[15%] font-semibold text-slate-700 py-3 px-6">Status</TableHead>
+                      <TableHead className="w-[30%] text-right font-semibold text-slate-700 py-3 px-6">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                 <TableBody>
@@ -385,16 +386,16 @@ export default function AdminArticleManagementPage() {
                       .fill(null)
                       .map((_, index) => (
                         <TableRow key={index} className="hover:bg-slate-50/50 transition-colors">
-                          <TableCell className="py-4 px-4 lg:px-6">
+                          <TableCell className="py-4 px-6">
                             <div className="h-4 bg-slate-200 rounded animate-pulse w-3/4"></div>
                           </TableCell>
-                          <TableCell className="py-4 px-4 lg:px-6">
+                          <TableCell className="py-4 px-6">
                             <div className="h-4 bg-slate-200 rounded animate-pulse w-1/2"></div>
                           </TableCell>
-                          <TableCell className="py-4 px-4 lg:px-6">
+                          <TableCell className="py-4 px-6">
                             <div className="h-6 bg-slate-200 rounded-full animate-pulse w-20"></div>
                           </TableCell>
-                          <TableCell className="py-4 px-4 lg:px-6">
+                          <TableCell className="py-4 px-6">
                             <div className="h-8 bg-slate-200 rounded animate-pulse w-16 ml-auto"></div>
                           </TableCell>
                         </TableRow>
@@ -402,17 +403,17 @@ export default function AdminArticleManagementPage() {
                   ) : filteredPosts.length > 0 ? (
                     filteredPosts.map((article) => (
                       <TableRow key={article.id} className="hover:bg-slate-50/50 transition-colors border-slate-100">
-                        <TableCell className="py-4 px-4 lg:px-6">
+                        <TableCell className="py-4 px-6">
                           <div className="font-medium text-slate-900 group-hover:text-blue-600 transition-colors break-words">
                             {typeof article.title === 'string' ? article.title : 'Untitled'}
                           </div>
                         </TableCell>
-                        <TableCell className="py-4 px-4 lg:px-6">
+                        <TableCell className="py-4 px-6">
                           <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
                             {typeof article.category === 'string' ? article.category : 'Uncategorized'}
                           </span>
                         </TableCell>
-                        <TableCell className="py-4 px-4 lg:px-6">
+                        <TableCell className="py-4 px-6">
                           <span
                             className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
                               article.status === "draft"
@@ -423,8 +424,8 @@ export default function AdminArticleManagementPage() {
                             {typeof article.status === 'string' ? article.status : 'unknown'}
                           </span>
                         </TableCell>
-                        <TableCell className="py-4 px-4 lg:px-6">
-                          <div className="flex items-center justify-end space-x-1 lg:space-x-2">
+                        <TableCell className="py-4 px-6">
+                          <div className="flex items-center justify-end space-x-2">
                             <Button
                               variant="ghost"
                               size="sm"
@@ -436,7 +437,7 @@ export default function AdminArticleManagementPage() {
                                   toast.error("Cannot edit post: Invalid Post ID.");
                                 }
                               }}
-                              className="p-1 lg:p-2 hover:bg-blue-100 hover:text-blue-600 transition-all duration-200 rounded-lg"
+                              className="p-2 hover:bg-blue-100 hover:text-blue-600 transition-all duration-200 rounded-lg"
                             >
                               <PenSquare className="h-4 w-4" />
                             </Button>
@@ -477,6 +478,95 @@ export default function AdminArticleManagementPage() {
                   )}
                 </TableBody>
               </Table>
+              </div>
+
+              {/* Mobile Card View */}
+              <div className="xl:hidden">
+                {isLoading ? (
+                  <div className="space-y-4 p-4">
+                    {Array(5).fill(null).map((_, index) => (
+                      <div key={index} className="bg-white rounded-xl p-4 border border-slate-200 animate-pulse">
+                        <div className="h-4 bg-slate-200 rounded w-3/4 mb-2"></div>
+                        <div className="h-3 bg-slate-200 rounded w-1/2 mb-3"></div>
+                        <div className="flex justify-between items-center">
+                          <div className="h-6 bg-slate-200 rounded-full w-16"></div>
+                          <div className="h-8 bg-slate-200 rounded w-16"></div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : filteredPosts.length > 0 ? (
+                  <div className="space-y-4 p-4">
+                    {filteredPosts.map((article) => (
+                      <div key={article.id} className="bg-white rounded-xl p-4 border border-slate-200 hover:shadow-md transition-shadow">
+                        <div className="mb-3">
+                          <h3 className="font-semibold text-slate-900 text-sm mb-2 line-clamp-2">
+                            {typeof article.title === 'string' ? article.title : 'Untitled'}
+                          </h3>
+                          <div className="flex flex-wrap gap-2 mb-3">
+                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                              {typeof article.category === 'string' ? article.category : 'Uncategorized'}
+                            </span>
+                            <span
+                              className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                                article.status === "draft"
+                                  ? "bg-amber-100 text-amber-800"
+                                  : "bg-green-100 text-green-800"
+                              }`}
+                            >
+                              {typeof article.status === 'string' ? article.status : 'unknown'}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-end space-x-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              if (article.id) {
+                                navigate(`/admin/article-management/edit/${article.id}`);
+                              } else {
+                                console.error("Attempted to edit post with undefined ID:", article);
+                                toast.error("Cannot edit post: Invalid Post ID.");
+                              }
+                            }}
+                            className="p-2 hover:bg-blue-100 hover:text-blue-600 transition-all duration-200 rounded-lg"
+                          >
+                            <PenSquare className="h-4 w-4" />
+                          </Button>
+                          <DeletePostDialog
+                            onDelete={() => {
+                              if (article.id) {
+                                handleDelete(article.id)
+                              } else {
+                                console.error("Attempted to delete post with undefined ID:", article);
+                                toast.error("Cannot delete post: Invalid Post ID.");
+                              }
+                            }}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12 px-4">
+                    <div className="flex flex-col items-center">
+                      <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4">
+                        <svg className="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                      </div>
+                      <h3 className="text-lg font-semibold text-slate-900 mb-2">No articles found</h3>
+                      <p className="text-slate-600 mb-4">No articles match your search criteria.</p>
+                      <Button
+                        onClick={() => navigate("/admin/article-management/create")}
+                        className="px-6 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold"
+                      >
+                        Create Your First Article
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
             
