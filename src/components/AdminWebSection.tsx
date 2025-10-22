@@ -22,7 +22,7 @@ import {
       <aside className="w-64 bg-white shadow-md">
         <div className="p-4">
           <h1 className="text-2xl font-bold">
-            Thomson P<span className="text-green-400">.</span>
+            LeoShin<span className="text-green-400">.</span>
           </h1>
           <p className="text-sm text-orange-400">Admin panel</p>
         </div>

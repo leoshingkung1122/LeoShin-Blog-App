@@ -245,7 +245,7 @@ export default function SignUpPage() {
                 htmlFor="name"
                 className="block text-sm font-semibold text-gray-700"
               >
-                Full Name
+                Display Name
               </label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />

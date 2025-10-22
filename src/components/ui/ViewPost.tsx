@@ -127,8 +127,8 @@ function ViewPost() {
               authorIntroduction={authorIntroduction}
             />
           </div>
-          <Share likesAmount={likes} setDialogState={setIsDialogOpen}/>
-          <Comment setDialogState={setIsDialogOpen}/>
+          <Share postId={postId || ""} likesAmount={likes} setDialogState={setIsDialogOpen}/>
+          <Comment postId={postId || ""} setDialogState={setIsDialogOpen}/>
 
         
         </div>

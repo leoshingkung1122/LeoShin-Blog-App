@@ -1,7 +1,7 @@
 import * as React from "react"
 import * as AvatarPrimitive from "@radix-ui/react-avatar"
-
 import { cn } from "@/lib/utils"
+import { generateAvatarProps } from "@/utils/badgeColors"
 
 function Avatar({
   className,
@@ -34,17 +34,24 @@ function AvatarImage({
 
 function AvatarFallback({
   className,
+  children,
   ...props
 }: React.ComponentProps<typeof AvatarPrimitive.Fallback>) {
+  // Extract name from children if it's a string
+  const name = typeof children === 'string' ? children : 'U';
+  const { backgroundClass, textClass } = generateAvatarProps(name);
+  
   return (
     <AvatarPrimitive.Fallback
       data-slot="avatar-fallback"
       className={cn(
-        "bg-muted flex size-full items-center justify-center rounded-full",
+        `${backgroundClass} ${textClass} flex size-full items-center justify-center rounded-full font-bold`,
         className
       )}
       {...props}
-    />
+    >
+      {children}
+    </AvatarPrimitive.Fallback>
   )
 }
 
