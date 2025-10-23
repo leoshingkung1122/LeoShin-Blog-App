@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/authentication";
 import { toast } from "sonner";
 import { X, Loader2, User, AtSign, Mail, Lock, Sparkles } from "lucide-react";
-import FrirenHappy from "@/assets/FrirenWithBook.png";
 import Leo1 from "@/assets/Leo1.png";
 
 
