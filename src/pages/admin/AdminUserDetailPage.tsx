@@ -97,6 +97,12 @@ const AdminUserDetailPage: React.FC = () => {
     }
   }, [isAuthenticated, state.user?.role, navigate]);
 
+  useEffect(() => {
+    if (id) {
+      fetchUserDetail();
+    }
+  }, [id, fetchUserDetail]);
+
   // Show loading while checking authentication
   if (!isAuthenticated || state.user?.role !== 'admin') {
     return (
@@ -307,10 +313,6 @@ const AdminUserDetailPage: React.FC = () => {
       setLikesLoading(false);
     }
   };
-
-  useEffect(() => {
-    fetchUserDetail();
-  }, [id]);
 
   if (loading) {
     return (

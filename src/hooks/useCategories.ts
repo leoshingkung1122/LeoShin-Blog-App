@@ -30,7 +30,7 @@ export const useCategories = (): UseCategoriesReturn => {
         
         if (response.data.success && response.data.data) {
           // Add colors based on category ID
-          const categoriesWithColors = response.data.data.map((apiCat: any) => ({
+          const categoriesWithColors = response.data.data.map((apiCat: { id: number; name: string }) => ({
             id: apiCat.id,
             name: apiCat.name,
             color: getBadgeColors(apiCat.id).dark // Use dark color for legacy compatibility

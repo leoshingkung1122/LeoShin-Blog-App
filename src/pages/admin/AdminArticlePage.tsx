@@ -50,8 +50,8 @@ export default function AdminArticleManagementPage() {
   const [selectedStatus, setSelectedStatus] = useState("");
   
   // Pagination states
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage] = useState(1);
+  const [totalPages] = useState(1);
 
   
 
@@ -68,6 +68,126 @@ export default function AdminArticleManagementPage() {
     }
   }, [isAuthenticated, state.user?.role, navigate]);
 
+  useEffect(() => {
+    if (!isAuthenticated || state.user?.role !== 'admin') {
+      return;
+    }
+
+    setIsLoading(true);
+    const fetchPosts = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          navigate("/login");
+          return;
+        }
+
+        let postsData = [];
+        
+        try {
+          const response = await axios.get(
+            "https://leoshin-blog-app-api-with-db.vercel.app/posts/admin",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
+            }
+          );
+          
+          console.log("Posts API response:", response.data);
+          
+          if (response.data.success && response.data.posts) {
+            postsData = response.data.posts;
+          }
+        } catch (postsError) {
+          console.error("Error fetching posts from /posts/admin:", postsError);
+          
+          // Fallback: try to get posts from regular /posts endpoint
+          try {
+            console.log("Trying fallback /posts endpoint...");
+            const fallbackResponse = await axios.get(
+              "https://leoshin-blog-app-api-with-db.vercel.app/posts?limit=100",
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`
+                }
+              }
+            );
+            
+            console.log("Fallback posts response:", fallbackResponse.data);
+            
+            if (fallbackResponse.data.success && fallbackResponse.data.posts) {
+              // Transform the data to match expected format
+              postsData = fallbackResponse.data.posts.map((post: { id: number; title?: string; description?: string; content?: string; categories?: { name?: string }; post_status?: { name?: string } }) => ({
+                id: post.id,
+                title: post.title || 'Untitled',
+                description: post.description || '',
+                content: post.content || '',
+                category: post.categories?.name || 'Uncategorized',
+                status: post.post_status?.name?.toLowerCase() || 'published'
+              }));
+            }
+          } catch (fallbackError) {
+            console.error("Fallback posts fetch also failed:", fallbackError);
+          }
+        }
+        
+        setPosts(postsData);
+        setFilteredPosts(postsData);
+        
+        let categoriesData = [];
+        
+        try {
+          const responseCategories = await axios.get(
+            "https://leoshin-blog-app-api-with-db.vercel.app/categories",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
+            }
+          );
+          
+          console.log("Categories API response:", responseCategories.data);
+          
+          if (responseCategories.data.success && responseCategories.data.data) {
+            categoriesData = responseCategories.data.data;
+          }
+        } catch (categoriesError) {
+          console.error("Error fetching categories:", categoriesError);
+        }
+        
+        setCategories(categoriesData);
+        
+        // Show success message if we got some data
+        if (postsData.length > 0 || categoriesData.length > 0) {
+          console.log(`Loaded ${postsData.length} posts and ${categoriesData.length} categories`);
+        } else {
+          // Show warning if no data was loaded
+          toast.custom((t) => (
+            <div className="bg-yellow-500 text-white p-4 rounded-sm flex justify-between items-start">
+              <div>
+                <h2 className="font-bold text-lg mb-1">No data found</h2>
+                <p className="text-sm">No articles or categories were found. You may need to create some content first.</p>
+              </div>
+              <button
+                onClick={() => toast.dismiss(t)}
+                className="text-white hover:text-gray-200"
+              >
+                <X size={20} />
+              </button>
+            </div>
+          ));
+        }
+      } catch (error) {
+        console.error("Unexpected error:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPosts();
+  }, [isAuthenticated, state.user?.role, navigate]);
+
   // Show loading while checking authentication
   if (!isAuthenticated || state.user?.role !== 'admin') {
     return (
@@ -80,7 +200,7 @@ export default function AdminArticleManagementPage() {
     );
   }
 
-  useEffect(() => {
+  /*useEffect(() => {
     setIsLoading(true);
     const fetchPosts = async () => {
       try {
@@ -137,7 +257,7 @@ export default function AdminArticleManagementPage() {
             
             if (fallbackResponse.data.success && fallbackResponse.data.posts) {
               // Transform the data to match expected format
-              postsData = fallbackResponse.data.posts.map((post: any) => ({
+              postsData = fallbackResponse.data.posts.map((post: { id: number; title?: string; description?: string; content?: string; categories?: { name?: string }; post_status?: { name?: string } }) => ({
                 id: post.id,
                 title: post.title || 'Untitled',
                 description: post.description || '',
@@ -220,17 +340,7 @@ export default function AdminArticleManagementPage() {
     };
 
     fetchPosts();
-  }, [currentPage, searchKeyword, selectedStatus, selectedCategory, navigate]);
-
-  // เพิ่มฟังก์ชันสำหรับเปลี่ยนหน้า
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
-  // Reset page เมื่อมีการเปลี่ยนแปลง filter
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchKeyword, selectedStatus, selectedCategory]);
+  }, [currentPage, searchKeyword, selectedStatus, selectedCategory, navigate]);*/
 
   const handleDelete = async (postId: number) => {
     try {

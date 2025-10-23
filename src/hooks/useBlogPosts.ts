@@ -29,7 +29,6 @@ export const useBlogPosts = (defaultCategory?: FilterCategory): UseBlogPostsRetu
     setError(null);
     
     try {
-      let response;
       const baseUrl = "https://leoshin-blog-app-api-with-db.vercel.app/posts";
       let params = `page=${currentPage}&limit=6`;
       
@@ -43,10 +42,10 @@ export const useBlogPosts = (defaultCategory?: FilterCategory): UseBlogPostsRetu
         params += `&category=${category}`;
       }
       
-      response = await axios.get(`${baseUrl}?${params}`);
+      const response = await axios.get(`${baseUrl}?${params}`);
       
       // Transform posts to include category name as string and author data
-      const transformedPosts = response.data.posts.map((post: any) => ({
+      const transformedPosts = response.data.posts.map((post: { categories?: { name?: string }; users?: { username?: string; profile_pic?: string; introduction?: string }; [key: string]: unknown }) => ({
         ...post,
         category: post.categories?.name || "Uncategorized",
         author: post.users?.name || "Unknown",

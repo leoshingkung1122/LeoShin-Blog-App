@@ -57,6 +57,12 @@ const AdminUsersPage: React.FC = () => {
     }
   }, [isAuthenticated, state.user?.role, navigate]);
 
+  useEffect(() => {
+    if (isAuthenticated && state.user?.role === 'admin') {
+      fetchUsers();
+    }
+  }, [isAuthenticated, state.user?.role, fetchUsers]);
+
   // Show loading while checking authentication
   if (!isAuthenticated || state.user?.role !== 'admin') {
     return (
@@ -175,10 +181,6 @@ const AdminUsersPage: React.FC = () => {
     setCurrentPage(page);
     fetchUsers(page);
   };
-
-  useEffect(() => {
-    fetchUsers();
-  }, []);
 
   if (loading) {
     return (

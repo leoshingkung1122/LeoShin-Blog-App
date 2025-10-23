@@ -45,7 +45,7 @@ export default function Comment({ postId, setDialogState }: CommentProps) {
 
   useEffect(() => {
     fetchComments();
-  }, [postId, currentPage]);
+  }, [postId, currentPage, fetchComments]);
 
   const fetchComments = async () => {
     try {

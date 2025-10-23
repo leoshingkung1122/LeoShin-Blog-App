@@ -59,7 +59,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     try {
       setState((prevState) => ({ ...prevState, getUserLoading: true }));
-      const response = await axios.get<any>(
+      const response = await axios.get<{ success: boolean; user: User }>(
         "https://leoshin-blog-app-api-with-db.vercel.app/auth/get-user",
         {
           headers: {
@@ -90,8 +90,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   useEffect(() => {
     // Load user on initial app load. Delay UI until first fetch completes by toggling getUserLoading.
     fetchUser();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [fetchUser]);
 
   // Login user
   const login = async (data: { email: string; password: string }) => {

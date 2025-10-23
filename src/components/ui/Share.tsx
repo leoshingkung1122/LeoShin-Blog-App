@@ -24,7 +24,7 @@ function Share({ postId, likesAmount, setDialogState }: ShareProps) {
     if (isAuthenticated) {
       fetchUserLikeStatus();
     }
-  }, [likesAmount, isAuthenticated]);
+  }, [likesAmount, isAuthenticated, fetchPublicLikeCount, fetchUserLikeStatus]);
 
   const fetchPublicLikeCount = async () => {
     try {

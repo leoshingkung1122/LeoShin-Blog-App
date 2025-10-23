@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { useState } from "react";
 import NavBar from "@/components/ui/navbar";
 import Footer from "@/components/ui/footer";
