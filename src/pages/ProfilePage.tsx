@@ -22,6 +22,36 @@ export default function ProfilePage() {
   const [isSaving, setIsSaving] = useState(false);
   const [imageFile, setImageFile] = useState<{ file?: File }>({});
 
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        setProfile({
+          image: state.user?.profile_pic || "",
+          name: state.user?.name || "",
+          username: state.user?.username || "",
+          email: state.user?.email || "",
+        });
+      } catch {
+        toast.custom((t) => (
+          <div className="bg-red-500 text-white p-4 rounded-sm flex justify-between items-start">
+            <div>
+              <h2 className="font-bold text-lg mb-1">Failed to load profile</h2>
+              <p className="text-sm">Please try again later</p>
+            </div>
+            <button
+              onClick={() => toast.dismiss(t)}
+              className="ml-4 text-white hover:text-gray-200"
+            >
+              <X size={20} />
+            </button>
+          </div>
+        ));
+      }
+    };
+
+    fetchProfile();
+  }, [state.user]);
+
   // Add error boundary for component
   if (!state.user && !state.getUserLoading) {
     return (
@@ -43,38 +73,6 @@ export default function ProfilePage() {
       </div>
     );
   }
-
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        setProfile({
-          image: state.user?.profile_pic || "",
-          name: state.user?.name || "",
-          username: state.user?.username || "",
-          email: state.user?.email || "",
-        });
-      } catch {
-        toast.custom((t) => (
-          <div className="bg-red-500 text-white p-4 rounded-sm flex justify-between items-start">
-            <div>
-              <h2 className="font-bold text-lg mb-1">
-                Failed to fetch profile
-              </h2>
-              <p className="text-sm">Please try again later.</p>
-            </div>
-            <button
-              onClick={() => toast.dismiss(t)}
-              className="text-white hover:text-gray-200"
-            >
-              <X size={20} />
-            </button>
-          </div>
-        ));
-      }
-    };
-
-    fetchProfile();
-  }, [state.user]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
