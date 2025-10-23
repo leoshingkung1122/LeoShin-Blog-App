@@ -20,7 +20,7 @@ export default function ProfilePage() {
     email: "",
   });
   const [isSaving, setIsSaving] = useState(false);
-  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imageFile, setImageFile] = useState<{ file?: File }>({});
 
   // Add error boundary for component
   if (!state.user && !state.getUserLoading) {
@@ -131,7 +131,7 @@ export default function ProfilePage() {
       return;
     }
 
-    setImageFile(file);
+    setImageFile({ file });
     setProfile((prev) => ({
       ...prev,
       image: URL.createObjectURL(file),
@@ -143,21 +143,62 @@ export default function ProfilePage() {
     try {
       setIsSaving(true);
 
-      const formData = new FormData();
-      formData.append("name", profile.name);
-      // Username is not editable, so we don't send it
-
-      if (imageFile) {
-        formData.append("imageFile", imageFile);
+      const token = localStorage.getItem("token");
+      if (!token) {
+        toast.custom((t) => (
+          <div className="bg-red-500 text-white p-4 rounded-sm flex justify-between items-start">
+            <div>
+              <h2 className="font-bold text-lg mb-1">Authentication Error</h2>
+              <p className="text-sm">Please login again.</p>
+            </div>
+            <button
+              onClick={() => toast.dismiss(t)}
+              className="text-white hover:text-gray-200"
+            >
+              <X size={20} />
+            </button>
+          </div>
+        ));
+        setIsSaving(false);
+        return;
       }
+
+      let imageUrl = profile.image; // Default to current image
+
+      if (imageFile.file) {
+        const formData = new FormData();
+        formData.append('image', imageFile.file);
+
+        const uploadResponse = await axios.post(
+          "https://leoshin-blog-app-api-with-db.vercel.app/profiles/upload-image",
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+        );
+
+        if (!uploadResponse.data.success) {
+          throw new Error(uploadResponse.data.error || "Failed to upload image");
+        }
+
+        imageUrl = uploadResponse.data.imageUrl;
+      }
+
+      const profileData = {
+        name: profile.name,
+        profile_pic: imageUrl,
+      };
 
       await axios.put(
         "https://leoshin-blog-app-api-with-db.vercel.app/profiles",
-        formData,
+        profileData,
         {
-          headers: { 
-            "Content-Type": "multipart/form-data",
-            "Authorization": `Bearer ${localStorage.getItem("token")}`
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
           },
         }
       );
@@ -178,6 +219,18 @@ export default function ProfilePage() {
           </button>
         </div>
       ));
+
+      // Update local profile state with new image URL
+      setProfile((prev) => ({
+        ...prev,
+        image: imageUrl,
+      }));
+
+      // Clear the image file state
+      setImageFile({});
+
+      // Refresh user data from server
+      await fetchUser();
     } catch (error) {
       console.error("Profile update error:", error);
       
@@ -210,7 +263,6 @@ export default function ProfilePage() {
       ));
     } finally {
       setIsSaving(false);
-      fetchUser();
     }
   };
 
@@ -277,7 +329,7 @@ export default function ProfilePage() {
                 <div className="relative z-10 flex flex-col items-center mb-6">
                   <Avatar className="h-28 w-28 mb-4 border-4 border-white shadow-xl">
                     <AvatarImage
-                      src={profile.image}
+                      src={imageFile.file ? URL.createObjectURL(imageFile.file) : profile.image}
                       alt="Profile"
                       className="object-cover"
                     />

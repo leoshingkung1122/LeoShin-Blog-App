@@ -61,7 +61,9 @@ export default function AdminCreateArticlePage() {
     fetchCategories();
   }, [navigate]); // Re-fetch if postId changes
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setPost((prevData) => ({
       ...prevData,
@@ -80,7 +82,7 @@ export default function AdminCreateArticlePage() {
 
   const handleSave = async (postStatusId: number) => {
     setIsSaving(true);
-    
+
     // Validate required fields
     if (!post.title?.trim()) {
       toast.custom((t) => (
@@ -184,7 +186,7 @@ export default function AdminCreateArticlePage() {
 
       if (imageFile.file) {
         const formData = new FormData();
-        formData.append('image', imageFile.file);
+        formData.append("image", imageFile.file);
 
         const uploadResponse = await axios.post(
           "https://leoshin-blog-app-api-with-db.vercel.app/posts/upload-image",
@@ -192,13 +194,15 @@ export default function AdminCreateArticlePage() {
           {
             headers: {
               Authorization: `Bearer ${token}`,
-              'Content-Type': 'multipart/form-data',
+              "Content-Type": "multipart/form-data",
             },
           }
         );
 
         if (!uploadResponse.data.success) {
-          throw new Error(uploadResponse.data.error || "Failed to upload image");
+          throw new Error(
+            uploadResponse.data.error || "Failed to upload image"
+          );
         }
 
         imageUrl = uploadResponse.data.imageUrl;
@@ -218,8 +222,8 @@ export default function AdminCreateArticlePage() {
         postData,
         {
           headers: {
-            "Authorization": `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
       // Success toast
@@ -248,19 +252,23 @@ export default function AdminCreateArticlePage() {
       navigate("/admin/article-management"); // Redirect after saving
     } catch (error) {
       console.error("Error creating post:", error);
-      
-      let errorMessage = "Something went wrong while trying to create article. Please try again later.";
-      
+
+      let errorMessage =
+        "Something went wrong while trying to create article. Please try again later.";
+
       if (error instanceof Error) {
-        if (error.message.includes('413')) {
-          errorMessage = "Image file is too large. Please choose a smaller image (max 10MB).";
-        } else if (error.message.includes('500')) {
-          errorMessage = "Server error occurred. Please check your data and try again.";
-        } else if (error.message.includes('Network Error')) {
-          errorMessage = "Network error. Please check your internet connection.";
+        if (error.message.includes("413")) {
+          errorMessage =
+            "Image file is too large. Please choose a smaller image (max 10MB).";
+        } else if (error.message.includes("500")) {
+          errorMessage =
+            "Server error occurred. Please check your data and try again.";
+        } else if (error.message.includes("Network Error")) {
+          errorMessage =
+            "Network error. Please check your internet connection.";
         }
       }
-      
+
       toast.custom((t) => (
         <div className="bg-red-500 text-white p-4 rounded-sm flex justify-between items-start">
           <div>
@@ -335,7 +343,7 @@ export default function AdminCreateArticlePage() {
 
     // เก็บข้อมูลไฟล์
     setImageFile({ file });
-    
+
     // Create preview URL for immediate display
     const previewUrl = URL.createObjectURL(file);
     setPost((prevData) => ({
@@ -363,7 +371,9 @@ export default function AdminCreateArticlePage() {
                     <h2 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 bg-clip-text text-transparent mb-2">
                       Create Article
                     </h2>
-                    <p className="text-slate-600">Write and publish your new blog post</p>
+                    <p className="text-slate-600">
+                      Write and publish your new blog post
+                    </p>
                   </div>
                   <div className="mt-4 sm:mt-0 flex flex-col sm:flex-row gap-3">
                     <Button
@@ -420,8 +430,12 @@ export default function AdminCreateArticlePage() {
                               <ImageIcon className="h-8 w-8 text-white" />
                             </div>
                             <div>
-                              <p className="text-slate-600 font-medium">No image selected</p>
-                              <p className="text-sm text-slate-500">Upload a thumbnail for your article</p>
+                              <p className="text-slate-600 font-medium">
+                                No image selected
+                              </p>
+                              <p className="text-sm text-slate-500">
+                                Upload a thumbnail for your article
+                              </p>
                             </div>
                           </div>
                         </div>
@@ -444,11 +458,17 @@ export default function AdminCreateArticlePage() {
 
                   {/* Category Selection */}
                   <div>
-                    <label htmlFor="category" className="block text-lg font-semibold text-slate-900 mb-3">
+                    <label
+                      htmlFor="category"
+                      className="block text-lg font-semibold text-slate-900 mb-3"
+                    >
                       Category
                     </label>
                     <Select
-                      value={categories.find(c => c.id === post.category_id)?.name || ""}
+                      value={
+                        categories.find((c) => c.id === post.category_id)
+                          ?.name || ""
+                      }
                       onValueChange={(value) => {
                         handleCategoryChange(value);
                       }}
@@ -457,18 +477,27 @@ export default function AdminCreateArticlePage() {
                         <SelectValue placeholder="Select category" />
                       </SelectTrigger>
                       <SelectContent className="rounded-xl border-slate-200 shadow-xl">
-                        {categories.map((cat) => (
-                          <SelectItem key={cat.id} value={cat.name} className="rounded-lg">
-                            {cat.name}
-                          </SelectItem>
-                        ))}
+                        {categories
+                          .filter((cat) => cat.name !== "All") // กรอง "All" ออก
+                          .map((cat) => (
+                            <SelectItem
+                              key={cat.id}
+                              value={cat.name}
+                              className="rounded-lg"
+                            >
+                              {cat.name}
+                            </SelectItem>
+                          ))}
                       </SelectContent>
                     </Select>
                   </div>
 
                   {/* Author Name */}
                   <div>
-                    <label htmlFor="author" className="block text-lg font-semibold text-slate-900 mb-3">
+                    <label
+                      htmlFor="author"
+                      className="block text-lg font-semibold text-slate-900 mb-3"
+                    >
                       Author Name
                     </label>
                     <Input
@@ -482,8 +511,14 @@ export default function AdminCreateArticlePage() {
 
                   {/* Article Title */}
                   <div>
-                    <label htmlFor="title" className="block text-lg font-semibold text-slate-900 mb-3">
-                      Article Title <span className="text-sm text-slate-500 font-normal">(max 80 characters)</span>
+                    <label
+                      htmlFor="title"
+                      className="block text-lg font-semibold text-slate-900 mb-3"
+                    >
+                      Article Title{" "}
+                      <span className="text-sm text-slate-500 font-normal">
+                        (max 80 characters)
+                      </span>
                     </label>
                     <Input
                       id="title"
@@ -501,8 +536,14 @@ export default function AdminCreateArticlePage() {
 
                   {/* Introduction */}
                   <div>
-                    <label htmlFor="introduction" className="block text-lg font-semibold text-slate-900 mb-3">
-                      Introduction <span className="text-sm text-slate-500 font-normal">(max 120 characters)</span>
+                    <label
+                      htmlFor="introduction"
+                      className="block text-lg font-semibold text-slate-900 mb-3"
+                    >
+                      Introduction{" "}
+                      <span className="text-sm text-slate-500 font-normal">
+                        (max 120 characters)
+                      </span>
                     </label>
                     <Textarea
                       id="introduction"
@@ -521,7 +562,10 @@ export default function AdminCreateArticlePage() {
 
                   {/* Content */}
                   <div>
-                    <label htmlFor="content" className="block text-lg font-semibold text-slate-900 mb-3">
+                    <label
+                      htmlFor="content"
+                      className="block text-lg font-semibold text-slate-900 mb-3"
+                    >
                       Article Content
                     </label>
                     <Textarea

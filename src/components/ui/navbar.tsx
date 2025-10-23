@@ -55,7 +55,7 @@ function NavBar() {
               className="relative grid place-items-center size-10 rounded-full border border-gray-300/70 bg-white/70 backdrop-blur hover:bg-white transition-colors"
             >
               <Bell className="w-5 h-5 text-gray-600" />
-              <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-rose-500 rounded-full" />
+              {/* <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-rose-500 rounded-full" /> */}
             </button>
             {/* User menu */}
             <DropdownMenu>

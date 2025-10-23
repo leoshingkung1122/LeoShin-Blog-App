@@ -26,7 +26,9 @@ export default function AdminEditArticlePage() {
   const [post, setPost] = useState<Partial<BlogPost>>({}); // Store the fetched post data
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [categories, setCategories] = useState<Array<{ id: number; name: string }>>([]);
+  const [categories, setCategories] = useState<
+    Array<{ id: number; name: string }>
+  >([]);
   const [imageFile, setImageFile] = useState<{ file?: File }>({});
 
   // Fetch post data by ID
@@ -68,7 +70,9 @@ export default function AdminEditArticlePage() {
     fetchPost();
   }, [id, navigate]); // Re-fetch if id changes
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setPost((prevData) => ({
       ...prevData,
@@ -101,7 +105,7 @@ export default function AdminEditArticlePage() {
       // If a new file is selected, upload it
       if (imageFile.file) {
         const formData = new FormData();
-        formData.append('image', imageFile.file);
+        formData.append("image", imageFile.file);
 
         const uploadResponse = await axios.post(
           "https://leoshin-blog-app-api-with-db.vercel.app/posts/upload-image",
@@ -109,13 +113,15 @@ export default function AdminEditArticlePage() {
           {
             headers: {
               Authorization: `Bearer ${token}`,
-              'Content-Type': 'multipart/form-data',
+              "Content-Type": "multipart/form-data",
             },
           }
         );
 
         if (!uploadResponse.data.success) {
-          throw new Error(uploadResponse.data.error || "Failed to upload image");
+          throw new Error(
+            uploadResponse.data.error || "Failed to upload image"
+          );
         }
 
         imageUrl = uploadResponse.data.imageUrl;
@@ -135,8 +141,8 @@ export default function AdminEditArticlePage() {
         postData,
         {
           headers: {
-            "Authorization": `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
 
@@ -187,7 +193,6 @@ export default function AdminEditArticlePage() {
       setIsSaving(false);
     }
   };
-
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]; // Get the selected file
@@ -244,7 +249,7 @@ export default function AdminEditArticlePage() {
 
     // เก็บข้อมูลไฟล์
     setImageFile({ file });
-    
+
     // Create preview URL for immediate display
     const previewUrl = URL.createObjectURL(file);
     setPost((prevData) => ({
@@ -273,7 +278,9 @@ export default function AdminEditArticlePage() {
                     <h2 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-900 bg-clip-text text-transparent mb-2">
                       Edit Article
                     </h2>
-                    <p className="text-slate-600">Update your blog post content and settings</p>
+                    <p className="text-slate-600">
+                      Update your blog post content and settings
+                    </p>
                   </div>
                   <div className="mt-4 sm:mt-0 flex flex-col sm:flex-row gap-3">
                     <Button
@@ -326,13 +333,27 @@ export default function AdminEditArticlePage() {
                         <div className="flex justify-center items-center w-full max-w-lg h-80 px-6 py-20 border-2 border-slate-300 border-dashed rounded-2xl bg-gradient-to-br from-slate-50 to-blue-50 hover:from-blue-50 hover:to-indigo-50 transition-all duration-300">
                           <div className="text-center space-y-4">
                             <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto">
-                              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                              <svg
+                                className="w-8 h-8 text-white"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                                />
                               </svg>
                             </div>
                             <div>
-                              <p className="text-slate-600 font-medium">No image selected</p>
-                              <p className="text-sm text-slate-500">Upload a thumbnail for your article</p>
+                              <p className="text-slate-600 font-medium">
+                                No image selected
+                              </p>
+                              <p className="text-sm text-slate-500">
+                                Upload a thumbnail for your article
+                              </p>
                             </div>
                           </div>
                         </div>
@@ -354,11 +375,17 @@ export default function AdminEditArticlePage() {
                   </div>
                   {/* Category Selection */}
                   <div>
-                    <label htmlFor="category" className="block text-lg font-semibold text-slate-900 mb-3">
+                    <label
+                      htmlFor="category"
+                      className="block text-lg font-semibold text-slate-900 mb-3"
+                    >
                       Category
                     </label>
                     <Select
-                      value={categories.find(c => c.id === post.category_id)?.name || ""}
+                      value={
+                        categories.find((c) => c.id === post.category_id)
+                          ?.name || ""
+                      }
                       onValueChange={(value) => {
                         handleCategoryChange(value);
                       }}
@@ -367,18 +394,27 @@ export default function AdminEditArticlePage() {
                         <SelectValue placeholder="Select category" />
                       </SelectTrigger>
                       <SelectContent className="rounded-xl border-slate-200 shadow-xl">
-                        {categories.map((cat) => (
-                          <SelectItem key={cat.id} value={cat.name} className="rounded-lg">
-                            {cat.name}
-                          </SelectItem>
-                        ))}
+                        {categories
+                          .filter((cat) => cat.name !== "All") // กรอง "All" ออก
+                          .map((cat) => (
+                            <SelectItem
+                              key={cat.id}
+                              value={cat.name}
+                              className="rounded-lg"
+                            >
+                              {cat.name}
+                            </SelectItem>
+                          ))}
                       </SelectContent>
                     </Select>
                   </div>
 
                   {/* Author Name */}
                   <div>
-                    <label htmlFor="author" className="block text-lg font-semibold text-slate-900 mb-3">
+                    <label
+                      htmlFor="author"
+                      className="block text-lg font-semibold text-slate-900 mb-3"
+                    >
                       Author Name
                     </label>
                     <Input
@@ -392,8 +428,14 @@ export default function AdminEditArticlePage() {
 
                   {/* Article Title */}
                   <div>
-                    <label htmlFor="title" className="block text-lg font-semibold text-slate-900 mb-3">
-                      Article Title <span className="text-sm text-slate-500 font-normal">(max 80 characters)</span>
+                    <label
+                      htmlFor="title"
+                      className="block text-lg font-semibold text-slate-900 mb-3"
+                    >
+                      Article Title{" "}
+                      <span className="text-sm text-slate-500 font-normal">
+                        (max 80 characters)
+                      </span>
                     </label>
                     <Input
                       id="title"
@@ -411,8 +453,14 @@ export default function AdminEditArticlePage() {
 
                   {/* Introduction */}
                   <div>
-                    <label htmlFor="introduction" className="block text-lg font-semibold text-slate-900 mb-3">
-                      Introduction <span className="text-sm text-slate-500 font-normal">(max 120 characters)</span>
+                    <label
+                      htmlFor="introduction"
+                      className="block text-lg font-semibold text-slate-900 mb-3"
+                    >
+                      Introduction{" "}
+                      <span className="text-sm text-slate-500 font-normal">
+                        (max 120 characters)
+                      </span>
                     </label>
                     <Textarea
                       id="introduction"
@@ -431,7 +479,10 @@ export default function AdminEditArticlePage() {
 
                   {/* Content */}
                   <div>
-                    <label htmlFor="content" className="block text-lg font-semibold text-slate-900 mb-3">
+                    <label
+                      htmlFor="content"
+                      className="block text-lg font-semibold text-slate-900 mb-3"
+                    >
                       Article Content
                     </label>
                     <Textarea
