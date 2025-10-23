@@ -39,13 +39,15 @@ function CreateAccountModal({ dialogState, setDialogState }: CreateAccountModalP
           </p>
 
           {/* Create Account Button */}
-          <button className="group relative rounded-full text-white bg-gradient-to-r from-gray-800 via-gray-700 to-gray-900 hover:from-gray-900 hover:via-gray-800 hover:to-black transition-all duration-300 py-4 px-12 text-lg font-semibold w-full sm:w-80 shadow-xl hover:shadow-2xl transform hover:-translate-y-0.5 overflow-hidden">
+          <a className="group relative rounded-full text-white bg-gradient-to-r from-gray-800 via-gray-700 to-gray-900 hover:from-gray-900 hover:via-gray-800 hover:to-black transition-all duration-300 py-4 px-12 text-lg font-semibold w-full sm:w-80 shadow-xl hover:shadow-2xl transform hover:-translate-y-0.5 overflow-hidden"
+          href="/SignUp"
+          >
             <span className="relative z-10 flex items-center justify-center gap-3">
               <User className="h-5 w-5" />
               Create account
             </span>
             <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-          </button>
+          </a>
 
           {/* Divider */}
           <div className="flex items-center gap-4 w-full my-6">
