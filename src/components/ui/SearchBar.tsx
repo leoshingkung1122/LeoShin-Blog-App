@@ -72,7 +72,7 @@ export default function SearchBar({
         );
         
         // Transform posts to include category name as string
-        const transformedPosts = (response.data.posts || []).map((post: any) => ({
+        const transformedPosts = (response.data.posts || []).map((post: { categories?: { name?: string }; [key: string]: unknown }) => ({
           ...post,
           category: post.categories?.name || "Uncategorized"
         }));

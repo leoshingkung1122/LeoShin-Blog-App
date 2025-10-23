@@ -1,4 +1,4 @@
-/* eslint-disable react/prop-types */
+
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom"; // Use `useParams` for getting the postId from the URL
 import { X } from "lucide-react";

@@ -157,8 +157,8 @@ export default function AdminProfilePage() {
           </button>
         </div>
       ));
-    } catch (error: any) {
-      const errorMessage = error.response?.data?.error || "Failed to update profile";
+    } catch (error: unknown) {
+      const errorMessage = (error as { response?: { data?: { error?: string } } })?.response?.data?.error || "Failed to update profile";
       toast.custom((t) => (
         <div className="bg-red-500 text-white p-4 rounded-sm flex justify-between items-start">
           <div>

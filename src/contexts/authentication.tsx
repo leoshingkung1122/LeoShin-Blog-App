@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { useState, useEffect, createContext, useContext, type ReactNode } from "react";
+import { useState, useEffect, createContext, useContext, useCallback, type ReactNode } from "react";
 import axios, { type AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -46,7 +46,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const navigate = useNavigate();
 
   // Fetch user details using API
-  const fetchUser = async () => {
+  const fetchUser = useCallback(async () => {
     const token = localStorage.getItem("token");
     if (!token) {
       setState((prevState) => ({
@@ -59,7 +59,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     try {
       setState((prevState) => ({ ...prevState, getUserLoading: true }));
-      const response = await axios.get<any>(
+        const response = await axios.get<{ success: boolean; user: User }>(
         "https://leoshin-blog-app-api-with-db.vercel.app/auth/get-user",
         {
           headers: {
@@ -70,8 +70,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setState((prevState) => ({
         ...prevState,
         user: {
-          ...response.data,
-          profile_pic: response.data.profilePic || response.data.profile_pic // Map profilePic to profile_pic
+          ...response.data.user,
+          profile_pic: response.data.user.profile_pic || ""
         },
         getUserLoading: false,
       }));
@@ -85,13 +85,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
         getUserLoading: false,
       }));
     }
-  };
+  }, []);
 
   useEffect(() => {
     // Load user on initial app load. Delay UI until first fetch completes by toggling getUserLoading.
     fetchUser();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [fetchUser]);
 
   // Login user
   const login = async (data: { email: string; password: string }) => {

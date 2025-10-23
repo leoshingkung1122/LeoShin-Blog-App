@@ -137,7 +137,7 @@ export default function AdminArticleManagementPage() {
             
             if (fallbackResponse.data.success && fallbackResponse.data.posts) {
               // Transform the data to match expected format
-              postsData = fallbackResponse.data.posts.map((post: any) => ({
+              postsData = fallbackResponse.data.posts.map((post: { id: number; title?: string; description?: string; content?: string; categories?: { name?: string }; post_status?: { name?: string } }) => ({
                 id: post.id,
                 title: post.title || 'Untitled',
                 description: post.description || '',
