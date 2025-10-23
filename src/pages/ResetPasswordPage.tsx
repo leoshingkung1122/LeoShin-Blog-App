@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import axios from "axios";
-import FrirenHappy from "@/assets/FrirenHappy.png";
+import Yuna1 from "@/assets/Yuna1.png";
 import { useAuth } from "@/contexts/authentication";
 
 export default function ResetPasswordPage() {
@@ -323,7 +323,7 @@ export default function ResetPasswordPage() {
                   </div>
 
                   <img
-                    src={FrirenHappy}
+                    src={Yuna1}
                     alt="Frieren - Security Guardian"
                     className="w-full max-w-[400px] h-auto object-contain drop-shadow-2xl transition-all duration-700 group-hover:scale-110 group-hover:-translate-y-2 relative z-10"
                   />
@@ -382,7 +382,7 @@ function ResetPasswordModal({
         {/* Friren in Modal */}
         <div className="absolute top-4 right-4 opacity-30">
           <img 
-            src={FrirenHappy} 
+            src={Yuna1} 
             alt="Friren" 
             className="w-16 h-16 object-contain"
           />

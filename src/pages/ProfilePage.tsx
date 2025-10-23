@@ -8,7 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import { useAuth } from "@/contexts/authentication";
 import { toast } from "sonner";
 import axios from "axios";
-import Fern from "@/assets/Fern.png";
+import Aki2 from "@/assets/Aki2.png";
 
 export default function ProfilePage() {
   const navigate = useNavigate();
@@ -445,7 +445,7 @@ export default function ProfilePage() {
                   </div>
 
                   <img
-                    src={Fern}
+                    src={Aki2}
                     alt="Fern"
                     className="w-full max-w-[400px] h-auto object-contain drop-shadow-2xl transition-all duration-700 group-hover:scale-110 group-hover:-translate-y-2 relative z-10"
                   />
