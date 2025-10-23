@@ -121,22 +121,50 @@ export default function AdminProfilePage() {
     try {
       setIsSaving(true);
 
-      const formData = new FormData();
-      formData.append("name", profile.name);
-      formData.append("introduction", profile.introduction);
-      // Username is not editable, so we don't send it
+      const token = localStorage.getItem("token");
+      if (!token) {
+        toast.error("Authentication Error", { description: "Please login again." });
+        setIsSaving(false);
+        return;
+      }
+
+      let imageUrl = profile.image; // Default to current image
 
       if (imageFile) {
-        formData.append("imageFile", imageFile);
+        const formData = new FormData();
+        formData.append('image', imageFile);
+
+        const uploadResponse = await axios.post(
+          "https://leoshin-blog-app-api-with-db.vercel.app/profiles/upload-image",
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+        );
+
+        if (!uploadResponse.data.success) {
+          throw new Error(uploadResponse.data.error || "Failed to upload image");
+        }
+
+        imageUrl = uploadResponse.data.imageUrl;
       }
+
+      const profileData = {
+        name: profile.name,
+        introduction: profile.introduction,
+        profile_pic: imageUrl,
+      };
 
       await axios.put(
         "https://leoshin-blog-app-api-with-db.vercel.app/profiles",
-        formData,
+        profileData,
         {
-          headers: { 
-            "Content-Type": "multipart/form-data",
-            "Authorization": `Bearer ${localStorage.getItem("token")}`
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
           },
         }
       );
@@ -157,8 +185,17 @@ export default function AdminProfilePage() {
           </button>
         </div>
       ));
+
+      // Update local state after successful save
+      setProfile((prev) => ({
+        ...prev,
+        image: imageUrl,
+      }));
+      setImageFile(null);
+      fetchUser(); // Refresh user data from context
+
     } catch (error: unknown) {
-      const errorMessage = (error as { response?: { data?: { error?: string } } })?.response?.data?.error || "Failed to update profile";
+      const errorMessage = (error as { response?: { data?: { error?: string } }; message?: string })?.response?.data?.error || (error as Error).message || "Failed to update profile";
       toast.custom((t) => (
         <div className="bg-red-500 text-white p-4 rounded-sm flex justify-between items-start">
           <div>
@@ -175,7 +212,6 @@ export default function AdminProfilePage() {
       ));
     } finally {
       setIsSaving(false);
-      fetchUser();
     }
   };
   return (
