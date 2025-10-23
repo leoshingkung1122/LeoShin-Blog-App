@@ -9,6 +9,7 @@ interface User {
   name?: string;
   role?: string;
   profile_pic?: string;
+  profilePic?: string; // API returns this field
   username?: string;
   introduction?: string;
 }
@@ -59,7 +60,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     try {
       setState((prevState) => ({ ...prevState, getUserLoading: true }));
-        const response = await axios.get<{ success: boolean; user: User }>(
+        const response = await axios.get<User>(
         "https://leoshin-blog-app-api-with-db.vercel.app/auth/get-user",
         {
           headers: {
@@ -67,14 +68,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
           }
         }
       );
-      setState((prevState) => ({
-        ...prevState,
-        user: {
-          ...response.data.user,
-          profile_pic: response.data.user.profile_pic || ""
-        },
-        getUserLoading: false,
-      }));
+        setState((prevState) => ({
+          ...prevState,
+          user: {
+            ...response.data,
+            profile_pic: response.data.profilePic || response.data.profile_pic || ""
+          },
+          isAuthenticated: true,
+          error: null,
+          getUserLoading: false,
+        }));
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Failed to fetch user";
       console.error("Error fetching user:", error);

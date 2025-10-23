@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { SmilePlus, Copy, X } from "lucide-react";
 import { FaFacebook, FaLinkedin, FaTwitter } from "react-icons/fa";
 import { toast } from "sonner";
@@ -19,14 +19,7 @@ function Share({ postId, likesAmount, setDialogState }: ShareProps) {
   
   const shareLink = encodeURI(window.location.href);
 
-  useEffect(() => {
-    fetchPublicLikeCount();
-    if (isAuthenticated) {
-      fetchUserLikeStatus();
-    }
-  }, [likesAmount, isAuthenticated]);
-
-  const fetchPublicLikeCount = async () => {
+  const fetchPublicLikeCount = useCallback(async () => {
     try {
       const response = await axios.get(
         `https://leoshin-blog-app-api-with-db.vercel.app/likes/${postId}/public`
@@ -38,9 +31,9 @@ function Share({ postId, likesAmount, setDialogState }: ShareProps) {
       // Fallback to initial likesAmount
       setLikeCount(likesAmount);
     }
-  };
+  }, [postId, likesAmount]);
 
-  const fetchUserLikeStatus = async () => {
+  const fetchUserLikeStatus = useCallback(async () => {
     if (!isAuthenticated) return;
     
     try {
@@ -60,7 +53,14 @@ function Share({ postId, likesAmount, setDialogState }: ShareProps) {
     } catch (error) {
       console.error("Error fetching user like status:", error);
     }
-  };
+  }, [postId, isAuthenticated]);
+
+  useEffect(() => {
+    fetchPublicLikeCount();
+    if (isAuthenticated) {
+      fetchUserLikeStatus();
+    }
+  }, [likesAmount, isAuthenticated, fetchPublicLikeCount, fetchUserLikeStatus]);
 
   const handleLikeToggle = async () => {
     if (!isAuthenticated) {

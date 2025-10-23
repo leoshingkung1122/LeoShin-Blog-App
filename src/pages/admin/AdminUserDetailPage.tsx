@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/Avatar';
@@ -109,7 +109,7 @@ const AdminUserDetailPage: React.FC = () => {
     );
   }
 
-  const fetchUserDetail = async (commentsPageNum: number = commentsPage, likesPageNum: number = likesPage, showLoading: boolean = true) => {
+  const fetchUserDetail = useCallback(async (commentsPageNum: number = commentsPage, likesPageNum: number = likesPage, showLoading: boolean = true) => {
     if (!id) return;
     
     try {
@@ -156,7 +156,7 @@ const AdminUserDetailPage: React.FC = () => {
         setLoading(false);
       }
     }
-  };
+  }, [id, commentsPage, likesPage]);
 
   const handleStatusChange = async (newStatus: 'active' | 'ban') => {
     if (!id) return;
@@ -310,7 +310,7 @@ const AdminUserDetailPage: React.FC = () => {
 
   useEffect(() => {
     fetchUserDetail();
-  }, [id]);
+  }, [id, fetchUserDetail]);
 
   if (loading) {
     return (

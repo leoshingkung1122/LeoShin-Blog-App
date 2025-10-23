@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Textarea } from "./Textarea";
 import { useAuth } from "@/contexts/authentication";
 import axios from "axios";
@@ -43,11 +43,7 @@ export default function Comment({ postId, setDialogState }: CommentProps) {
 
   const COMMENTS_PER_PAGE = 5;
 
-  useEffect(() => {
-    fetchComments();
-  }, [postId, currentPage]);
-
-  const fetchComments = async () => {
+  const fetchComments = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
@@ -105,7 +101,11 @@ export default function Comment({ postId, setDialogState }: CommentProps) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [postId, currentPage]);
+
+  useEffect(() => {
+    fetchComments();
+  }, [postId, currentPage, fetchComments]);
 
   const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (!isAuthenticated) {

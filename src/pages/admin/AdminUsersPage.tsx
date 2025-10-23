@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/Avatar';
@@ -69,7 +69,7 @@ const AdminUsersPage: React.FC = () => {
     );
   }
 
-  const fetchUsers = async (page: number = currentPage) => {
+  const fetchUsers = useCallback(async (page: number = currentPage) => {
     try {
       const token = localStorage.getItem('token');
       const response = await fetch(`https://leoshin-blog-app-api-with-db.vercel.app/users?page=${page}&limit=10`, {
@@ -105,7 +105,7 @@ const AdminUsersPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentPage]);
 
   const handleStatusChange = async (userId: string, newStatus: 'active' | 'ban') => {
     setActionLoading(userId);
@@ -178,7 +178,7 @@ const AdminUsersPage: React.FC = () => {
 
   useEffect(() => {
     fetchUsers();
-  }, []);
+  }, [fetchUsers]);
 
   if (loading) {
     return (
