@@ -22,7 +22,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import type { Category } from "../../types/blog";
+import type { Category } from "@/types/blog";
 
 export default function AdminCategoryManagementPage() {
   const navigate = useNavigate();

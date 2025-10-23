@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Button } from '../../components/ui/button';
-import { Avatar, AvatarImage, AvatarFallback } from '../../components/ui/Avatar';
-import Badge from '../../components/ui/badge';
-import { AdminSidebar } from '../../components/AdminWebSection';
-import { useAuth } from '../../contexts/authentication';
+import { Button } from '@/components/ui/button';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/Avatar';
+import Badge from '@/components/ui/badge';
+import { AdminSidebar } from '@/components/AdminWebSection';
+import { useAuth } from '@/contexts/authentication';
 import { toast } from 'sonner';
 import { X } from 'lucide-react';
-import Pagination from '../../components/ui/Pagination';
+import Pagination from '@/components/ui/Pagination';
 import axios from 'axios';
 
 interface User {

@@ -6,7 +6,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import { X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useCategories } from "../../hooks/useCategories";
+import { useCategories } from "@/hooks/useCategories";
 
 export default function AdminCreateCategoryPage() {
   const navigate = useNavigate();
