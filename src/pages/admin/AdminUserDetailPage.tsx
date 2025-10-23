@@ -83,31 +83,7 @@ const AdminUserDetailPage: React.FC = () => {
     likes: PaginationInfo;
   } | null>(null);
   const { isAuthenticated, state } = useAuth();
-
-  // Check authentication and admin role
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate("/login");
-      return;
-    }
-    
-    if (state.user?.role !== 'admin') {
-      navigate("/");
-      return;
-    }
-  }, [isAuthenticated, state.user?.role, navigate]);
-
-  // Show loading while checking authentication
-  if (!isAuthenticated || state.user?.role !== 'admin') {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-800 mb-4">Loading...</h1>
-          <p className="text-gray-600">Checking permissions...</p>
-        </div>
-      </div>
-    );
-  }
+  const [checkingAuth, setCheckingAuth] = useState(true);
 
   const fetchUserDetail = useCallback(async (commentsPageNum: number = commentsPage, likesPageNum: number = likesPage, showLoading: boolean = true) => {
     if (!id) return;
@@ -157,6 +133,40 @@ const AdminUserDetailPage: React.FC = () => {
       }
     }
   }, [id, commentsPage, likesPage]);
+
+  // Check authentication and admin role
+  useEffect(() => {
+    if (isAuthenticated) {
+      if (state.user?.role !== 'admin') {
+        navigate("/");
+      } else {
+        setCheckingAuth(false);
+      }
+    } else {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        navigate("/login");
+      }
+    }
+  }, [isAuthenticated, state.user?.role, navigate]);
+
+  useEffect(() => {
+    if (!checkingAuth) {
+      fetchUserDetail();
+    }
+  }, [checkingAuth, fetchUserDetail]);
+
+  // Show loading while checking authentication
+  if (checkingAuth) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-800 mb-4">Loading...</h1>
+          <p className="text-gray-600">Checking permissions...</p>
+        </div>
+      </div>
+    );
+  }
 
   const handleStatusChange = async (newStatus: 'active' | 'ban') => {
     if (!id) return;
@@ -307,10 +317,6 @@ const AdminUserDetailPage: React.FC = () => {
       setLikesLoading(false);
     }
   };
-
-  useEffect(() => {
-    fetchUserDetail();
-  }, [id, fetchUserDetail]);
 
   if (loading) {
     return (

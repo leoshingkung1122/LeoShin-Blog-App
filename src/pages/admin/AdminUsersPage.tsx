@@ -43,33 +43,10 @@ const AdminUsersPage: React.FC = () => {
   const [pagination, setPagination] = useState<PaginationInfo | null>(null);
   const navigate = useNavigate();
   const { isAuthenticated, state } = useAuth();
-
-  // Check authentication and admin role
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate("/login");
-      return;
-    }
-    
-    if (state.user?.role !== 'admin') {
-      navigate("/");
-      return;
-    }
-  }, [isAuthenticated, state.user?.role, navigate]);
-
-  // Show loading while checking authentication
-  if (!isAuthenticated || state.user?.role !== 'admin') {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-800 mb-4">Loading...</h1>
-          <p className="text-gray-600">Checking permissions...</p>
-        </div>
-      </div>
-    );
-  }
+  const [checkingAuth, setCheckingAuth] = useState(true);
 
   const fetchUsers = useCallback(async (page: number = currentPage) => {
+    setLoading(true);
     try {
       const token = localStorage.getItem('token');
       const response = await fetch(`https://leoshin-blog-app-api-with-db.vercel.app/users?page=${page}&limit=10`, {
@@ -106,6 +83,40 @@ const AdminUsersPage: React.FC = () => {
       setLoading(false);
     }
   }, [currentPage]);
+
+  // Check authentication and admin role
+  useEffect(() => {
+    if (isAuthenticated) {
+      if (state.user?.role !== 'admin') {
+        navigate("/");
+      } else {
+        setCheckingAuth(false);
+      }
+    } else {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        navigate("/login");
+      }
+    }
+  }, [isAuthenticated, state.user?.role, navigate]);
+
+  useEffect(() => {
+    if (!checkingAuth) {
+      fetchUsers();
+    }
+  }, [checkingAuth, fetchUsers]);
+
+  // Show loading while checking authentication
+  if (checkingAuth) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-800 mb-4">Loading...</h1>
+          <p className="text-gray-600">Checking permissions...</p>
+        </div>
+      </div>
+    );
+  }
 
   const handleStatusChange = async (userId: string, newStatus: 'active' | 'ban') => {
     setActionLoading(userId);
@@ -175,10 +186,6 @@ const AdminUsersPage: React.FC = () => {
     setCurrentPage(page);
     fetchUsers(page);
   };
-
-  useEffect(() => {
-    fetchUsers();
-  }, [fetchUsers]);
 
   if (loading) {
     return (
