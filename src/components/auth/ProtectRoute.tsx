@@ -1,12 +1,12 @@
 import { Navigate } from "react-router-dom";
 import { type ReactNode } from "react";
-import LoadingScreen from "../ui/LoadingScreen";
+import LoadingToast from "../ui/LoadingToast";
 
 interface ProtectedRouteProps {
   isLoading: boolean;
   isAuthenticated: boolean;
   userRole?: string;
-  requiredRole?: string;
+  requiredRole?: string | string[];
   children: ReactNode;
 }
 
@@ -20,10 +20,8 @@ function ProtectedRoute({
   if (isLoading) {
     // Loading state
     return (
-      <div className="flex flex-col min-h-screen">
-        <div className="min-h-screen md:p-8">
-          <LoadingScreen />
-        </div>
+      <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-90 backdrop-blur-sm z-50">
+        <LoadingToast size="extra-large" text="Loading" />
       </div>
     );
   }
@@ -34,8 +32,11 @@ function ProtectedRoute({
   }
 
   // If role is required and doesn't match, redirect to home
-  if (requiredRole && userRole !== requiredRole) {
-    return <Navigate to="/" replace />;
+  if (requiredRole) {
+    const allowedRoles = Array.isArray(requiredRole) ? requiredRole : [requiredRole];
+    if (!userRole || !allowedRoles.includes(userRole)) {
+      return <Navigate to="/" replace />;
+    }
   }
 
   // User is authenticated (and has correct role if required)

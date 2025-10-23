@@ -1,4 +1,4 @@
-/* eslint-disable react/prop-types */
+
 import { useState } from "react";
 import NavBar from "@/components/ui/navbar";
 import Footer from "@/components/ui/footer";
@@ -14,10 +14,12 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import axios from "axios";
-import FrirenHappy from "@/assets/FrirenHappy.png";
+import Yuna1 from "@/assets/Yuna1.png";
+import { useAuth } from "@/contexts/authentication";
 
 export default function ResetPasswordPage() {
   const navigate = useNavigate();
+  const { state } = useAuth();
   const [password, setPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
@@ -27,6 +29,28 @@ export default function ResetPasswordPage() {
     confirmNewPassword: true,
   });
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  // Add error boundary for component
+  if (!state.user && !state.getUserLoading) {
+    return (
+      <div className="flex flex-col min-h-screen bg-white">
+        <NavBar />
+        <main className="flex-grow flex items-center justify-center">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">Unable to load page</h2>
+            <p className="text-gray-600 mb-4">Please try refreshing the page or logging in again.</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+            >
+              Refresh Page
+            </button>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -50,11 +74,16 @@ export default function ResetPasswordPage() {
     try {
       setIsDialogOpen(false);
 
-      const response = await axios.put(
-        `https://blog-post-project-api-with-db.vercel.app/auth/reset-password`,
+      const response = await axios.post(
+        `https://leoshin-blog-app-api-with-db.vercel.app/auth/reset-password`,
         {
           oldPassword: password,
           newPassword: newPassword,
+        },
+        {
+          headers: {
+            "Authorization": `Bearer ${localStorage.getItem("token")}`
+          }
         }
       );
 
@@ -83,9 +112,20 @@ export default function ResetPasswordPage() {
         setConfirmNewPassword("");
       }
     } catch (error) {
-      const errorMessage = axios.isAxiosError(error) 
-        ? error.response?.data?.error || "Something went wrong. Please try again."
-        : "Something went wrong. Please try again.";
+      console.error("Reset password error:", error);
+      
+      // Safely extract error message to prevent React rendering errors
+      let errorMessage = "Something went wrong. Please try again.";
+      
+      if (axios.isAxiosError(error)) {
+        if (error.response?.data?.error) {
+          errorMessage = String(error.response.data.error);
+        } else if (error.message) {
+          errorMessage = String(error.message);
+        }
+      } else if (error instanceof Error) {
+        errorMessage = String(error.message);
+      }
       
       toast.custom((t) => (
         <div className="bg-red-500 text-white p-4 rounded-sm flex justify-between items-start">
@@ -283,7 +323,7 @@ export default function ResetPasswordPage() {
                   </div>
 
                   <img
-                    src={FrirenHappy}
+                    src={Yuna1}
                     alt="Frieren - Security Guardian"
                     className="w-full max-w-[400px] h-auto object-contain drop-shadow-2xl transition-all duration-700 group-hover:scale-110 group-hover:-translate-y-2 relative z-10"
                   />
@@ -333,7 +373,7 @@ function ResetPasswordModal({
 }) {
   return (
     <AlertDialog open={dialogState} onOpenChange={setDialogState}>
-      <AlertDialogContent className="bg-gradient-to-br from-white to-red-50 rounded-xl pt-20 pb-8 max-w-[26rem] sm:max-w-lg flex flex-col items-center shadow-2xl border-0 relative overflow-hidden">
+      <AlertDialogContent className="!fixed !top-1/2 !left-1/2 !transform !-translate-x-1/2 !-translate-y-1/2 bg-gradient-to-br from-white to-red-50 rounded-xl pt-8 pb-8 max-w-[26rem] sm:max-w-lg flex flex-col items-center shadow-2xl border-0 relative overflow-hidden z-50">
         {/* Animated background */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-red-800 to-transparent"></div>
@@ -342,7 +382,7 @@ function ResetPasswordModal({
         {/* Friren in Modal */}
         <div className="absolute top-4 right-4 opacity-30">
           <img 
-            src={FrirenHappy} 
+            src={Yuna1} 
             alt="Friren" 
             className="w-16 h-16 object-contain"
           />

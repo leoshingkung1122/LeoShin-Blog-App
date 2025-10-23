@@ -8,7 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import { useAuth } from "@/contexts/authentication";
 import { toast } from "sonner";
 import axios from "axios";
-import Fern from "@/assets/Fern.png";
+import Aki2 from "@/assets/Aki2.png";
 
 export default function ProfilePage() {
   const navigate = useNavigate();
@@ -20,13 +20,13 @@ export default function ProfilePage() {
     email: "",
   });
   const [isSaving, setIsSaving] = useState(false);
-  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imageFile, setImageFile] = useState<{ file?: File }>({});
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         setProfile({
-          image: state.user?.profilePic || "",
+          image: state.user?.profile_pic || "",
           name: state.user?.name || "",
           username: state.user?.username || "",
           email: state.user?.email || "",
@@ -35,14 +35,12 @@ export default function ProfilePage() {
         toast.custom((t) => (
           <div className="bg-red-500 text-white p-4 rounded-sm flex justify-between items-start">
             <div>
-              <h2 className="font-bold text-lg mb-1">
-                Failed to fetch profile
-              </h2>
-              <p className="text-sm">Please try again later.</p>
+              <h2 className="font-bold text-lg mb-1">Failed to load profile</h2>
+              <p className="text-sm">Please try again later</p>
             </div>
             <button
               onClick={() => toast.dismiss(t)}
-              className="text-white hover:text-gray-200"
+              className="ml-4 text-white hover:text-gray-200"
             >
               <X size={20} />
             </button>
@@ -53,6 +51,28 @@ export default function ProfilePage() {
 
     fetchProfile();
   }, [state.user]);
+
+  // Add error boundary for component
+  if (!state.user && !state.getUserLoading) {
+    return (
+      <div className="flex flex-col min-h-screen bg-white">
+        <NavBar />
+        <main className="flex-grow flex items-center justify-center">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">Unable to load profile</h2>
+            <p className="text-gray-600 mb-4">Please try refreshing the page or logging in again.</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+            >
+              Refresh Page
+            </button>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -109,7 +129,7 @@ export default function ProfilePage() {
       return;
     }
 
-    setImageFile(file);
+    setImageFile({ file });
     setProfile((prev) => ({
       ...prev,
       image: URL.createObjectURL(file),
@@ -121,19 +141,63 @@ export default function ProfilePage() {
     try {
       setIsSaving(true);
 
-      const formData = new FormData();
-      formData.append("name", profile.name);
-      formData.append("username", profile.username);
-
-      if (imageFile) {
-        formData.append("imageFile", imageFile);
+      const token = localStorage.getItem("token");
+      if (!token) {
+        toast.custom((t) => (
+          <div className="bg-red-500 text-white p-4 rounded-sm flex justify-between items-start">
+            <div>
+              <h2 className="font-bold text-lg mb-1">Authentication Error</h2>
+              <p className="text-sm">Please login again.</p>
+            </div>
+            <button
+              onClick={() => toast.dismiss(t)}
+              className="text-white hover:text-gray-200"
+            >
+              <X size={20} />
+            </button>
+          </div>
+        ));
+        setIsSaving(false);
+        return;
       }
 
+      let imageUrl = profile.image; // Default to current image
+
+      if (imageFile.file) {
+        const formData = new FormData();
+        formData.append('image', imageFile.file);
+
+        const uploadResponse = await axios.post(
+          "https://leoshin-blog-app-api-with-db.vercel.app/profiles/upload-image",
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+        );
+
+        if (!uploadResponse.data.success) {
+          throw new Error(uploadResponse.data.error || "Failed to upload image");
+        }
+
+        imageUrl = uploadResponse.data.imageUrl;
+      }
+
+      const profileData = {
+        name: profile.name,
+        profile_pic: imageUrl,
+      };
+
       await axios.put(
-        "https://blog-post-project-api-with-db.vercel.app/profile",
-        formData,
+        "https://leoshin-blog-app-api-with-db.vercel.app/profiles",
+        profileData,
         {
-          headers: { "Content-Type": "multipart/form-data" },
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          },
         }
       );
 
@@ -153,12 +217,39 @@ export default function ProfilePage() {
           </button>
         </div>
       ));
-    } catch {
+
+      // Update local profile state with new image URL
+      setProfile((prev) => ({
+        ...prev,
+        image: imageUrl,
+      }));
+
+      // Clear the image file state
+      setImageFile({});
+
+      // Refresh user data from server
+      await fetchUser();
+    } catch (error) {
+      console.error("Profile update error:", error);
+      
+      // Safely extract error message to prevent React rendering errors
+      let errorMessage = "Something went wrong. Please try again.";
+      
+      if (axios.isAxiosError(error)) {
+        if (error.response?.data?.error) {
+          errorMessage = String(error.response.data.error);
+        } else if (error.message) {
+          errorMessage = String(error.message);
+        }
+      } else if (error instanceof Error) {
+        errorMessage = String(error.message);
+      }
+      
       toast.custom((t) => (
         <div className="bg-red-500 text-white p-4 rounded-sm flex justify-between items-start">
           <div>
             <h2 className="font-bold text-lg mb-1">Failed to update profile</h2>
-            <p className="text-sm">Please try again later.</p>
+            <p className="text-sm">{errorMessage}</p>
           </div>
           <button
             onClick={() => toast.dismiss(t)}
@@ -170,7 +261,6 @@ export default function ProfilePage() {
       ));
     } finally {
       setIsSaving(false);
-      fetchUser();
     }
   };
 
@@ -237,7 +327,7 @@ export default function ProfilePage() {
                 <div className="relative z-10 flex flex-col items-center mb-6">
                   <Avatar className="h-28 w-28 mb-4 border-4 border-white shadow-xl">
                     <AvatarImage
-                      src={profile.image}
+                      src={imageFile.file ? URL.createObjectURL(imageFile.file) : profile.image}
                       alt="Profile"
                       className="object-cover"
                     />
@@ -286,9 +376,9 @@ export default function ProfilePage() {
                       id="username"
                       name="username"
                       value={profile.username}
-                      onChange={handleInputChange}
-                      className="py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 hover:border-purple-300 focus:shadow-lg focus:shadow-purple-100 placeholder:text-gray-400 focus-visible:ring-0 focus-visible:ring-offset-0 bg-gradient-to-r from-white to-purple-50/30"
-                      placeholder="Choose a username"
+                      readOnly
+                      className="py-3 rounded-xl border-2 border-gray-200 bg-gray-50 text-gray-500 cursor-not-allowed focus-visible:ring-0 focus-visible:ring-offset-0"
+                      placeholder="Username cannot be changed"
                     />
                   </div>
 
@@ -353,7 +443,7 @@ export default function ProfilePage() {
                   </div>
 
                   <img
-                    src={Fern}
+                    src={Aki2}
                     alt="Fern"
                     className="w-full max-w-[400px] h-auto object-contain drop-shadow-2xl transition-all duration-700 group-hover:scale-110 group-hover:-translate-y-2 relative z-10"
                   />

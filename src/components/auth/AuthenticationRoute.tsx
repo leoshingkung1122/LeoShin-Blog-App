@@ -1,6 +1,6 @@
 import { Navigate } from "react-router-dom";
 import { type ReactNode } from "react";
-import LoadingScreen from "../ui/LoadingScreen";
+import LoadingToast from "../ui/LoadingToast";
 
 interface AuthenticationRouteProps {
   isLoading: boolean;
@@ -12,10 +12,8 @@ function AuthenticationRoute({ isLoading, isAuthenticated, children }: Authentic
   if (isLoading) {
     // Loading state
     return (
-      <div className="flex flex-col min-h-screen">
-        <div className="min-h-screen md:p-8">
-          <LoadingScreen />
-        </div>
+      <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-90 backdrop-blur-sm z-50">
+        <LoadingToast size="extra-large" text="Loading" />
       </div>
     );
   }

@@ -11,7 +11,10 @@ import type { BlogPost } from "../../types/blog";
 export default function Articles() {
   const [searchTerm, setSearchTerm] = useState<string>("");
   
-  // Use custom hooks
+  // Get categories first
+  const { categories, error: categoriesError } = useCategories();
+  
+  // Use custom hooks with first category as default (only when categories are loaded)
   const {
     posts,
     isLoading,
@@ -22,9 +25,7 @@ export default function Articles() {
     setSelectedCategory,
     setSearchKeyword,
     loadMore,
-  } = useBlogPosts();
-  
-  const { categories } = useCategories();
+  } = useBlogPosts(""); // Always start with empty string to show all posts
 
   // Debounce search term
   useEffect(() => {
@@ -55,10 +56,15 @@ export default function Articles() {
         />
       </div>
       
-      {/* Error Message */}
+      {/* Error Messages */}
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mt-4">
           <p>Error loading articles: {error}</p>
+        </div>
+      )}
+      {categoriesError && (
+        <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mt-4">
+          <p>Error loading categories: {categoriesError}</p>
         </div>
       )}
       {/* Articles Grid */}
@@ -69,10 +75,14 @@ export default function Articles() {
             id={post.id}
             image={post.image}
             category={post.category}
+            categoryId={post.category_id}
             title={post.title}
             description={post.description}
-            author={post.author}
-            date={new Date(post.date).toLocaleDateString("en-GB", {
+            author={post.author || "Unknown"}
+            authorUsername={post.authorUsername}
+            authorProfilePic={post.authorProfilePic}
+            authorIntroduction={post.authorIntroduction}
+            date={new Date(post.published_at).toLocaleDateString("en-GB", {
               day: "numeric",
               month: "long",
               year: "numeric",

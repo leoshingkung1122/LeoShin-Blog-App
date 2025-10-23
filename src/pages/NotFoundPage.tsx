@@ -2,7 +2,7 @@ import NavBar from "@/components/ui/navbar";
 import Footer from "@/components/ui/footer";
 import { Home, ArrowLeft, Sparkles, Heart, BookOpen } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import FriendBook from "@/assets/FrirenWithBook.png";
+import Reina1 from "@/assets/Reina1.png";
 
 export default function NotFoundPage() {
   const navigate = useNavigate();
@@ -36,7 +36,7 @@ export default function NotFoundPage() {
             <div className="relative z-10 flex items-center justify-center order-2 md:order-1 mb-4 md:mb-0">
               <div className="relative">
                 <img 
-                  src={FriendBook} 
+                  src={Reina1} 
                   alt="Frieren with Book" 
                   className="w-full max-w-[200px] sm:max-w-[240px] md:max-w-[280px] lg:max-w-[320px] h-auto object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-300"
                 />

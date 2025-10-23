@@ -4,6 +4,10 @@ import "./index.css";
 import App from "./App.tsx";
 import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "./contexts/authentication";
+import jwtInterceptor from "./utils/jwtinterceptor";
+
+// Initialize JWT interceptor
+jwtInterceptor();
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

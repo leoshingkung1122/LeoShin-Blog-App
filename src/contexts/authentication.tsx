@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { useState, useEffect, createContext, useContext, type ReactNode } from "react";
+import { useState, useEffect, createContext, useContext, useCallback, type ReactNode } from "react";
 import axios, { type AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -8,8 +8,10 @@ interface User {
   email: string;
   name?: string;
   role?: string;
-  profilePic?: string;
+  profile_pic?: string;
+  profilePic?: string; // API returns this field
   username?: string;
+  introduction?: string;
 }
 
 interface AuthState {
@@ -23,7 +25,7 @@ interface AuthContextType {
   state: AuthState;
   login: (data: { email: string; password: string }) => Promise<{ error?: string } | void>;
   logout: () => void;
-  register: (data: { email: string; password: string; name?: string }) => Promise<{ error?: string } | void>;
+  register: (data: { email: string; password: string; name?: string; username?: string }) => Promise<{ error?: string } | void>;
   isAuthenticated: boolean;
   fetchUser: () => Promise<void>;
 }
@@ -37,7 +39,7 @@ interface AuthProviderProps {
 export function AuthProvider({ children }: AuthProviderProps) {
   const [state, setState] = useState<AuthState>({
     loading: false,
-    getUserLoading: false,
+    getUserLoading: true, // Start with true to prevent flicker
     error: null,
     user: null,
   });
@@ -45,7 +47,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const navigate = useNavigate();
 
   // Fetch user details using API
-  const fetchUser = async () => {
+  const fetchUser = useCallback(async () => {
     const token = localStorage.getItem("token");
     if (!token) {
       setState((prevState) => ({
@@ -58,45 +60,56 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     try {
       setState((prevState) => ({ ...prevState, getUserLoading: true }));
-      const response = await axios.get<User>(
-        "https://blog-post-project-api-with-db.vercel.app/auth/get-user"
+        const response = await axios.get<User>(
+        "https://leoshin-blog-app-api-with-db.vercel.app/auth/get-user",
+        {
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        }
       );
-      setState((prevState) => ({
-        ...prevState,
-        user: response.data,
-        getUserLoading: false,
-      }));
+        setState((prevState) => ({
+          ...prevState,
+          user: {
+            ...response.data,
+            profile_pic: response.data.profilePic || response.data.profile_pic || ""
+          },
+          isAuthenticated: true,
+          error: null,
+          getUserLoading: false,
+        }));
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Failed to fetch user";
+      console.error("Error fetching user:", error);
       setState((prevState) => ({
         ...prevState,
         error: errorMessage,
-        user: null,
+        // Don't set user to null on error, keep existing user data
         getUserLoading: false,
       }));
     }
-  };
+  }, []);
 
   useEffect(() => {
-    fetchUser(); // Load user on initial app load
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    // Load user on initial app load. Delay UI until first fetch completes by toggling getUserLoading.
+    fetchUser();
+  }, [fetchUser]);
 
   // Login user
   const login = async (data: { email: string; password: string }) => {
     try {
       setState((prevState) => ({ ...prevState, loading: true, error: null }));
       const response = await axios.post<{ access_token: string }>(
-        "https://blog-post-project-api-with-db.vercel.app/auth/login",
+        "https://leoshin-blog-app-api-with-db.vercel.app/auth/login",
         data
       );
       const token = response.data.access_token;
       localStorage.setItem("token", token);
 
-      // Fetch and set user details
+      // Ensure user state is populated before navigating to avoid flicker
+      await fetchUser();
       setState((prevState) => ({ ...prevState, loading: false, error: null }));
       navigate("/");
-      await fetchUser();
     } catch (error) {
       const axiosError = error as AxiosError<{ error: string }>;
       const errorMessage = axiosError.response?.data?.error || "Login failed";
@@ -110,11 +123,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
   };
 
   // Register user
-  const register = async (data: { email: string; password: string; name?: string }) => {
+  const register = async (data: { email: string; password: string; name?: string; username?: string }) => {
     try {
       setState((prevState) => ({ ...prevState, loading: true, error: null }));
       await axios.post(
-        "https://blog-post-project-api-with-db.vercel.app/auth/register",
+        "https://leoshin-blog-app-api-with-db.vercel.app/auth/register",
         data
       );
       setState((prevState) => ({ ...prevState, loading: false, error: null }));

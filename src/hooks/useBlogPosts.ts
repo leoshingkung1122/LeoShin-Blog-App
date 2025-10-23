@@ -15,9 +15,9 @@ interface UseBlogPostsReturn {
   resetPosts: () => void;
 }
 
-export const useBlogPosts = (): UseBlogPostsReturn => {
+export const useBlogPosts = (defaultCategory?: FilterCategory): UseBlogPostsReturn => {
   const [posts, setPosts] = useState<BlogPost[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<FilterCategory>("Highlight");
+  const [selectedCategory, setSelectedCategory] = useState<FilterCategory>(defaultCategory || "");
   const [searchKeyword, setSearchKeyword] = useState<string>("");
   const [page, setPage] = useState<number>(1);
   const [hasMore, setHasMore] = useState<boolean>(true);
@@ -29,8 +29,7 @@ export const useBlogPosts = (): UseBlogPostsReturn => {
     setError(null);
     
     try {
-      let response;
-      const baseUrl = "https://blog-post-project-api.vercel.app/posts";
+      const baseUrl = "https://leoshin-blog-app-api-with-db.vercel.app/posts";
       let params = `page=${currentPage}&limit=6`;
       
       // Add keyword if searching
@@ -38,17 +37,27 @@ export const useBlogPosts = (): UseBlogPostsReturn => {
         params += `&keyword=${encodeURIComponent(keyword)}`;
       }  
       
-      if (category !== "Highlight") {
-        // Only add category filter if not searching
+      if (category && category.trim() !== "" && category !== "All") {
+        // Only add category filter if category is specified and not "All"
         params += `&category=${category}`;
       }
       
-      response = await axios.get(`${baseUrl}?${params}`);
+      const response = await axios.get(`${baseUrl}?${params}`);
       
+      // Transform posts to include category name as string and author data
+      const transformedPosts = response.data.posts.map((post: { categories?: { name?: string }; users?: { username?: string; profile_pic?: string; introduction?: string; name?: string }; [key: string]: unknown }) => ({
+        ...post,
+        category: post.categories?.name || "Uncategorized",
+        author: post.users?.name || "Unknown",
+        authorUsername: post.users?.username || "unknown",
+        authorProfilePic: post.users?.profile_pic || "",
+        authorIntroduction: post.users?.introduction || "",
+      }));
+
       setPosts((prevPosts) => 
         isNewCategory || currentPage === 1 
-          ? response.data.posts 
-          : [...prevPosts, ...response.data.posts]
+          ? transformedPosts 
+          : [...prevPosts, ...transformedPosts]
       );
       
       if (response.data.currentPage >= response.data.totalPages) {
