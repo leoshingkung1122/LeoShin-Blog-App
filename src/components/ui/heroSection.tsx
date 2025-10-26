@@ -1,4 +1,4 @@
-import LeoShin from "@/assets/ShuLing.jpg";
+import LeoShin from "@/assets/LeoShin.jpg";
 
 function HeroSection() {
   return (
@@ -10,12 +10,17 @@ function HeroSection() {
             the Future, <br />
             One Commit at a Time,
           </h1>
-          <p className="text-lg text-gray-500">
+          <p className="text-lg text-gray-500 mb-4">
             Full-Stack Visionary with a MERN Core. Passionate about leveraging
             Next.js and TypeScript for scalable and high-performance web
             applications. Always eager to explore cutting-edge solutions like
             Serverless and Cloud technologies to deliver innovative user
             experiences.
+          </p>
+          <p className="text-lg text-gray-500">
+            フルスタック開発者 兼 探求者 (エクスプローラー)
+            です。スケーラブルで高性能なWebアプリケーション
+            の構築を得意としております。Next.jsやクラウド技術に注力し、革新的なユーザー体験を提供します。
           </p>
         </div>
         <img
@@ -32,9 +37,16 @@ function HeroSection() {
             strategic thinking; Reading fuels my ability to absorb complex
             information quickly.
           </p>
-          <p className="text-gray-500">
-            In my downtime, Travelling broadens my perspective, just as vital for
-            understanding global user needs.
+          <p className="text-gray-500 mb-4">
+            In my downtime, Travelling broadens my perspective, just as vital
+            for understanding global user needs.
+          </p>
+          <p className="text-gray-500 mb-4">
+            趣味と同じ探究心をもって、コーディングに向き合っています。
+            ゲームは、問題解決能力と戦略的思考を鍛えてくれます。読書は、複雑な情報を素早く吸収する力になります。
+          </p>
+          <p className="text-gray-500 mb-4">
+          休日には旅行を楽しむことで視野を広げており、それがグローバルなユーザーニーズを理解する上で不可欠な要素だと考えています。
           </p>
         </div>
       </div>

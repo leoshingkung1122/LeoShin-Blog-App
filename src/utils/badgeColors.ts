@@ -12,11 +12,11 @@ export interface AvatarColors {
 
 export const CATEGORY_COLOR_MAPPING: Record<number, BadgeColors> = {
   1: { light: "#FEE2E2", dark: "#EF4444" }, // Red
-  2: { light: "#DBEAFE", dark: "#3B82F6" }, // blue
-  3: { light: "#DBEAFE", dark: "#3B82F6" }, // Blue
-  4: { light: "#D1FAE5", dark: "#10B981" }, // Green
-  5: { light: "#FEF3C7", dark: "#F59E0B" }, // Yellow
-  6: { light: "#EDE9FE", dark: "#8B5CF6" }, // Purple
+  2: { light: "#FEE2E2", dark: "#EF4444" }, // blue
+  3: { light: "#EDE9FE", dark: "#8B5CF6" }, // Purple
+  4: { light: "#E0E7FF", dark: "#6366F1" }, // Indigo
+  5: { light: "#CCFBF1", dark: "#2DD4BF" }, // Teal 
+  6: { light: "#FFEDD5", dark: "#F97316" }, // Orange
 };
 
 // Avatar color palette - using similar colors to category badges

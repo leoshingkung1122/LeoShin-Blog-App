@@ -12,7 +12,7 @@ export default function Articles() {
   const [searchTerm, setSearchTerm] = useState<string>("");
   
   // Get categories first
-  const { categories, error: categoriesError } = useCategories();
+  const { categories, categoriesWithColors, error: categoriesError } = useCategories();
   
   // Use custom hooks with first category as default (only when categories are loaded)
   const {
@@ -69,26 +69,32 @@ export default function Articles() {
       )}
       {/* Articles Grid */}
       <article className="grid grid-cols-1 md:grid-cols-2 gap-8 px-4 md:px-0 mt-10 mb-20">
-        {posts.map((post: BlogPost) => (
-          <BlogCard
-            key={post.id}
-            id={post.id}
-            image={post.image}
-            category={post.category}
-            categoryId={post.category_id}
-            title={post.title}
-            description={post.description}
-            author={post.author || "Unknown"}
-            authorUsername={post.authorUsername}
-            authorProfilePic={post.authorProfilePic}
-            authorIntroduction={post.authorIntroduction}
-            date={new Date(post.published_at).toLocaleDateString("en-GB", {
-              day: "numeric",
-              month: "long",
-              year: "numeric",
-            })}
-          />
-        ))}
+        {posts.map((post: BlogPost) => {
+          // Find the category by original category_id to get newId
+          const categoryDetails = categoriesWithColors.find(cat => cat.id === post.category_id);
+          const categoryNewId = categoryDetails?.newId;
+          
+          return (
+            <BlogCard
+              key={post.id}
+              id={post.id}
+              image={post.image}
+              category={post.category}
+              categoryId={categoryNewId}
+              title={post.title}
+              description={post.description}
+              author={post.author || "Unknown"}
+              authorUsername={post.authorUsername}
+              authorProfilePic={post.authorProfilePic}
+              authorIntroduction={post.authorIntroduction}
+              date={new Date(post.published_at).toLocaleDateString("en-GB", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              })}
+            />
+          );
+        })}
         
         {/* Loading Skeleton */}
         {isLoading && <LoadingSkeleton count={6} />}

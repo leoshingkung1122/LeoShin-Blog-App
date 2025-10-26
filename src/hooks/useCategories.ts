@@ -29,13 +29,19 @@ export const useCategories = (): UseCategoriesReturn => {
         );
         
         if (response.data.success && response.data.data) {
-          // Add colors based on category ID
-            const categoriesWithColors = response.data.data.map((apiCat: { id: number; name: string }) => ({
-            id: apiCat.id,
-            name: apiCat.name,
-            color: getBadgeColors(apiCat.id).dark // Use dark color for legacy compatibility
-          }));
-          
+          // Add colors based on new ID starting from 1
+          const categoriesWithColors = response.data.data.map(
+            (apiCat: { id: number; name: string }, index: number) => {
+              const newId = index + 1; // Start from 1, 2, 3, 4, 5, 6...
+              return {
+                id: apiCat.id, // Keep original id for reference
+                newId: newId, // New sequential ID
+                name: apiCat.name,
+                color: getBadgeColors(newId).dark,
+              };
+            }
+          );
+
           setApiCategories(categoriesWithColors);
         } else {
           setApiCategories([]);

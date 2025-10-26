@@ -8,6 +8,7 @@ import Share from "./Share";
 import Comment from "./comment";
 import CreateAccountModal from "./CreateAccountModal";
 import CategoryBadge from "./CategoryBadge";
+import { useCategories } from "../../hooks";
 
 
 function ViewPost() {
@@ -28,6 +29,9 @@ function ViewPost() {
   const [authorUsername, setAuthorUsername] = useState("");
   const [authorProfilePic, setAuthorProfilePic] = useState("");
   const [authorIntroduction, setAuthorIntroduction] = useState("");
+  
+  // Get categories to map to newId
+  const { categoriesWithColors } = useCategories();
 
   useEffect(() => {
     getPost();
@@ -104,7 +108,7 @@ function ViewPost() {
             <div className="flex">
               <CategoryBadge 
                 category={category} 
-                categoryId={categoryId}
+                categoryId={categoriesWithColors.find(cat => cat.id === categoryId)?.newId || categoryId}
                 className="mb-2"
               />
               <span className="px-3 py-1 text-sm font-normal text-muted-foreground">

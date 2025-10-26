@@ -23,8 +23,8 @@ export default function CategoryFilter({
   return (
     <>
       {/* Mobile Category Filter */}
-      <div className={`md:hidden w-full text-[var(--brown-400)] ${className}`}>
-        <h2 className="text-sm font-medium mb-2">Category</h2>
+      <div className={`lg:hidden w-full text-[var(--brown-400)] ${className}`}>
+        
         <Select 
           value={selectedCategory}
           onValueChange={(value: FilterCategory) => onCategoryChange(value)}
@@ -43,7 +43,7 @@ export default function CategoryFilter({
       </div>
 
       {/* Desktop Category Filter */}
-      <div className={`hidden md:flex space-x-2 ${className}`}>
+      <div className={`hidden lg:flex space-x-2 ${className}`}>
         {categories.map((category) => (
           <button 
             key={category} 

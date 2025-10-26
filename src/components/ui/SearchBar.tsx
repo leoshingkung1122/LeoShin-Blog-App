@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import type { BlogPost } from "@/types/blog";
 import CategoryBadge from "./CategoryBadge";
+import { useCategories } from "../../hooks";
 
 interface SearchBarProps {
   searchTerm: string;
@@ -27,6 +28,7 @@ export default function SearchBar({
   const [showDropdownState, setShowDropdownState] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+  const { categoriesWithColors } = useCategories();
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -141,7 +143,7 @@ export default function SearchBar({
                     <div className="flex items-center gap-2 mt-2">
                       <CategoryBadge 
                         category={post.category} 
-                        categoryId={post.category_id}
+                        categoryId={categoriesWithColors.find(cat => cat.id === post.category_id)?.newId || post.category_id}
                         size="sm"
                       />
                       <span className="text-xs text-gray-400">
