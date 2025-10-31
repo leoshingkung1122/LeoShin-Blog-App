@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/authentication";
 import { toast } from "sonner";
 import { X, Loader2, User, AtSign, Mail, Lock, Sparkles } from "lucide-react";
-import Leo1 from "@/assets/Leo pose01.png";
+// @ts-ignore - PNG file import
+import Leo1 from "@/assets/Leo pose01.PNG";
 
 
 interface FormValues {

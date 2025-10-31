@@ -160,7 +160,7 @@ function Share({ postId, likesAmount, setDialogState }: ShareProps) {
               </div>
             ));
           }}
-          className="flex items-center space-x-2 bg-white px-6 py-3 rounded-full border border-gray-300 hover:bg-gray-50 transition-colors"
+          className="flex items-center space-x-2 bg-white px-6 py-3 rounded-full border border-gray-300 hover:bg-gray-50 transition-colors cursor-pointer"
         >
           <Copy className="w-4 h-4 text-gray-600" />
           <span className="text-gray-700 font-medium text-sm">

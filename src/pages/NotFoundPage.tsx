@@ -2,7 +2,8 @@ import NavBar from "@/components/ui/navbar";
 import Footer from "@/components/ui/footer";
 import { Home, ArrowLeft, Sparkles, Heart, BookOpen } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import Reina1 from "@/assets/Reina pose01.png";
+// @ts-ignore - PNG file import
+import Reina1 from "@/assets/Reina pose01.PNG";
 
 export default function NotFoundPage() {
   const navigate = useNavigate();

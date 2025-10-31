@@ -1,5 +1,6 @@
 import React from 'react';
-import LoadingToastImage from '../../assets/Yuna pose02.png';
+// @ts-ignore - PNG file import
+import LoadingToastImage from '../../assets/Yuna pose02.PNG';
 import './LoadingToast.css';
 
 interface LoadingToastProps {

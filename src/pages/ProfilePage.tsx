@@ -8,7 +8,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import { useAuth } from "@/contexts/authentication";
 import { toast } from "sonner";
 import axios from "axios";
-import Aki2 from "@/assets/Aki pose01.png";
+// @ts-ignore - PNG file import
+import Aki2 from "@/assets/Aki pose01.PNG";
 
 export default function ProfilePage() {
   const navigate = useNavigate();
