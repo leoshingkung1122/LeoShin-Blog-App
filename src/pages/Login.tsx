@@ -16,7 +16,7 @@ import {
   Star,
   Heart,
 } from "lucide-react";
-import Leo2 from "@/assets/Leo2.png";
+import Leo2 from "@/assets/Reina pose02.png";
 
 interface FormValues {
   email: string;

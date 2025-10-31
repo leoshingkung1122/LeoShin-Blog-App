@@ -8,7 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import { useAuth } from "@/contexts/authentication";
 import { toast } from "sonner";
 import axios from "axios";
-import Aki2 from "@/assets/Aki2.png";
+import Aki2 from "@/assets/Aki pose01.png";
 
 export default function ProfilePage() {
   const navigate = useNavigate();

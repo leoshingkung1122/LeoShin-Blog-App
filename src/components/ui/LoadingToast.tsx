@@ -1,5 +1,5 @@
 import React from 'react';
-import LoadingToastImage from '../../assets/LoadingToast.png';
+import LoadingToastImage from '../../assets/Yuna pose02.png';
 import './LoadingToast.css';
 
 interface LoadingToastProps {

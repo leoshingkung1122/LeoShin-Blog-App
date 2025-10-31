@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import axios from "axios";
-import Yuna1 from "@/assets/Yuna1.png";
+import Yuna1 from "@/assets/Yuna pose01.png";
 import { useAuth } from "@/contexts/authentication";
 
 export default function ResetPasswordPage() {
